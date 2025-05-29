@@ -324,5 +324,5 @@ export class MemStorage implements IStorage {
 
 import { DatabaseStorage } from './database-storage';
 
-// Use database storage if DATABASE_URL is available, otherwise fall back to memory storage
-export const storage = process.env.DATABASE_URL ? new DatabaseStorage() : new MemStorage();
+// Always use database storage since we have the connection configured
+export const storage = new DatabaseStorage();
