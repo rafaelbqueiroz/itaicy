@@ -1,0 +1,124 @@
+Header v2.0 — especificação completa
+(baseada no layout que você enviou + sitemap definitivo)
+
+1. Estrutura HTML semântica
+html
+Copiar
+Editar
+<header class="site-header">
+  <div class="container flex items-center justify-between gap-8">
+    <a href="/" class="logo" aria-label="Itaicy Pantanal Eco Lodge">
+      <!-- usa o word-mark primário svg, 160×56 -->
+    </a>
+
+    <nav class="main-nav" aria-label="Menu principal">
+      <ul class="flex gap-10 lg:gap-12">
+        <li class="nav-item"><a href="/lodge" class="nav-link">LODG​E</a>
+          <!-- mega menu -->
+          <div class="mega lodge" role="group">
+            <ul>
+              <li><a href="/lodge#estrutura">Estrutura & Conforto</a></li>
+              <li><a href="/lodge#historia-sustentabilidade">História & Sustentabilidade</a></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="nav-item"><a href="/experiencias" class="nav-link">EXPERIÊNCIAS</a>
+          <div class="mega exp">
+            <ul>
+              <li><a href="/experiencias/pesca-esportiva">Pesca Esportiva</a></li>
+              <li><a href="/experiencias/ecoturismo-birdwatching">Ecoturismo & Birdwatching</a></li>
+              <li><a href="/experiencias/pacotes-tarifas">Pacotes & Tarifas</a></li>
+            </ul>
+          </div>
+        </li>
+
+        <li><a class="nav-link" href="/galeria">GALERIA</a></li>
+        <li><a class="nav-link" href="/blog">BLOG</a></li>
+        <li><a class="nav-link" href="/contato">CONTATO</a></li>
+      </ul>
+    </nav>
+
+    <div class="actions flex items-center gap-6">
+      <!-- chat-icon -->
+      <button class="chat-btn" aria-label="Abrir chat de atendimento">
+        <svg><!-- ícone balão Lucide 24 px --></svg>
+      </button>
+
+      <a href="/reservar" class="btn btn-ghost reserve-link">RESERVAR</a>
+
+      <button class="lang-switch" aria-label="Mudar idioma">PT ▾</button>
+
+      <!-- toggler mobile -->
+      <button class="burger lg:hidden" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+2. Estilos principais
+Prop	Valor
+Font-family links	Lato, sans-serif
+Peso	300 (Light)
+Transform	uppercase
+Letter-spacing	0.08em
+Font-size	0.875rem (14 px) desktop
+1rem para mega headings
+Cor	#ffffff sobre hero / pantanal-green-900 em sticky
+Hover	color: sand-beige-400 + underline 2 px fade in 120 ms
+Active/Current	cor sunset-amber-600
+
+3. Comportamento
+Situação	Detalhe
+Hero overlay	Header transparente (bg-transparent, texto branco)
+Scroll > 64 px	Classe .sticky → background #064737ee + blur-backdrop 12 px, shadow 0 1px 4px rgba(0,0,0,.2)
+Mega menu	On hover (desktop) / on tap (tablet): container 100 % width, padding 32, bg #faf9f6, grid 3 cols; fade + slide-down 160 ms
+Mobile	burger abre off-canvas da direita (width: 80vw); sub-niveis em accordion
+Lang-switch	dropdown simples com bandeiras PT / EN / ES – guarda em cookie lang
+Reserva	Botão “RESERVAR” estilo ghost dark no hero; ao virar sticky troca para btn-filled sunset-amber/600 para realçar
+
+4. Tokens Tailwind/SCSS
+scss
+Copiar
+Editar
+$font-nav: 'Lato', sans-serif;
+$green-900:#064737;
+$amber-600:#C97A2C;
+$beige-400:#D9CEB3;
+
+.nav-link{
+  @apply text-[0.875rem] font-light tracking-[.08em] uppercase transition-colors;
+  &:hover{color:$beige-400;}
+}
+5. Mega-menu conteúdo
+Coluna	Items
+Experiências	Pesca Esportiva · Ecoturismo & Bird · Pacotes & Tarifas
+Planeje-se	Como Chegar · Melhor Época · FAQ
+Destaques Visuais	card 240 × 160 contendo img + heading “Ver onças de perto” (linka /blog)
+
+6. Boas-práticas de acessibilidade
+Links <a> recebem aria-current="page" quando ativo.
+
+Mega menu desliga em prefers-reduced-motion (fade 0 ms).
+
+Foco teclado visível: outline 2 px $amber-600.
+
+tabindex="-1" para wrapper mega, focáveis apenas os <a> internos.
+
+Ajustes na seção “Nossas Acomodações”
+Grid 4 col → quebra para 2/1 em 1024 / 680 px.
+
+gap-8 (32 px).
+
+Card radius 12 px, shadow lvl-2.
+
+Legenda: título Playfair 700 1.25 rem, subtítulo Lato 400 0.9375 rem cor #E8E6E3.
+
+Placeholder cinza – use aspect-ratio: 4/3; background: #2f2f2f url('/img/placeholder.svg') center.
+
+Próximos passos práticos
+Quem	Tarefa	Prazo
+UI	Ajustar nav e mega-menu no Figma (usar componentes DS)	D+1
+Dev Front	Refatorar <header> em Next.js layout + Tailwind; implementar sticky + IntersectionObserver	D+3
+Conteúdo	Preparar textos curtos “Estrutura & Conforto”, “História & Sustentabilidade”	D+2
+QA	Testar contraste (nav / sticky) & navegação teclado	D+4
