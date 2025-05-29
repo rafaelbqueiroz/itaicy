@@ -7,25 +7,25 @@ export function Experiences() {
 
   const experiences = [
     {
-      title: t('experiences.pescaTitle'),
-      description: t('experiences.pescaDescription'),
+      title: 'Pesca Esportiva All-Inclusive',
+      description: 'Pescaria de dourados gigantes em águas cristalinas com guias especializados e equipamentos de primeira linha.',
       price: 'R$ 2.000',
-      image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600',
-      alt: 'Pesca esportiva no Pantanal',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=800&auto=format&fit=crop', // Barco no rio Cuiabá
+      alt: 'Barco no rio Cuiabá para pesca esportiva',
     },
     {
-      title: t('experiences.ecoturismoTitle'),
-      description: t('experiences.ecoturismoDescription'),
+      title: 'Safári Fotográfico & Birdwatching',
+      description: 'Observe onças-pintadas, ariranhas e mais de 166 espécies de aves em seu habitat natural.',
       price: 'R$ 1.500',
-      image: 'https://images.unsplash.com/photo-1594736797933-d0a4390d327e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
-      alt: 'Birdwatching no Pantanal',
+      image: 'https://images.unsplash.com/photo-1551969014-7d2c4786d7a6?q=80&w=800&auto=format&fit=crop', // Onça-pintada close-up
+      alt: 'Onça-pintada no Pantanal',
     },
     {
-      title: t('experiences.porDoSolTitle'),
-      description: t('experiences.porDoSolDescription'),
+      title: 'Passeio ao Entardecer',
+      description: 'Contemple o pôr-do-sol mais espetacular do Brasil navegando pelas baías pantaneiras.',
       price: 'R$ 350',
-      image: 'https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
-      alt: 'Passeio ao entardecer no Pantanal',
+      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=800&auto=format&fit=crop', // Pôr-do-sol nas baías
+      alt: 'Pôr-do-sol nas baías do Pantanal',
     },
   ];
 

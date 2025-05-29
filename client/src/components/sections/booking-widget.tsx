@@ -38,13 +38,15 @@ export function BookingWidget() {
   };
 
   return (
-    <section id="booking-widget" className="bg-itaicy-primary py-16">
+    <section id="booking-widget" className="bg-itaicy-cream py-24">
       <div className="max-w-4xl mx-auto px-4">
-        <Card className="shadow-2xl">
-          <CardContent className="p-8">
-            <h3 className="playfair text-2xl font-semibold text-center mb-8 text-itaicy-charcoal">
-              {t('booking.title')}
+        <Card className="shadow-2xl max-w-[840px] mx-auto">
+          <div className="bg-[#D4B896] p-6 text-center">
+            <h3 className="playfair text-2xl font-semibold text-[#064737]">
+              Reserve Sua Experiência
             </h3>
+          </div>
+          <CardContent className="p-8">
             
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -124,9 +126,9 @@ export function BookingWidget() {
               <Button 
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-itaicy-secondary hover:bg-itaicy-secondary/90 text-white py-4 text-lg font-semibold transition-colors duration-200"
+                className="w-full bg-[#C8860D] hover:bg-[#C8860D]/90 text-white py-4 text-lg font-semibold transition-colors duration-200"
               >
-                {isLoading ? 'Pesquisando...' : t('booking.search')}
+                {isLoading ? 'Pesquisando Disponibilidade...' : 'Pesquisar Disponibilidade'}
               </Button>
             </form>
           </CardContent>

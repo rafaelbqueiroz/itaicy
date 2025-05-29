@@ -22,61 +22,39 @@ export function HeroVideo() {
   };
 
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Video Background */}
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="hero-video absolute inset-0 z-0"
-        poster="https://images.unsplash.com/photo-1544735716-392fe2489ffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&h=1080"
-      >
-        <source 
-          src="https://sample-videos.com/zip/10/webm/SampleVideo_1280x720_1mb.webm" 
-          type="video/webm" 
-        />
-        <source 
-          src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" 
-          type="video/mp4" 
-        />
-        {/* Fallback image if video doesn't load */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center" 
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1544735716-392fe2489ffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&h=1080')"
-          }}
-        />
-      </video>
-      
-      {/* Overlay */}
-      <div className="overlay-gradient absolute inset-0 z-10" />
+    <section className="relative h-[75vh] sm:h-screen flex items-center justify-center overflow-hidden">
+      {/* Aerial Drone Background - Pantanal River */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `linear-gradient(180deg, rgba(6, 71, 55, 0.53) 0%, rgba(6, 71, 55, 0) 45%), url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop')`
+        }}
+      />
       
       {/* Hero Content */}
       <div className="relative z-20 text-center text-white max-w-4xl mx-auto px-4">
-        <h1 className="playfair text-5xl md:text-7xl font-bold mb-6 animate-fade-up">
-          {t('hero.title')}<br />
-          <span className="text-itaicy-secondary">{t('hero.subtitle')}</span>
+        <h1 className="playfair text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-up leading-tight text-[#064737]">
+          Experiência Autêntica<br />
+          no Coração do Pantanal
         </h1>
-        <p className="text-xl md:text-2xl mb-8 opacity-90 max-w-2xl mx-auto animate-fade-up" style={{ animationDelay: '0.2s' }}>
-          {t('hero.description')}
+        <p className="text-lg sm:text-xl md:text-2xl mb-8 opacity-90 max-w-2xl mx-auto animate-fade-up font-light" style={{ animationDelay: '0.2s' }}>
+          Descubra a maior planície alagável do mundo em nosso eco lodge sustentável
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{ animationDelay: '0.4s' }}>
           <Button 
             size="lg"
-            className="bg-itaicy-secondary hover:bg-itaicy-secondary/90 text-white px-8 py-4 text-lg font-semibold transition-all duration-200 transform hover:scale-105"
+            className="bg-[#C8860D] hover:bg-[#C8860D]/90 text-white px-8 py-4 text-lg font-semibold transition-all duration-300 hover:translate-y-[-2px] shadow-lg"
             onClick={scrollToBooking}
           >
-            {t('hero.reserveNow')}
+            Reservar Agora
           </Button>
           <Button 
             variant="outline"
             size="lg"
-            className="border-2 border-white text-white hover:bg-white hover:text-itaicy-primary px-8 py-4 text-lg font-semibold transition-all duration-200"
+            className="border-2 border-white text-white hover:bg-white hover:text-[#064737] px-8 py-4 text-lg font-semibold transition-all duration-300"
             onClick={() => document.getElementById('experiencias')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            {t('hero.knowExperiences')}
+            Conheça as Experiências
           </Button>
         </div>
       </div>

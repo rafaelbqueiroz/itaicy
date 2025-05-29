@@ -1,0 +1,36 @@
+Análise crítica do mock-up que você enviou
+Área	O que ficou fora do que definimos	Por que importa	Ajuste recomendado
+Hero	• Gradiente irregular, cores “lavadas”
+• Vídeo/ imagem sem o verde-Pantanal
+• H1 multicolorido (“Autêntico” laranja) polui	Brand pede Pantanal Green 900 #064737 + overlay sutil; texto todo em Playfair 700 verde	– Foto aérea (drone) do rio
+– Sobrepor linear-gradient(180deg,#06473788 0%,#06473700 45%)
+– H1 2 linhas, apenas uma cor
+Navbar	• Logo antigo (verde/lima) e miúdo
+• Menu 8 itens — excede limite de 7	Consistência visual e heurística de carga cognitiva	Trocar para word-mark primário; reduzir menu para: Experiências, Lodge, Galeria, Blog, Contato
+Booking Widget	• Campos pequenos; header verde escuro conflita com BG
+• Faltam ícones de calendário / adulto-criança	Acessibilidade e clareza	Card 840 px wide, header Sand-Beige 400, ícones LUCIDE “calendar”, “user” inline; CTA “Reservar” Sunset-Amber 600
+Experiências	• Cards com fotos random (surf, montanha!)
+• Tipografia corpo minúscula (≈10 px)	Deve refletir Pesca, Safári, Pôr-do-sol; legibilidade min 14 px mobile	Fotos: barco no Cuiabá, onça close-up, pôr-do-sol nas baías; body-L Lato 1 rem
+Seção Lodge	• Grid 2 col bem feito, mas fotos desalinhadas (margem negativa)	Quebra ritmo e parece bug	Usar “mosaic-three” (1 grande 2 pequenas) com gutters 24 px
+Highlights strip	• Ícones ok, mas textos longos quebram	O DS prevê labels ≤ 3 words	“166 + Espécies, 100 % Sustentável, Desde 1897, Guias Top”
+Depoimentos	• Caixas brancas gigantes, sem foto/hospede	Falta emoção e prova social real	Componente testimonial-card: avatar circular, quote ≤ 180 carac., rating ★, localidade
+Newsletter	• Faltando junto aos destaques
+• CTA “Se Inscrever” na cor errada (cinza)	Flow de leads	Card com BG Pantanal-Green, texto branco, CTA Amber
+FAQ	• Accordion ocupa toda largura; padding estreito	Precisa de respiro; max-width 920 px	Adicionar container e ícone “chevron” rotating
+
+Ajustes de refinamento (pixel & motion)
+Spacing – Reaplicar escala 4 px: seções 96/64/48; cards 32 px interno; espaço 64 px entre módulos.
+
+Tipografia – Playfair Display H1 3.5 rem, H2 2.5 rem; Body Lato 1.125 rem desktop / 1rem mobile.
+
+Micro-motion –
+
+Hero copy fade-up 400 ms 40 px
+
+Cards hover translateY(-4px) shadow-lvl2
+
+Accordion max-height transition 260 ms ease
+
+Ícones – usar Lucide outline 24 px (peixe, binocular, leaf, award).
+
+Edge cases mobile – Booking bar fixa bottom (height 72 px); hero 75 vh; imagens 100 vw lazy.
