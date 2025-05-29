@@ -1,0 +1,120 @@
+import { Link } from 'wouter';
+import { useLanguage } from '@/hooks/use-language';
+import { Instagram, Facebook, Youtube, Phone, Mail, MapPin } from 'lucide-react';
+
+export function Footer() {
+  const { t } = useLanguage();
+
+  const quickLinks = [
+    { name: t('nav.experiencias'), href: '/experiencias' },
+    { name: t('nav.acomodacoes'), href: '/acomodacoes' },
+    { name: t('nav.galeria'), href: '/galeria' },
+    { name: t('nav.blog'), href: '/blog' },
+    { name: t('nav.contato'), href: '/contato' },
+  ];
+
+  return (
+    <footer className="bg-itaicy-charcoal text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Logo & Description */}
+          <div className="lg:col-span-2">
+            <img 
+              src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTgwIDQwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8dGV4dCB4PSIxMCIgeT0iMjgiIGZvbnQtZmFtaWx5PSJQbGF5ZmFpciUyMERpc3BsYXkiIGZvbnQtc2l6ZT0iMjQiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiNmNWYxZTgiPklUQUlDWTwvdGV4dD4KPHR1eHQgeD0iMTAiIHk9IjM3IiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtc2l6ZT0iMTAiIGZvbnQtd2VpZ2h0PSI0MDAiIGZpbGw9IiNiODk1NmIiPlBBTlRBTkFMIEVDTyBMT0RHRTI8L3RleHQ+Cjwvc3ZnPgo=" 
+              alt="Itaicy Pantanal Eco Lodge" 
+              className="h-10 mb-6"
+            />
+            <p className="text-gray-300 max-w-md leading-relaxed mb-6">
+              {t('footer.description')}
+            </p>
+            
+            {/* Social Links */}
+            <div className="flex space-x-4">
+              <a 
+                href="#" 
+                className="w-10 h-10 bg-itaicy-primary rounded-full flex items-center justify-center hover:bg-itaicy-secondary transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a 
+                href="#" 
+                className="w-10 h-10 bg-itaicy-primary rounded-full flex items-center justify-center hover:bg-itaicy-secondary transition-colors"
+                aria-label="Facebook"
+              >
+                <Facebook className="h-5 w-5" />
+              </a>
+              <a 
+                href="#" 
+                className="w-10 h-10 bg-itaicy-primary rounded-full flex items-center justify-center hover:bg-itaicy-secondary transition-colors"
+                aria-label="YouTube"
+              >
+                <Youtube className="h-5 w-5" />
+              </a>
+            </div>
+          </div>
+          
+          {/* Quick Links */}
+          <div>
+            <h4 className="font-semibold text-lg mb-4 playfair">{t('footer.quickLinks')}</h4>
+            <ul className="space-y-2 text-gray-300">
+              {quickLinks.map((link) => (
+                <li key={link.href}>
+                  <Link 
+                    href={link.href}
+                    className="hover:text-itaicy-secondary transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          {/* Contact Info */}
+          <div>
+            <h4 className="font-semibold text-lg mb-4 playfair">{t('footer.contact')}</h4>
+            <ul className="space-y-3 text-gray-300">
+              <li className="flex items-center">
+                <Phone className="w-4 h-4 mr-3 flex-shrink-0" />
+                <span>+55 (65) 3000-0000</span>
+              </li>
+              <li className="flex items-center">
+                <Mail className="w-4 h-4 mr-3 flex-shrink-0" />
+                <span>contato@itaicy.com.br</span>
+              </li>
+              <li className="flex items-start">
+                <MapPin className="w-4 h-4 mr-3 mt-1 flex-shrink-0" />
+                <span>
+                  Estrada do Itaicy, s/n<br />
+                  Pantanal, MT - Brasil
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        {/* Bottom Footer */}
+        <div className="border-t border-gray-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-gray-400 text-sm">
+            {t('footer.rights')}
+          </p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <Link 
+              href="/termos" 
+              className="text-gray-400 hover:text-itaicy-secondary text-sm transition-colors"
+            >
+              {t('footer.terms')}
+            </Link>
+            <Link 
+              href="/privacidade" 
+              className="text-gray-400 hover:text-itaicy-secondary text-sm transition-colors"
+            >
+              {t('footer.privacy')}
+            </Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
