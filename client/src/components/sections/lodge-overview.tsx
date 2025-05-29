@@ -30,11 +30,11 @@ export function LodgeOverview() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <h2 className="playfair text-4xl md:text-5xl font-bold text-itaicy-charcoal">
-              {t('lodge.title')}<br />
-              <span className="text-itaicy-primary">{t('lodge.titleHighlight')}</span>
+              Seu Refúgio no<br />
+              <span className="text-itaicy-primary">Coração do Pantanal</span>
             </h2>
             <p className="text-xl text-gray-600 leading-relaxed">
-              {t('lodge.description')}
+              Conforte-se em 11 apartamentos recém-renovados, entre contemplaristas, equipamentos, comfort, com vida privilegiada e vista para o Rio Cuiabá
             </p>
             
             {/* Features */}
@@ -54,27 +54,26 @@ export function LodgeOverview() {
             </Button>
           </div>
           
-          <div className="space-y-4">
-            {/* Main room image */}
-            <img 
-              src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
-              alt="Quarto do eco lodge com vista para a natureza"
-              className="w-full h-80 object-cover rounded-2xl shadow-lg"
-            />
-            <div className="grid grid-cols-2 gap-4">
-              {/* Bathroom */}
+          <div className="grid grid-cols-2 gap-6">
+            {/* Main room image - spans 2 rows */}
+            <div className="col-span-2">
               <img 
-                src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
-                alt="Banheiro sustentável do lodge"
-                className="w-full h-36 object-cover rounded-xl shadow-lg"
-              />
-              {/* Terrace */}
-              <img 
-                src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
-                alt="Varanda com rede e vista para o Pantanal"
-                className="w-full h-36 object-cover rounded-xl shadow-lg"
+                src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400" 
+                alt="Seu Refúgio no Coração do Pantanal"
+                className="w-full h-64 object-cover rounded-2xl shadow-lg"
               />
             </div>
+            {/* Two smaller images */}
+            <img 
+              src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
+              alt="Acomodação com vista para o Rio Cuiabá"
+              className="w-full h-32 object-cover rounded-xl shadow-lg"
+            />
+            <img 
+              src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
+              alt="Varanda com rede e vista panorâmica"
+              className="w-full h-32 object-cover rounded-xl shadow-lg"
+            />
           </div>
         </div>
       </div>

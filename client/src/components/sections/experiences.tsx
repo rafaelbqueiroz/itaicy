@@ -55,7 +55,7 @@ export function Experiences() {
                 <h3 className="playfair text-2xl font-semibold mb-3 text-itaicy-charcoal">
                   {experience.title}
                 </h3>
-                <p className="text-gray-600 mb-4 leading-relaxed">
+                <p className="text-gray-600 mb-4 leading-relaxed text-base">
                   {experience.description}
                 </p>
                 <div className="flex items-center justify-between">

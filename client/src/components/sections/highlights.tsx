@@ -7,23 +7,23 @@ export function Highlights() {
   const highlights = [
     {
       icon: Fish,
-      title: t('highlights.species'),
-      description: t('highlights.speciesDesc'),
+      title: '166+ Espécies',
+      description: 'Diversidade única registrada',
     },
     {
       icon: Leaf,
-      title: t('highlights.sustainable'),
-      description: t('highlights.sustainableDesc'),
+      title: '100% Sustentável',
+      description: 'Ecoturismo que protege o Pantanal',
     },
     {
       icon: History,
-      title: t('highlights.history'),
-      description: t('highlights.historyDesc'),
+      title: 'Desde 1897',
+      description: 'História no Rio Cuiabá',
     },
     {
       icon: Award,
-      title: t('highlights.guides'),
-      description: t('highlights.guidesDesc'),
+      title: 'Guias Top',
+      description: 'Especialistas premiados',
     },
   ];
 
