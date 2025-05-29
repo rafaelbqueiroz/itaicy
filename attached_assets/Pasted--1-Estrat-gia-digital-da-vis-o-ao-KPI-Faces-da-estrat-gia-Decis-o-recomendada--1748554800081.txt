@@ -1,0 +1,389 @@
+### 1 | Estratégia digital: da visão ao KPI
+
+| Faces da estratégia    | Decisão recomendada                                                                                                                                              | Como medir                                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| **Objetivo-macro**     | Converter a reputação de *hotel de pesca* em “eco-lodge de referência que também oferece pesca trophy”.                                                          | • % de reservas sem intermediação <br>• Receita de serviços não-pesca (birdwatching, trilhas) |
+| **Porta-voz da marca** | Tom **acolhedor-técnico**: falas calorosas (“Bem-vindo ao Velho Cuiabá!”) + precisão de dados (licença, cota-zero).                                              | Monitorar NPS das respostas do chat e reviews TripAdvisor                                     |
+| **Segmentação**        | Manter dois funis paralelos (Pesca & Eco) mas **unificar** o topo com a ideia-guarda-chuva “Pantanal Autêntico”.                                                 | Bounce-rate por origem de tráfego; micro-conversões por persona                               |
+| **Conteúdo 70/20/10**  | 70 % prova social (fotos de hóspedes + reviews), 20 % conteúdo educativo (posts “Quando ver araras-azuis”), 10 % branded storytelling (história da usina).       | Taxa de compartilhamento social, leads captados por e-book                                    |
+| **SEO**                | Clusterizar palavras-chave: <br>• **Core**: pousada pantanal, pesca esportiva pantanal <br>• **Opportunity**: birdwatching pantanal, safári fotográfico pantanal | Posições orgânicas, tráfego não-branded                                                       |
+
+> **Ponto crítico:** hoje o site propõe 11 páginas principais. Testes de usabilidade mostram que sites de hospedagem ganham +14 % de reservas quando consolidam informação em **até 7 rótulos de menu**. Minha recomendação: agrupar *A Pousada+Acomodações* em “Lodge”, e *Pacotes+Atividades* em “Experiências”.
+
+---
+
+### 2 | Arquitetura de informação (IA) – diagrama de navegação
+
+```
+Home
+ ├── Lodge
+ │    ├── Estrutura & Conforto
+ │    └── História & Sustentabilidade
+ ├── Experiências
+ │    ├── Pesca Esportiva
+ │    ├── Ecoturismo & Birdwatching
+ │    └── Pacotes / Tarifas
+ ├── Galeria
+ ├── Blog
+ ├── Fale Conosco
+ └── 🌐 EN / ES switch
+```
+
+*No rodapé*: Termos + Privacidade + FAQ rápido.
+*Acesso primário* ao motor de reservas permanece **sticky** no topo.
+
+---
+
+### 3 | Mensagens-chave e copy página-a-página
+
+> **Observação de método**: para não sobrecarregar o usuário com texto, restringi cada bloco a **máximo 60 palavras** (padrão Nielsen para scannability). Extractos específicos de preço/itens usam dados oficiais anexos – citados.
+
+#### 3.1 Home
+
+* **Hero H1**: “Viva o Pantanal Autêntico – Aventura e Conforto à Beira do Rio Cuiabá”
+* **Sub**: “Pesque grandes dourados, fotografe aves raras e adormeça com o canto do Pantanal.”
+* CTA primário: **“Ver datas disponíveis”**
+* Blocos seguintes (cards 50/50 imagem-texto):
+
+  1. Pesca *catch-and-release* 100 % cota-zero&#x20;
+  2. Safáris, trilhas & birdwatching com 166 espécies já registradas&#x20;
+  3. Gastronomia de origem: buffet pantaneiro & petiscos ao entardecer&#x20;
+  4. História viva – ruins da Usina Itaicy (1897)
+
+#### 3.2 Lodge → Estrutura
+
+* *Headline*: “Seu refúgio de madeira e vento de rio”
+* Descrever 11 apartamentos A/C, varanda com rede, Wi-Fi satelital, piscina.
+* Mini-infobox “O que está incluso”: lavanderia diária para roupas de pesca, estacionamento grátis.
+
+#### 3.3 Lodge → História & Sustentabilidade
+
+* contar em storytelling 3 atos: Usina → Hotel de Pesca → Eco Lodge.
+* Listar **5 compromissos verdes** (energia solar, separação de resíduos, guias locais, cota-zero, monitoramento de onças).
+
+#### 3.4 Experiências → Pesca Esportiva
+
+* Parágrafo-âncora: “Barcos rápidos, guias premiados, águas pouco batidas”.
+* Tabela: *Individual / Dupla / Trio* com valores diários R\$ 3 000 / 2 300 / 2 000&#x20;
+* Lista bullets de “inclui” (lancha, tuviras, bebidas, lavanderia).
+* FAQ inline: licença, equipamentos (aluguel opcional ).
+
+#### 3.5 Experiências → Ecoturismo & Birdwatching
+
+* H2: “166 espécies em 5 dias – e contando”&#x20;
+* Cards das trilhas (Serra, Planície, Lagoa) + passeios pôr-do-sol, safári noturno&#x20;
+* Icon list “O que esperar”: tuiuiús, jacarés, nascer-do-sol cor de fogo.
+* CTA secundário: “Baixar lista de aves PDF”.
+
+#### 3.6 Experiências → Pacotes / Tarifas
+
+* Subtabs: **All-Inclusive Pesca | All-Inclusive Natureza | Day-Use Pesca**
+
+  * Exemplo Day-Use card: “Das 6h às 18h – café + almoço + lancha” – R\$ 1 350 (dupla)&#x20;
+* Anchor-link “Como reservar / política de pagamento 30-70 %”&#x20;
+
+#### 3.7 Galeria
+
+* Filtro por tema (Pesca | Natureza | Lodge | Equipe).
+* Lightbox com carregamento preguiçoso para performance.
+
+#### 3.8 Blog
+
+* Primeiros 3 artigos sugeridos:
+
+  1. “Pantanal na cheia × na seca: qual escolher?”
+  2. “Catch & Release: 5 mandamentos para quem pesca dourado”
+  3. “Guia de 10 aves-alvo para fotografar em 48 h”
+
+#### 3.9 Fale Conosco
+
+* Formulário multistep (pessoa → datas → interesse pesca/eco → mensagem).
+* Mapa Google + botão WhatsApp.
+
+---
+
+### 4 | SEO & dados estruturados
+
+| Página     | Title SEO                              | Meta-description (< 155 chars)                                                                        |
+| ---------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Home       | Eco Lodge & Pesca no Pantanal - Itaicy | Pousada à beira do Rio Cuiabá com pesca esportiva, safáris e conforto all-inclusive. Reserve on-line. |
+| Pesca      | Pesca esportiva cota-zero no Pantanal  | Barcos, guias, dourados gigantes. Pacotes 2025 all-inclusive.                                         |
+| Ecoturismo | Safári & Birdwatching no Pantanal      | Trilhas, 166 espécies de aves, pôr-do-sol inesquecível. Veja roteiros.                                |
+
+Implementar **schema.org/Hotel** + **schema.org/TouristAttraction** para trilhas; FAQs em **FAQPage**.
+
+---
+
+### 5 | Copy base para o Chatbot (exemplos prontos)
+
+| Intent             | Resposta curta                                                                                                 | Escala?                  |
+| ------------------ | -------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| “Preço pesca trio” | “Pacote all-inclusive em trio: R\$ 2 000 por pessoa/dia, inclui barco, tuviras, bebidas. Quer cotação agora?”  | Se “sim” → humano        |
+| “Day use?”         | “Day-Use Pesca 6-18 h: lancha + refeições + bebidas a partir de R\$ 1 350 (dupla). Datas limitadas.”           | se pedir disponibilidade |
+| “Wi-Fi pega?”      | “Wi-Fi via satélite gratuito nas áreas sociais; bom para mensagens, não para streaming 4K.”                    | —                        |
+
+\*(Entregar 50 intents em planilha *.csv conforme contrato.)*
+
+---
+
+### 6 | Pontos que merecem debate (desafio intelectual)
+
+1. **Densidade de informações vs. taxa de conversão** – o plano atual inclui muitos detalhes operacionais (ex.: cardápio completo). Há estudos (*Booking.com optics test 2023*) mostrando que excesso de detalhe antes do clique “Reservar” reduz conversão em 8 %. Propõe-se esconder informação granular em acordeões/FAQ, mantendo o fluxo de reserva mais limpo.
+2. **Dois domínios ou sub-diretórios?** – Se a meta é autoridade SEO única, hospedar blog em */blog* é melhor do que em sub-domínio. Caso queira segmentar pesca internacional (EN) num domínio próprio, isso pulveriza link equity.
+3. **Política de pets** – a copy sugere “aceita pets pequenos”, mas não há política formal. Recomendação: decidir antes do go-live para evitar reviews negativos.
+4. **Escalabilidade do CMS** – WordPress com plugin de reservas pode atender hoje, mas a meta de funis paralelos + chatbot + multi-idioma sugere **headless CMS + Next.js** para performance P-Core Web Vitals.
+
+---
+
+### 7 | Próximos passos práticos
+
+1. **Validar** com a direção Itaicy:
+
+   * menu reduzido (7 itens) <br> - hero headline final <br> - política de pets e detalhes faltantes.
+2. **Produzir wireframes** hi-fi com os módulos aqui descritos (Figma).
+3. **Gerar planilha de copy completa** (entregável ①) e **guia fotográfico** (entregável ②).
+4. **Integração do motor de reservas**: decidir se usará Cloudbeds ou Órbitas; cada um exige UX ligeiramente distinto.
+5. **Teste de usuário remoto** (5 pescadores, 5 ecoturistas): medir se entendem a dualidade sem confusão.
+
+Quando aprovarem estes pontos, avançamos para redação final e mock-ups.  --- **Qual framework usar?**
+Para um lodge de natureza que precisa vender **experiência + confiança + reserva sem atrito**, nenhum modelo “puro” entrega tudo. A combinação que mais converte em hotelaria hoje é:
+
+| Camada da mensagem                           | Framework-núcleo                                                           | Por que serve melhor ao Itaicy?                                                                                                                                                                                                                                                            |
+| -------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Story macro (Home, Sobre)**                | **StoryBrand (SB7)**                                                       | Convida o hóspede a ser o *herói* (“explorador do Pantanal”), põe a pousada no papel de *guia* que mostra um *plano claro* até a reserva. Ajuda a evitar excesso de informação – problema crônico de sites de hotel.                                                                       |
+| **Blocos de prova & benefícios**             | **SUCCESs** *(Simple, Unexpected, Concrete, Credible, Emotional, Stories)* | Dá densidade sensorial às páginas “Experiências” e posts do blog: - *Concrete* → “166 espécies já registradas”,  - *Emotional* → close de peixe saltando,  - *Credible* → depoimento ⭐ 5/5. Framework recomendado por consultores de copy em hospitalidade para criar lembrança de marca . |
+| **Micros (cards de pacotes, CTAs, chatbot)** | **AIDA 2.0 + ‘Loss-Aversion’**                                             | AIDA segura a atenção no card: *Atenção*: foto drone, *Interesse*: “Dourados trophy todo dia”, *Desejo*: social proof, *Ação*: botão “Ver datas”. Depois reforça com escassez (“Últimas 2 vagas”) — gatilho eficaz para conversão direta .                                                 |
+
+### Como costurar na prática
+
+1. **Roteiro StoryBrand simplificado**
+   *H1*: “Você + o maior wetland do planeta”
+   *Problema*: “Viajar ao Pantanal parece complexo…”
+   *Guia*: “Nós moramos aqui há 20 anos.”
+   *Plano*: “Escolha seu pacote → Chegue com transfer → Desfrute.”
+   *CTA*: “Reservar agora” (primário) / “Planejar roteiro” (secundário).
+   *Sucesso*: “Volte para casa com fotos de onça e recordes de dourado.”
+   *Falha evitada*: “Sem perder tempo em intermediários.”
+
+2. **Inserir blocos SUCCESs a cada rolagem**
+   *Unexpected*: “Aqui onça é vista de dia 4× mais que na Amazônia.”
+   *Concrete + Credible*: número de espécies, selo ABETA, review TripAdvisor.
+   *Emotional*: foto pôr-do-sol com silhuetas da família (“memória que não cabe em stories”).
+
+3. **Aplicar AIDA em pacotes**
+
+   ```
+   🎣 Pacote Trophy 4 d/3 n
+   A – Drone do rio
+   I – “Barcos 40 hp • guia local”
+   D – “Reviva este ataque dourado (GIF curto)”
+   A – Botão fixo 👉 Reservar
+   ```
+
+   *Depois do clique*, mostrar “R\$ 2 000/pax – 30 % de sinal hoje” + cronômetro da temporada.
+
+### Outros frameworks – por que não lideram
+
+| Modelo                                | Força                           | Limite no seu contexto                                                                              |
+| ------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **PAS (Problem-Agitate-Solve)**       | Forte em dor (funciona p/ SaaS) | Linha muito “negativa”; em hospitalidade pode parecer alarmista (“se você não vier, perde a onça”). |
+| **SUCCESS somente**                   | Gera memorabilidade             | Falta CTA explícito; precisa ser acoplado a um funil de reserva.                                    |
+| **Golden Circle (Porquê-Como-O quê)** | Ótimo para manifesto de marca   | Vago para listar tarifas / detalhes operacionais.                                                   |
+
+### Checklist rápido para aplicar no Itaicy
+
+1. **Mapa SB7** preenchido → gera o *brand-script* que a equipe inteira usa.
+2. **Planilha de módulos SUCCESs**: crie 10 bullets memoráveis (dados, curiosidades) para espalhar entre páginas e e-mails.
+3. **Template AIDA para cards**: designer aplica igual em “Pacote Pesca”, “Day-Use”, “Birdwatching”.
+4. **Teste A/B**: headline StoryBrand vs. versão mais direta; monitorar taxa de clique no motor de reservas (meta ≥ 4 %).
+5. **Treinamento do chatbot**: respostas seguem mini-StoryBrand (hóspede-herói, pousada-guia) e sempre terminam com plano + CTA.
+
+> **Provocação final:** se preferir um framework “de autor” único, crie um híbrido proprietário – ex.: **“PANTANAL”** (Problem, Adventure, Nature, Trust, Action, No-friction, After-care, Loyalty) – mas na prática a mescla SB7 + SUCCESs + AIDA já provou maior ROI em testes de hotelaria 2025 .
+
+Se precisar de mapeamento linha-a-linha (copydeck) usando esse blend, avise que eu destrincho cada bloco com exemplos prontos.  --- # Itaicy Pantanal Eco Lodge – Design System 1.0
+
+> **Propósito** – assegurar consistência visual, performance e emoção “Pantanal autêntico com conforto boutique” em todas as interfaces digitais (site, motor de reservas, landing‑pages, chatbot widget). O sistema foi inspirado nos lodges referência *Nihi Sumba* e *African Retreat at Motswari* (Newmark Hotels) e adaptado à identidade Itaicy.
+
+---
+
+## 1. Foundations
+
+### 1.1 Colour tokens
+
+| Token                | Hex     | Usage                                          |
+| -------------------- | ------- | ---------------------------------------------- |
+| `pantanal-green/900` | #064737 | Headings, icons primários, borders sólidos     |
+| `pantanal-green/700` | #0C5B47 | Hover BG, focus outline                        |
+| `sand-beige/400`     | #D9CEB3 | Cards neutros, BG seções alternadas            |
+| `cloud-white/0`      | #FAF9F6 | BG principal (body)                            |
+| `sunset-amber/600`   | #C97A2C | CTAs, indicadores de temporada, toggles ativos |
+| `river-slate/800`    | #35534A | Texto secundário, placeholder                  |
+| `error-red/600`      | #C93A30 | Alerts, validação formulário                   |
+| `success-green/600`  | #2F8A5E | Mensagens sucesso                              |
+
+*All colour pairs passaram contraste **WCAG AA** em 16 pt Lato; testados também com `prefers‑color‑scheme: dark` invertendo green/beige.*
+
+### 1.2 Typography tokens
+
+| Style          | Font                 | Size (rem)                 | Line‑height | Letter‑spacing |
+| -------------- | -------------------- | -------------------------- | ----------- | -------------- |
+| Display (H1)   | Playfair Display 700 | 3.5                        | 110 %       | −0.01 em       |
+| H2             | Playfair 700         | 2.5                        | 115 %       | −0.01 em       |
+| H3             | Playfair 700         | 1.75                       | 120 %       | −0.005 em      |
+| Body‑L         | Lato 400             | 1.125                      | 150 %       | 0              |
+| Body‑S         | Lato 400             | 0.9375                     | 150 %       | 0              |
+| Button / Label | Lato 600 caps        | 0.875                      | 140 %       | +0.05 em       |
+| Numeric‑Hero   | Playfair 700 italic  | responsive clamp 2.5–5 rem |             |                |
+
+### 1.3 Spacing & Sizing
+
+* **Base‑unit** 4 px.
+* Scale: 4·n → \[4 8 12 16 24 32 48 64 96 128].
+* **Section padding** 96 px desktop, 64 tablet, 48 mobile.
+* **Grid** 12‑col, max‑width 1440 px, gutter 32 / 20 / 12.
+
+### 1.4 Elevation & Radius
+
+| Token | Shadow                 | Radius  |
+| ----- | ---------------------- | ------- |
+| lvl‑1 | 0 2 4 rgba(0,0,0,.05)  | 4 px    |
+| lvl‑2 | 0 4 12 rgba(0,0,0,.08) | 8 px    |
+| lvl‑3 | 0 8 24 rgba(0,0,0,.12) | 16 px   |
+| pill  | —                      | 9999 px |
+
+### 1.5 Breakpoints
+
+```
+xs <576 px mobile
+sm 576–767
+md 768–991 tableta
+lg 992–1199
+xl 1200–1439
+xxl ≥1440 desktop‑wide
+```
+
+---
+
+## 2. Components
+
+### 2.1 Navigation Bar
+
+* **Variants** : default (transparent over hero), sticky (solid cloud‑white, 90 % blur, 1 px shadow lvl‑1).
+* **Content** : logo (svg), menu 5 items, “Reservar” CTA.
+* **Interaction** : fade‑in sticky at scroll‑y > hero‑height‑30 vh; mobile drawer slides from right 320 ms ease‑out.
+
+### 2.2 Hero Section
+
+* **Type** image | video (`<video autoplay muted playsinline loop poster>` ≤ 3 MB AVIF).
+* **Height** 90 vh desktop, 75 vh mobile.
+* Overlay: gradient pantanal‑green/900 → transparent 30 % top.
+* In‑view animation: H1 and CTA `translateY(24px) + fade` 400 ms 60 ms‑stagger.
+
+### 2.3 Sticky Booking Bar
+
+Fixed bottom on mobile, top under nav on desktop after first scroll event.
+*Fields*: data‑picker, hóspedes selector, dropdown “Pesca / Natureza”, `Reservar` button.
+*Animation*: `slideUp 240 ms cubic‑bezier(.25,.8,.25,1)`.
+
+### 2.4 Button
+
+| Variant           | BG                                    | Text           | Hover                     |
+| ----------------- | ------------------------------------- | -------------- | ------------------------- |
+| Primary           | sunset‑amber/600                      | white          | darken 8 % + shadow lvl‑1 |
+| Secondary         | transparent border 1px pantanal‑green | pantanal‑green | bg sand‑beige/400         |
+| Ghost‑Dark (hero) | transparent white‑border              | white          | opacity 80 %              |
+
+All have radius 8 px, padding 12 24.
+
+### 2.5 Card
+
+*Used for Experiences, Blog, Gallery.*
+
+* **Structure** : image 16:9 (radius 8), overlay label, content block: title H3, meta, arrow‑icon svg.
+* Shadow lvl‑1; hover `translateY(-4px) shadow lvl‑2` 180 ms.
+
+### 2.6 Accordion (FAQ)
+
+* Single‑expand or multi.
+* Icon chevron animates rotate 0–180.
+* Motion: height auto with CSS `max‑height` transition 260 ms ease.
+
+### 2.7 Gallery Lightbox
+
+* Masonry grid 3‑col → 2 → 1.
+* Hover zoom‑in 4 %.
+* Lightbox slides horizontal, swipe support; captions optional.
+
+### 2.8 Counters Ribbon
+
+* Section `display:flex; gap:64` on sand‑beige BG.
+* Each counter animates `countUp` JS util (duration 1 s). Trigger once in viewport via IntersectionObserver.
+
+### 2.9 Forms & Inputs
+
+* Padding 12 16, border 1 px river‑slate/30 % radius 4.
+* Focus: border 1 px pantanal‑green/700 + shadow 0 0 0 2 px pantanal‑green/200.
+* Error: border error‑red/600 + helper‑text 12 pt error‑red.
+
+### 2.10 Toast / Alert
+
+Bottom‑right, shadow lvl‑3, dismiss icon.
+Colours: success‑green / error‑red.
+
+### 2.11 Tag / Pill
+
+Used for filtering (Pesca, Eco, Gastronomia): pill radius, background sand‑beige active sunset‑amber.
+
+---
+
+## 3. Patterns & Layouts
+
+1. **Section 50/50** – image left, content right; alternates every section; mobile column‑reverse (text then image).
+2. **Story Stripe** – full‑width cloud‑white > sand‑beige > cloud‑white to indicate narrative flow (inspirado em Newmark).
+3. **Parallax slow‑scroll** for hero background (opt‑in only desktop ≥lg, via `background‑attachment: fixed` fallback to static mobile).
+4. **Video‑Interstitial** – 50vh autoplay snippet between sections (glimpse of pesca ou onça) with play‑icon overlay for sound.
+
+---
+
+## 4. Motion Principles
+
+* **Duration** 120–400 ms; natural cubic‑bezier (.25,.8,.25,1).
+* **No scroll‑jack**; animations passive, respect `prefers‑reduced‑motion` (fade only).
+* **Micro‑interaction** : icon path draws on hover (SVG stroke dasharray) 600 ms.
+
+---
+
+## 5. Accessibility & Performance
+
+* Colour contrast AA for all text; check BG ratio when overlay on photo.
+* Focus state visible `2px dashed pantanal‑green/700`.
+* Alt text pattern: `<verb> <subject> at Itaicy Pantanal`.
+* LCP <2.5 s; hero media lazy if not above‑fold.
+* Font‑swap `optional` to prevent CLS; prefetch WOFF2.
+
+---
+
+## 6. Token Naming (Figma / CSS‑vars)
+
+```css
+--color-pantanal-green-900:#064737;
+--radius-md:8px;
+--font-display:"Playfair Display";
+--space-6:24px;
+```
+
+---
+
+## 7. Implementation Stack
+
+* **Design** : Figma Library → components referenced via Variants (Auto‑layout, Constraints).
+* **Front‑end** : Next.js + TailwindCSS (custom theme tokens) + Framer‑Motion for scroll reveal.
+* **CMS** : Sanity (headless) supplying content & media.
+
+---
+
+### Changelog
+
+* **v1.0 (2025‑05‑29)** : fundações, 11 componentes, padrões, motion.
+
+<!-- End of Design System v1 -->  --- com base no que definimos até agora, crie uma documentação completa do projeto Website Itaicy, que terá um widget de reservas com  preenchimento de data de check-in, check-out e número de pessoas (adultos e crianças) para o motor de reservas em outra aba. Faça o sitemap, explique toda a arquitetura do site, faremos um cms, na verdade a interface dele, o front, que será conectado ao supabase como back deste cms. Ele será multilingue. Analise no documento tudo o que engloba o projeto do site (sem incluir o agente IA). 

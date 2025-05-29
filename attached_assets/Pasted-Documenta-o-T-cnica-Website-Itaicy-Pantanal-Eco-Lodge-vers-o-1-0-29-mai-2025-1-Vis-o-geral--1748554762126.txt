@@ -1,0 +1,297 @@
+Documentação Técnica - Website Itaicy Pantanal Eco Lodge
+(versão 1.0 – 29 mai 2025)
+
+1. Visão geral
+Item	Descrição
+Objetivo	Construir um site institucional capaz de converter visitantes em reservas diretas – tanto de pesca esportiva quanto de ecoturismo – usando um widget próprio de pré-reserva que abra o motor externo em nova aba já parametrizado.
+Escopo	Todo o front-end público, o CMS (interface de gestão de conteúdo) e a API que liga o front aos serviços do Supabase. Fora do escopo: agente de IA, PMS/motor em si, apps nativos.
+Stack resumida	Next.js 14 • React Server Components • Tailwind (tokens do Design System) • Supabase (PostgreSQL + Storage + Auth + Edge Functions) • Vercel (deploy & edge network).
+Idiomas	pt-BR (default), en-US, es-ES – seleção via sub-diretório (/en/…, /es/…).
+Prazo contratual	30 dias úteis contados do kick-off + entrega técnica (conforme Anexo I-B)
+
+2. Sitemap & Fluxos de navegação
+cpp
+Copiar
+Editar
+/
+├── lodge
+│   ├── estrutura
+│   └── historia-sustentabilidade
+├── experiencias
+│   ├── pesca-esportiva
+│   ├── ecoturismo-birdwatching
+│   └── pacotes-tarifas
+├── galeria
+├── blog
+├── fale-conosco
+└── 🌐 lang-switch
+Rota “reservar” não é página: dispara o booking widget em “drawer” ou “sticky bar”; ao enviar, redireciona para o motor em nova aba com query-string (checkIn, checkOut, adults, children, packageId).
+
+Canonical de cada idioma usa <link rel="alternate" hreflang>.
+
+3. Requisitos Funcionais
+#	Funcionalidade	Detalhes
+F-01	Widget de reserva	Form 4 campos (check-in, check-out, adultos, crianças). Autovalidação, calendário responsivo, currency locale, botão “Continuar”.
+F-02	Galeria dinâmica	Imagens (WebP/AVIF) e vídeos (MP4) servidos do Supabase Storage; lazy-load & Lightbox.
+F-03	Filtros & tags	Pills (Pesca, Natureza, Lodge) alimentam busca em Supabase via Edge Function (full-text).
+F-04	Form. multistep	/fale-conosco grava lead em Supabase (leads), dispara e-mail via Supabase Functions (Resend).
+F-05	Blog	Rich-text MDX + imagens; slug automático; RSS feed.
+F-06	I18n	Textos extraídos para arquivos JSON no Supabase Bucket i18n; fallback para pt-BR.
+F-07	SEO técnico	OG/meta tags dinâmicas, sitemap.xml, robots.txt, Schema.org/Hotel & FAQ.
+
+4. Arquitetura
+4.1 Visão em camadas
+pgsql
+Copiar
+Editar
+┌───────────────────────────┐
+│      Front-end UI         │  Next.js-App-Router
+│ (SSR + RSC + Client comp) │  Tailwind Design-Tokens
+└────────────┬──────────────┘
+             │ API Routes (Server Actions)
+┌────────────▼──────────────┐
+│       Supabase Edge       │  Row Level Security (RLS)
+│  - Auth (JWT)             │  PostgREST auto-API
+│  - Edge Functions         │
+└────────────┬──────────────┘
+             │
+┌────────────▼──────────────┐
+│     PostgreSQL (DB)       │  Tables: pages, media, packages,
+│   Storage (S3-compatible) │  rates, i18n, leads
+└───────────────────────────┘
+CMS Admin = um “back-office” React (route group /admin) protegido por Supabase Auth (role editor).
+
+Public front nunca expõe chaves secretas; usa supabase-js com anon key + RLS.
+
+Edge Functions (TypeScript) tratam lógica extra: form-submit, contagem de views, cache-invalidation do sitemap.
+
+4.2 Modelo de dados (simplificado)
+Tabela	Campos chave	Observações
+pages	id · slug · title_pt · title_en · title_es · body_pt …	Estrutura headless para conteúdos institucionais.
+packages	id · category (`pesca	eco
+bookings_temp	cid (UUID) · check_in · check_out · adults · children · package_id · created_at	Armazena consulta antes de enviar ao motor 3º.
+media	path · alt_pt · alt_en · alt_es · tag	Galeria.
+leads	name · email · phone · message · origin	Fale Conosco & IA escalonamento.
+
+5. CMS – Interface de Gestão
+Seção	Operações	Permissões
+Conteúdo	CRUD Pages (MDX), reorder menú, SEO fields	admin, editor
+Galeria	Upload arrastar-soltar (compressor WebP), tagging	editor
+Pacotes & Tarifas	CRUD + versões	admin
+Traduções	UI para JSON i18n (chave-valor)	translator
+Leads	Visualizar, exportar CSV	admin, sales
+
+Construído com React + shadcn/ui + TanStack Table; chama Supabase via RPC. Live-preview no lado direito usando iframe da rota pública.
+
+6. Internacionalização
+Estratégia: sub-paths (/en, /es) com middleware que detecta Accept-Language e cookie.
+
+Conteúdos: campos coluna-por-idioma nas tabelas férteis (pages, media), strings de UI num bucket i18n/<lang>.json.
+
+RTL: não previsto nesta fase; infraestrutura já usa dir dinâmico.
+
+7. Widget de Reserva – Especificação
+Item	Valor
+Lançamento	componente React (BookingWidget.tsx) carregado preguiçosamente, sticky em desktop e barra inferior em mobile.
+Calendário	@headlessui/react + Day.js, range picker; bloqueia datas fora da temporada no Supabase Table season_blocks.
+Validação	• check-in < check-out < 30 dias
+• adultos + crianças ≤ 6
+• alertas toast acessíveis.
+Ação “Buscar”	1️⃣ grava linha em bookings_temp 2️⃣ abre https://booking.itaicy.com/?ci=YYYY-MM-DD&co=…&a=…&c=…&pkg=… em _blank
+Eventos	dispara gtag('event','start_booking', {…}) p/ GA4.
+
+8. Não-funcionais
+Categoria	Meta
+Performance	LCP ≤ 2.5 s, CLS < 0.1, FCP ≤ 1.8 s (métricas da Web Vitals).
+A11y	WCAG 2.2 AA; foco visível, ARIA nos componentes interativos.
+Segurança	HTTPS, CSP estrita, Supabase RLS “SELECT owner OR public”, rate-limit Edge Fn.
+Backup	Snapshots DB/Storage diários (30-dias); infra pela própria Supabase.
+CI/CD	Vercel Git-integration; preview em PR; tests Jest + Playwright.
+
+9. Pipeline de Deploy
+Merge → GitHub main
+
+Vercel build (Next.js 14)
+
+Post-deploy hook chama Edge Fn revalidate → purga cache de rota ISR & envia webhook para Algolia (busca interna).
+
+Slack notification channel #itaicy-deploys.
+
+10. Cronograma Macro (Dias úteis)
+| D0 | Kick-off + coleta de credenciais |
+| D+5 | Protótipo Figma final (UX/UI) |
+| D+12 | Estrutura Supabase + migrações |
+| D+18 | Front-end MVP (Home, Lodge, Experiências) |
+| D+22 | Integração widget de reservas |
+| D+26 | Conteúdo multilíngue importado |
+| D+28 | Testes & acessibilidade |
+| D+30 | Go-Live + hand-off CMS |
+
+(Pontos de controle coincidem com cláusulas de pagamento e aceite – vide contrato) 
+
+11. Riscos & Mitigações
+Risco	Impacto	Estratégia
+Atraso no fornecimento de conteúdo traduzido	Lançamento multilíngue	Planejar placeholder + fase‐in progressivo
+Alteração do motor de reservas	Quebra de query-string	Abstrair URL em variável .env + teste regressivo
+Conectividade fraca dos hóspedes	Peso do hero-video	Fallback imagem + prefers-reduced-data
+
+12. Glossário de Roles
+Perfil	Responsabilidades
+Product Owner (Itaicy)	Decisões de negócio, aprovação de conteúdo
+Tech Lead (Studio de IA)	Arquitetura, code-review, deploy
+UX/UI Designer	Manter biblioteca Figma / Design System
+Full-Stack Dev	Implementar páginas, CMS, Edge Fns
+Content Editor	Inserir textos, imagens, traduções
+QA / A11y	Testes funcionais, Lighthouse, WCAG
+
+Conclusão
+Este documento consolida toda a infraestrutura, fluxos, modelo de dados e cronograma necessários para o lançamento do novo website Itaicy, alinhado ao contrato vigente e ao Design System entregue. Quaisquer ajustes de escopo ou tecnologia devem ser formalizados via Termo Aditivo conforme cláusula contratual.
+
+
+Fontes
+
+
+
+
+Você disse:
+Faça prompts em sprints do projeto separados para a equipe de design UI/UX e para a equipe de desenvolvimento.
+
+
+O ChatGPT disse:
+
+Pensou por 23 segundos
+Abaixo estão dois conjuntos de prompts — um para a squad UI/UX e outro para a squad DEV.
+Cada prompt já vem no formato “pronto-para-colar” no Jira / Linear / Trello, organizado em sprints quinzenais e com critérios de aceite claros.
+
+📐 SQUAD UI/UX
+(5 sprints de 2 semanas — total 10 semanas)
+
+Sprint 0 — Kick-off & imersão (D0-D5)
+Prompt para o board
+
+vbnet
+Copiar
+Editar
+OBJETIVO: entender negócio, usuários e restrições técnicas do novo site Itaicy.
+• Revisar dossiê contratual + Research do Pantanal  
+• Mapear personas (Pescador, Ecoturista, Família) → Empathy Map  
+• Reunir dados de analytics do site antigo (bounce, heatmap)  
+• Workshop remoto 2 h com PO p/ validar visão & KPIs  
+ENTREGAS: mural de insights + User-Flows alto nível (Figma).  
+CRITÉRIOS DE ACEITE: persona sheet validado pelo PO; fluxos cobrem as 3 journeys principais.  
+DEPENDÊNCIA: acesso GA4 do site atual.
+Sprint 1 — Moodboard & Style-tile (D5-D15)
+yaml
+Copiar
+Editar
+OBJETIVO: cristalizar diretriz visual — “Pantanal autêntico + luxo boutique”.
+• Colecionar refs visuais (Nihi Sumba, Newmark/Motswari)  
+• Aplicar cores & tipografia já aprovadas no Design System v1  
+• Deliver ‘Style-tile’ com tokens: cores, type scale, ícones, UI samples  
+• Definir motion primitives (easing, duração)  
+ENTREGAS: 1 página Figma ‘Moodboard’, 1 página ‘Style-tile’ linkada.  
+ACEITE: PO dá 👍 nos tokens; contraste AA verificado; exportação .PDF p/ dev.  
+Sprint 2 — IA & Wireframes Low-Fi (D15-D25)
+vbnet
+Copiar
+Editar
+OBJETIVO: estruturar navegação de até 7 itens de menu.
+• Card-Sort + árvore de decisão → Sitemap definitivo  
+• Wireframes cinza (desktop/tablet/mobile) p/ 7 templates: Home, Lodge, Experiências-Listing, Pacote Detail, Galeria, Blog List, Post  
+• Incluir posição do Booking Widget sticky  
+ENTREGAS: Flow + 7 wireframes B&W (FigJam → Figma).  
+ACEITE: dev confirma viabilidade; todos wireframes linkados ao user-flows.  
+Sprint 3 — Hi-Fi Prototype & Micro-interações (D25-D35)
+vbnet
+Copiar
+Editar
+OBJETIVO: protótipo navegável com brand completo.
+• Aplicar Design System nos wireframes → hi-fi screens  
+• Criar componentes: Navbar, Hero, Cards, Accordion, Gallery Lightbox, Booking Widget placeholder  
+• Framer-Motion spec (json table) p/ cada componente  
+ENTREGAS: Prototype Figma (desktop + mobile) com hotspot map.  
+ACEITE: 95 % dos tokens usados corretamente; hand-off Zeplin / Figma Inspect ok; vídeo demo 60 s.  
+Sprint 4 — Usability Test & Iteração Final (D35-D45)
+pgsql
+Copiar
+Editar
+OBJETIVO: validar UX com usuários-alvo.
+• Recrutar 5 pescadores + 5 ecoturistas (remoto)  
+• Tasks: encontrar preço, iniciar reserva, achar política de cancelamento  
+• Métricas: SUS score ≥ 80, êxito tarefa ≥ 80 %  
+• Iterar telas conforme feedback crítico (P1/P2).  
+ENTREGAS: Relatório teste + screens atualizadas.  
+ACEITE: PO aprova; dev recebe protótipo final “design-freeze”.  
+💻 SQUAD DEV
+(6 sprints de 2 semanas — total 12 semanas; corre em paralelo, defasado 1 sprint de UI/UX)
+
+Sprint 0 — Setup & Infra (D0-D5)
+pgsql
+Copiar
+Editar
+OBJETIVO: preparar fundação técnica.
+• Criar repositório GitHub + branch workflow trunk-based  
+• Provisionar Supabase project (org Itaicy) + configure RLS templates  
+• Set Vercel project + env vars skeleton (.env.example)  
+• Add CI (ESLint, Prettier, Type-check)  
+ACEITE: build verde; Supabase tables “pages, media” migradas; preview Vercel up.  
+Sprint 1 — CMS Core & Auth (D5-D15)
+pgsql
+Copiar
+Editar
+OBJETIVO: CRUD básico de conteúdo.
+• Define DB schema via `supabase-migrations` (pages, packages, media, leads, i18n)  
+• Implement Supabase Auth (email-magic-link) roles: admin/editor/translator  
+• Build `/admin` shell with shadcn/ui + route guards  
+• Storage bucket `media` + signed URLs  
+ACEITE: criar/editar página funciona; RLS impede anon write; unit tests pass.  
+Sprint 2 — Public Site Skeleton & Design Tokens (D15-D25)
+csharp
+Copiar
+Editar
+OBJETIVO: entregar layout básico conectado ao CMS.
+• Integrar Tailwind theme (colors, radius, spacing) ==> DS tokens  
+• Layout base: Navbar, footer, i18n middleware  
+• Static props via Supabase (ISR 60 min)  
+• Home & 404 fully responsive  
+ACEITE: Lighthouse perf ≥ 90; nav sticky OK; lang switch swaps JSON.  
+Sprint 3 — Booking Widget & Key Pages (D25-D35)
+pgsql
+Copiar
+Editar
+OBJETIVO: funcionalidade de reserva ponta-a-ponta.
+• Component `BookingWidget` (range picker, adults/kids)  
+• Edge Fn records temp booking, redirects to external engine  
+• Templates: Lodge, Experiências-Listing, Pacote Detail (prices from packages table)  
+• Analytics event GA4 on start_booking  
+ACEITE: QA inputs dates → URL correta; data persists in `bookings_temp`.  
+Sprint 4 — Blog, Galeria & SEO (D35-D45)
+pgsql
+Copiar
+Editar
+OBJETIVO: conteúdo dinâmico + discoverability.
+• MDX loader (next-mdx-remote) for blog posts stored in Supabase  
+• Gallery masonry pulling from Storage; lightbox SWR  
+• Generate sitemap.xml & rss.xml nightly via Edge Fn cron  
+• Add JSON-LD (Hotel, FAQ)  
+ACEITE: Google Rich-Results test passes; blog post loads <1.5 s (TTFB + render).  
+Sprint 5 — Perf, A11y & PWA (D45-D55)
+vbnet
+Copiar
+Editar
+OBJETIVO: harden app for launch.
+• Lazy-load hero video, convert to AVIF fallback poster  
+• Core-Web-Vitals tuning (images, font-preload, next/script)  
+• A11y sweep (axe-ci) ↑ 95 score  
+• Add manifest + service-worker (offline shell)  
+ACEITE: LCP ≤2.5 s on 3G; a11y automated issues = 0 critical.  
+Sprint 6 — QA, Staging & Launch (D55-D60)
+vbnet
+Copiar
+Editar
+OBJETIVO: preparar produção e hand-off.
+• Playwright e2e: flow reserva, flow blog, flow 404  
+• UAT with PO – capture sign-off checklist  
+• Set up staging -> prod promotion; backup strategy Supabase  
+• DNS cut-over, monitor Sentry for 48h  
+ACEITE: Zero blocker bugs; PO email de “go”; post-launch Lighthouse ≥ 90/90/90/100.  
