@@ -46,44 +46,34 @@ export function Newsletter() {
   };
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-[#064737]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-itaicy-primary rounded-2xl overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-2">
-            <div className="p-8 lg:p-12 text-white">
-              <h3 className="playfair text-3xl font-bold mb-4">
-                {t('newsletter.title')}
-              </h3>
-              <p className="text-lg opacity-90 mb-8">
-                {t('newsletter.description')}
-              </p>
-              
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <Input
-                  type="email"
-                  placeholder={t('newsletter.placeholder')}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg text-itaicy-charcoal focus:ring-2 focus:ring-itaicy-secondary focus:outline-none"
-                />
-                <Button 
-                  type="submit"
-                  disabled={subscriptionMutation.isPending}
-                  className="w-full bg-itaicy-secondary hover:bg-itaicy-secondary/90 text-white py-3 font-semibold"
-                >
-                  {subscriptionMutation.isPending ? 'Inscrevendo...' : t('newsletter.subscribe')}
-                </Button>
-              </form>
-            </div>
-            
-            <div className="hidden lg:block">
-              <img 
-                src="https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400" 
-                alt="Paisagem do Pantanal ao entardecer"
-                className="w-full h-full object-cover"
+        <div className="text-center text-white">
+          <h3 className="playfair text-3xl font-bold mb-4">
+            Receba Novidades do Pantanal
+          </h3>
+          <p className="text-lg opacity-90 mb-8 max-w-2xl mx-auto">
+            Fique por dentro das melhores épocas para visitar, novidades do lodge e dicas exclusivas de nossos guias especializados.
+          </p>
+          
+          <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+            <div className="flex gap-4">
+              <Input
+                type="email"
+                placeholder="Seu melhor e-mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#C8860D] focus:outline-none"
               />
+              <Button 
+                type="submit"
+                disabled={subscriptionMutation.isPending}
+                className="bg-[#C8860D] hover:bg-[#C8860D]/90 text-white px-6 py-3 font-semibold rounded-lg"
+              >
+                {subscriptionMutation.isPending ? 'Enviando...' : 'Inscrever'}
+              </Button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </section>

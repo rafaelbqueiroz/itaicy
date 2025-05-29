@@ -37,10 +37,10 @@ export function FAQ() {
 
   return (
     <section className="py-20 bg-itaicy-cream">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[920px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="playfair text-4xl md:text-5xl font-bold text-itaicy-charcoal mb-6">
-            {t('faq.title')}
+            O Que Nossos Hóspedes Dizem
           </h2>
         </div>
         
@@ -51,17 +51,17 @@ export function FAQ() {
                 <Button
                   variant="ghost"
                   onClick={() => toggleItem(index)}
-                  className="w-full px-6 py-4 text-left flex justify-between items-center font-semibold text-itaicy-charcoal hover:bg-gray-50 rounded-lg"
+                  className="w-full px-8 py-6 text-left flex justify-between items-center font-semibold text-itaicy-charcoal hover:bg-gray-50 rounded-lg"
                 >
-                  <span>{faq.question}</span>
-                  {openItem === index ? (
-                    <ChevronUp className="h-5 w-5 text-gray-400" />
-                  ) : (
-                    <ChevronDown className="h-5 w-5 text-gray-400" />
-                  )}
+                  <span className="text-base">{faq.question}</span>
+                  <ChevronDown 
+                    className={`h-5 w-5 text-gray-400 transition-transform duration-260 ease-in-out ${
+                      openItem === index ? 'rotate-180' : ''
+                    }`} 
+                  />
                 </Button>
                 {openItem === index && (
-                  <div className="px-6 pb-4 text-gray-600 leading-relaxed">
+                  <div className="px-8 pb-6 text-gray-600 leading-relaxed transition-all duration-260 ease-in-out">
                     {faq.answer}
                   </div>
                 )}

@@ -34,7 +34,7 @@ export function LodgeOverview() {
               <span className="text-itaicy-primary">Coração do Pantanal</span>
             </h2>
             <p className="text-xl text-gray-600 leading-relaxed">
-              Conforte-se em 11 apartamentos recém-renovados, entre contemplaristas, equipamentos, comfort, com vida privilegiada e vista para o Rio Cuiabá
+              Conforte-se em 11 apartamentos recém-renovados, entre acomodações, equipamentos, confort com vida privilegiada e vista para o Rio Cuiabá
             </p>
             
             {/* Features */}
