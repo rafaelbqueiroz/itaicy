@@ -15,7 +15,7 @@ export function Header() {
   const [location] = useLocation();
 
   // Pages that should start with sticky header (no full-width background image)
-  const pagesWithStickyStart = ['/experiencias', '/galeria', '/blog', '/contato', '/sobre-nos', '/acomodacoes', '/gastronomia', '/sustentabilidade'];
+  const pagesWithStickyStart = ['/experiencias', '/galeria', '/blog', '/contato', '/sobre-nos', '/gastronomia', '/sustentabilidade'];
   const shouldStartSticky = pagesWithStickyStart.some(path => location.startsWith(path));
 
   // Sticky header behavior
