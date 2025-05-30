@@ -49,8 +49,8 @@ export function CountersRibbon() {
     {
       display: `${historyCount.count}`,
       ref: historyCount.ref,
-      label: 'DESDE',
-      description: 'Patrimônio',
+      label: 'LEGADO',
+      description: 'Usina Itaicy',
     },
   ];
 

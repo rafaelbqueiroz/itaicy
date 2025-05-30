@@ -48,7 +48,7 @@ export function HeroVideo() {
           Autêntico
         </h1>
         <p className="text-lg sm:text-xl md:text-2xl mb-8 opacity-90 max-w-2xl mx-auto animate-fade-up font-normal text-[#FAF9F6]" style={{ animationDelay: '0.2s', fontFamily: 'Lato, sans-serif' }}>
-          Pesque dourados gigantes, fotografe 166 aves e durma embalado pelo canto da mata.
+          Pesque dourados gigantes, aviste 650+ aves e adormeça com o canto da mata.
         </p>
 
       </div>

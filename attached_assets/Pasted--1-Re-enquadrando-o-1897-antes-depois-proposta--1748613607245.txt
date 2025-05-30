@@ -1,0 +1,69 @@
+### 1 ▸ Re‐enquadrando o “1897”
+
+| antes                           | depois (proposta)                  | por quê                                                                                                                                                                                                           |
+| ------------------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1897**<br>DESDE<br>Patrimônio | **1897**<br>LEGADO<br>Usina Itaicy | • “Legado” liga a data ao fato histórico.<br>• Sub-label “Usina Itaicy” (máx 24 car.) torna explícito *o que* é o patrimônio.<br>• Mantém simetria de 2 palavras (label) + 1 sub-linha como os demais contadores. |
+
+> **CSS/tailwind** – nenhuma mudança de grid; só altera o texto no objeto `counters` usado no loop.
+
+---
+
+### 2 ▸ Novo subtítulo da hero (StoryBrand, clara & sem jargão)
+
+> **“Pesque dourados gigantes, aviste 650 + aves e adormeça com o canto da mata.”**
+
+*Benefícios:*
+
+1. **Clareza** – troca “fotografe 166 aves” (literal e limitado) por “aviste 650 + aves” que corresponde ao counter e sugere abundância, não obrigação de fotografar.
+2. **Paralelismo** – trio de verbos no imperativo (“Pesque / aviste / adormeça”) reforça ritmo.
+3. **SEO** – mantém “dourados”, “aves” e “Pantanal” ↔ palavras-chave primárias.
+
+###### 15-segundos AB-test rápido
+
+Se quiser validar, deixe ambos textos em `CMS > Hero` e use atributo `data-variant` no A/B library (opt-in GTM). Meta-métrica: scroll-depth > 50 % + click no sticky-booking.
+
+---
+
+### 3 ▸ Atualização na copy do bloco Bird-watching
+
+```md
+Safáris, trilhas & birdwatching  
+Mais de **650 aves** no Pantanal — **166 registradas em 5 dias** na última maratona Itaicy (jan 2024). Sinta o rio na barriga ao avistar tuiuiús e onças.
+```
+
+*Agora o número de 166 volta a aparecer onde o visitante já tem contexto (bloco de aves).*
+
+---
+
+### 4 ▸ Tooltip mais rico (opção)
+
+```html
+<span class="group relative">
+  <svg class="w-3 h-3 text-pantanal-green-900 cursor-help"/>  
+  <div class="pointer-events-none opacity-0 group-hover:opacity-100
+              transition absolute bottom-full left-1/2 -translate-x-1/2
+              bg-cloud-white-0 text-pantanal-green-900 text-xs p-3 rounded-md shadow">
+      166 espécies registradas em 5 dias (expedição guiada jan 2024).  
+      <a href="/downloads/bird-checklist.pdf" class="underline">Baixar lista</a>
+  </div>
+</span>
+```
+
+*Pointer-events* ficam em `none` só para o balão; link continua clicável.
+
+---
+
+### 5 ▸ Checklist final de consistência
+
+| Item                                            | Onde alterar                 | Done?            |
+| ----------------------------------------------- | ---------------------------- | ---------------- |
+| **Contador 1** → “4 700 + espécies”             | `counters.ts` ou equivalente | ✔                |
+| **Contador 2** → “650 + aves”                   | idem                         | ✔                |
+| **Contador 3** → “325 + peixes”                 | idem                         | ✔                |
+| **Contador 4** → “166 aves / 5 dias” (+tooltip) | idem + component Tooltip     | ✔                |
+| **Contador 5** → “1897 Legado / Usina Itaicy”   | idem                         | ⬜ *(novo texto)* |
+| Hero subtitle                                   | `HeroSection.tsx`            | ⬜                |
+| Bloco Bird-watching                             | Markdown / CMS section       | ⬜                |
+| Meta-description                                | `next-seo.config.ts`         | ⬜                |
+
+Depois desses ajustes o ribbon fica proporcional, todos os números conversam entre si, e a promessa principal da hero section volta a ser inspiradora sem confundir o visitante.

@@ -16,7 +16,7 @@ export function FeatureBlocks() {
     {
       id: 'safari',
       title: 'Safáris, trilhas & birdwatching',
-      description: 'Mais de 650 espécies no Pantanal — e 166 avistadas em apenas 5 dias na última expedição Itaicy. Sinta o frio na barriga ao avistar tuiuiús e onças.',
+      description: 'Mais de 650 aves no Pantanal — 166 registradas em 5 dias na última maratona Itaicy (jan 2024). Sinta o frio na barriga ao avistar tuiuiús e onças.',
       image: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=800&h=600&auto=format&fit=crop',
       imagePosition: 'right',
       link: '/experiencias/birdwatching'
