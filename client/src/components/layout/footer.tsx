@@ -33,21 +33,21 @@ export function Footer() {
             <div className="flex space-x-4">
               <a 
                 href="#" 
-                className="w-10 h-10 bg-itaicy-primary rounded-full flex items-center justify-center hover:bg-itaicy-secondary transition-colors text-[#1b5048]"
+                className="w-10 h-10 bg-river-slate-800 rounded-full flex items-center justify-center hover:bg-pantanal-green-700 transition-colors duration-200 text-white"
                 aria-label="Instagram"
               >
                 <Instagram className="h-5 w-5" />
               </a>
               <a 
                 href="#" 
-                className="w-10 h-10 bg-itaicy-primary rounded-full flex items-center justify-center hover:bg-itaicy-secondary transition-colors text-[#1b5048]"
+                className="w-10 h-10 bg-river-slate-800 rounded-full flex items-center justify-center hover:bg-pantanal-green-700 transition-colors duration-200 text-white"
                 aria-label="Facebook"
               >
                 <Facebook className="h-5 w-5" />
               </a>
               <a 
                 href="#" 
-                className="w-10 h-10 bg-itaicy-primary rounded-full flex items-center justify-center hover:bg-itaicy-secondary transition-colors text-[#1b5048]"
+                className="w-10 h-10 bg-river-slate-800 rounded-full flex items-center justify-center hover:bg-pantanal-green-700 transition-colors duration-200 text-white"
                 aria-label="YouTube"
               >
                 <Youtube className="h-5 w-5" />
@@ -63,7 +63,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link 
                     href={link.href}
-                    className="hover:text-[#1b5048] transition-colors text-[#1b5038]"
+                    className="hover:text-pantanal-green-700 transition-colors duration-200 text-river-slate-800"
                   >
                     {link.name}
                   </Link>
@@ -103,13 +103,13 @@ export function Footer() {
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link 
               href="/termos" 
-              className="hover:text-[#1b5048] text-sm transition-colors text-[#1b5038]"
+              className="hover:text-pantanal-green-700 text-sm transition-colors duration-200 text-river-slate-800"
             >
               {t('footer.terms')}
             </Link>
             <Link 
               href="/privacidade" 
-              className="hover:text-[#1b5048] text-sm transition-colors text-[#1b5038]"
+              className="hover:text-pantanal-green-700 text-sm transition-colors duration-200 text-river-slate-800"
             >
               {t('footer.privacy')}
             </Link>
