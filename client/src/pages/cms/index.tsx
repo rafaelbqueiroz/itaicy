@@ -65,8 +65,20 @@ export default function CMSPage() {
     },
   });
 
-  const handleSaveBlock = (blockId: string, payload: Record<string, any>) => {
-    updateBlockMutation.mutate({ blockId, payload });
+  const handleSaveBlock = (blockId: string, blockType: string, payload: Record<string, any>) => {
+    // Validar payload antes de salvar
+    const validation = validateBlockPayload(blockType as BlockType, payload);
+    
+    if (!validation.success) {
+      toast({
+        title: 'Dados inválidos',
+        description: 'Verifique os campos obrigatórios e tente novamente.',
+        variant: 'destructive'
+      });
+      return;
+    }
+    
+    updateBlockMutation.mutate({ blockId, payload: validation.data });
   };
 
   const renderBlockCard = (block: Block) => {
@@ -74,10 +86,11 @@ export default function CMSPage() {
 
     if (isEditing) {
       return (
-        <BlockForm
+        <FormGenerator
           key={block.id}
-          block={block}
-          onSave={(data) => handleSaveBlock(block.id, data)}
+          blockType={block.type as BlockType}
+          initialData={block.payload || {}}
+          onSave={(data) => handleSaveBlock(block.id, block.type, data)}
           onCancel={() => setEditingBlock(null)}
           isLoading={updateBlockMutation.isPending}
         />
