@@ -1,0 +1,87 @@
+### Novo dado de biodiversidade (para substituir “650 + espécies”)
+
+> **4 700 + espécies**
+> *Plantas & animais registrados no Pantanal*
+
+— o número 4 700 + vem da síntese WWF e já engloba **aves, peixes, mamíferos, répteis, anfíbios, insetos e flora**.
+Isto mantém o contrapeso: pesca (peixes 325 +), bird-watching (aves 650 +) e patrimônio histórico (1897).
+
+---
+
+## Como ajustar o counter-ribbon para ficar harmonioso
+
+| posição | métrica (Playfair Display 700) | label 1 linha (Lato 600) | sub-label 1 linha (Lato 400 Body-S) | notas de layout                                              |
+| ------- | ------------------------------ | ------------------------ | ----------------------------------- | ------------------------------------------------------------ |
+| 1       | **4 700 +**                    | ESPÉCIES                 | Biodiversidade                      | font-size = `clamp(2.0rem, 3vw, 3.5rem)`                     |
+| 2       | **650 +**                      | AVES                     | Lista oficial                       | adiciona ícone 🕊️ se desejar                                |
+| 3       | **325 +**                      | PEIXES                   | Dourados etc                        | mantém coerência pesca                                       |
+| 4       | **166 aves / 5 dias**          | BIRDS CHECKLIST          | Maratona Bird ’24                   | quebra manual com `<br>`; font-size igual às outras métricas |
+| 5       | **1897**                       | DESDE                    | Patrimônio                          |                                                              |
+
+### Detalhes de UI / Tailwind
+
+```html
+<section class="bg-sand-beige-400 py-16">
+  <div class="mx-auto max-w-screen-xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 text-center">
+    <div v-for="item in counters" :key="item.id">
+      <p class="font-display font-bold text-amber-600 text-[clamp(2rem,3vw,3.5rem)] leading-none">
+        {{ item.value }}
+      </p>
+      <p class="font-medium text-pantanal-green-900 uppercase tracking-wide">{{ item.label }}</p>
+      <p class="text-river-slate-800 text-sm">{{ item.sublabel }}</p>
+    </div>
+  </div>
+</section>
+```
+
+* Todos os números compartilham **a mesma hierarquia visual** (sem uma métrica explodir as outras).
+* O grupo é limitado a `max-w-screen-xl` para alinhar com a primeira dobra.
+* `gap-8` garante respiro entre colunas; em mobile passa a 2 col → scroll vertical suave.
+
+### Tooltip revisado
+
+```html
+<span class="relative group cursor-help">
+  <svg ...class="w-3 h-3 text-pantanal-green-900" />
+  <span
+    class="invisible group-hover:visible opacity-0 group-hover:opacity-100
+           absolute bottom-full left-1/2 -translate-x-1/2
+           bg-cloud-white-0 text-pantanal-green-900 text-xs p-3
+           shadow-lg rounded-md transition-opacity duration-150">
+    166 espécies registradas<br>em 5 dias (expedição jan 2024).<br>
+    <a href="/downloads/checklist-birds-jan24.pdf" class="underline">Baixar lista</a>
+  </span>
+</span>
+```
+
+* A `div` do balão nasce **sobre** o ícone (não deslocada) e só desaparece após `transition-opacity`.
+* Link direto para o PDF atende a solicitação de download sem que o mouse precise permanecer sobre o ícone.
+
+---
+
+## Onde refletir a mudança na copy da Home
+
+1. **Sub-headline do hero**
+
+   > *“Pesque dourados gigantes, fotografe **650+ aves** e durma embalado pelo canto da mata.”*
+   > Mantém o gancho de bird-watching, agora consistente com o counter.
+
+2. **Bloco “Safáris, Trilhas & Birdwatching”**
+   Primeiro parágrafo:
+
+   > *“Mais de **650 espécies** no Pantanal — e **166 avistadas** em apenas 5 dias na última expedição Itaicy.”*
+
+3. **SEO meta-description (home)**
+
+   > “Itaicy Pantanal Eco Lodge: pesca cota-zero, 4 700+ espécies na maior planície alagável do mundo, onça-pintada e história de 1897. Reserve online com tarifa direta.”
+
+4. **Rich-snippet FAQ**
+   Adicione **How many bird species can I see?** → resposta menciona 650 +.
+
+---
+
+### Resultado
+
+* Métricas corretas, proporcionais e legíveis em todas as larguras.
+* Tooltip funcional e acessível.
+* Copy atualizada posiciona pesca como “carro-chefe” sem ofuscar a nova aposta em bird-watching, tudo ainda alinhado ao **Design System 1.0**.

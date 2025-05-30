@@ -14,71 +14,72 @@ export function CountersRibbon() {
   const { t } = useLanguage();
   const [showTooltip, setShowTooltip] = useState(false);
 
-  const speciesCount = useCountUp({ end: 650, duration: 2500, delay: 200 });
-  const fishCount = useCountUp({ end: 325, duration: 2200, delay: 300 });
-  const birdsCount = useCountUp({ end: 166, duration: 2000, delay: 400 });
+  const biodiversityCount = useCountUp({ end: 4700, duration: 3000, delay: 100 });
+  const birdsCount = useCountUp({ end: 650, duration: 2200, delay: 200 });
+  const fishCount = useCountUp({ end: 325, duration: 2000, delay: 300 });
+  const checklistCount = useCountUp({ end: 166, duration: 1800, delay: 400 });
   const historyCount = useCountUp({ end: 1897, duration: 2800, delay: 500 });
 
   const counters = [
     {
-      display: `${speciesCount.count}+`,
-      ref: speciesCount.ref,
-      label: t('highlights.speciesLabel'),
-      description: t('highlights.speciesDesc'),
+      display: `${biodiversityCount.count}+`,
+      ref: biodiversityCount.ref,
+      label: 'ESPÉCIES',
+      description: 'Biodiversidade',
+    },
+    {
+      display: `${birdsCount.count}+`,
+      ref: birdsCount.ref,
+      label: 'AVES',
+      description: 'Lista oficial',
     },
     {
       display: `${fishCount.count}+`,
       ref: fishCount.ref,
-      label: t('highlights.fishLabel'),
-      description: t('highlights.fishDesc'),
+      label: 'PEIXES',
+      description: 'Dourados etc',
     },
     {
-      display: `${birdsCount.count} aves / 5 dias`,
-      ref: birdsCount.ref,
-      label: t('highlights.birdsLabel'),
-      description: t('highlights.birdsDesc'),
-      tooltip: '166 espécies registradas durante expedição guiada (5 dias, jan 2024). Baixe a lista oficial.',
+      display: `${checklistCount.count} aves / 5 dias`,
+      ref: checklistCount.ref,
+      label: 'BIRDS CHECKLIST',
+      description: 'Maratona Bird \'24',
+      tooltip: '166 espécies registradas em 5 dias (expedição jan 2024).',
     },
     {
       display: `${historyCount.count}`,
       ref: historyCount.ref,
-      label: t('highlights.historyLabel'),
-      description: t('highlights.historyDesc'),
+      label: 'DESDE',
+      description: 'Patrimônio',
     },
   ];
 
   return (
     <section className="relative bg-sand-beige-400">
       <div className="absolute inset-0 bg-[radial-gradient(200%_200%_at_80%_40%,rgba(0,0,0,.03),transparent_70%)]" />
-      <div className="relative max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-8 py-14 px-6 md:px-8">
+      <div className="relative max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 py-16 px-6 md:px-8 text-center">
         {counters.map((counter, index) => (
-          <div key={index} ref={counter.ref} className="text-center">
+          <div key={index} ref={counter.ref}>
             <p 
-              className="font-playfair italic text-sunset-amber-600 leading-none"
-              style={{ fontSize: 'clamp(2.25rem, 4vw, 3.5rem)' }}
+              className="font-playfair font-bold text-sunset-amber-600 leading-none"
+              style={{ fontSize: 'clamp(2rem, 3vw, 3.5rem)' }}
             >
               {counter.display}
               {counter.tooltip && (
-                <span 
-                  className="inline-block align-baseline ml-1 text-[0.75rem] text-pantanal-green-900 cursor-help"
-                  title={counter.tooltip}
-                  onMouseEnter={() => setShowTooltip(true)}
-                  onMouseLeave={() => setShowTooltip(false)}
-                  onClick={() => setShowTooltip(!showTooltip)}
-                >
-                  ⓘ
+                <span className="relative group cursor-help inline-block ml-1">
+                  <span className="text-[0.75rem] text-pantanal-green-900">ⓘ</span>
+                  <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-full left-1/2 -translate-x-1/2 bg-white text-pantanal-green-900 text-xs p-3 shadow-lg rounded-md transition-opacity duration-150 w-48 mb-2">
+                    {counter.tooltip}
+                    <br />
+                    <a href="/downloads/checklist-birds-jan24.pdf" className="underline">Baixar lista</a>
+                  </span>
                 </span>
               )}
             </p>
-            {counter.tooltip && showTooltip && (
-              <div className="absolute mt-2 w-60 p-3 bg-white text-pantanal-green-900 text-sm rounded-lg shadow-lg border border-sand-beige-400/20 z-50 left-1/2 transform -translate-x-1/2">
-                {counter.tooltip}
-              </div>
-            )}
-            <p className="mt-1 text-xs md:text-sm font-semibold uppercase tracking-wide text-pantanal-green-900">
+            <p className="font-medium text-pantanal-green-900 uppercase tracking-wide text-sm">
               {counter.label}
             </p>
-            <p className="text-[0.75rem] md:text-[0.875rem] text-river-slate-800">
+            <p className="text-river-slate-800 text-sm">
               {counter.description}
             </p>
           </div>
