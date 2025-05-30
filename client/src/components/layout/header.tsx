@@ -94,7 +94,7 @@ export function Header() {
                 {/* Mega Menu */}
                 {item.megaMenu && activeDropdown === item.name && (
                   <div className="fixed top-20 left-0 right-0 w-full shadow-lg z-50 bg-white border-t border-pantanal-green-900/10">
-                    <div className="mx-auto max-w-[1440px] px-8 grid md:grid-cols-3 gap-x-16 gap-y-8 py-12">
+                    <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-3 gap-x-16 gap-y-8 py-12">
                       {/* Coluna 1: Lodge */}
                       <div>
                         <h3 className="font-playfair text-xl text-pantanal-green-900 mb-4">Lodge</h3>
