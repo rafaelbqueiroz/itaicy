@@ -109,7 +109,7 @@ export function Footer() {
             </Link>
             <Link 
               href="/privacidade" 
-              className="text-gray-400 hover:text-itaicy-secondary text-sm transition-colors"
+              className="hover:text-itaicy-secondary text-sm transition-colors text-[#1b5038]"
             >
               {t('footer.privacy')}
             </Link>
