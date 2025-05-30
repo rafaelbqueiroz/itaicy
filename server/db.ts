@@ -2,8 +2,17 @@ import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
 import * as schema from '@shared/schema';
 
-// URL encode the database URL to handle special characters in password
-const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres.hcmrlpevcpkclqubnmmf:%2A-%3FA%40fU3LrnQM27@aws-0-sa-east-1.pooler.supabase.com:6543/postgres";
+// Get database URL from environment - Supabase PostgreSQL connection
+const databaseUrl = process.env.DATABASE_URL;
 
-const sql = neon(databaseUrl);
+if (!databaseUrl) {
+  throw new Error('DATABASE_URL environment variable is required');
+}
+
+// URL encode the password to handle special characters
+const connectionString = databaseUrl.includes('*-?A@fU3LrnQM27') 
+  ? databaseUrl.replace('*-?A@fU3LrnQM27', '%2A-%3FA%40fU3LrnQM27')
+  : databaseUrl;
+
+const sql = neon(connectionString);
 export const db = drizzle(sql, { schema });
