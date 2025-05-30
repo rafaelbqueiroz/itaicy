@@ -49,16 +49,16 @@ export function FeatureBlocks() {
           >
             {/* Content */}
             <div className={`space-y-6 ${feature.imagePosition === 'right' ? 'lg:col-start-1' : ''}`}>
-              <h2 className="playfair text-3xl md:text-4xl font-bold text-[#064737] leading-tight">
+              <h2 className="playfair text-3xl md:text-4xl font-bold text-pantanal-green-900 leading-tight">
                 {feature.title}
               </h2>
-              <p className="text-lg text-[#64748B] leading-relaxed max-w-md" style={{ fontFamily: 'Lato, sans-serif' }}>
+              <p className="text-lg text-river-slate-800 leading-relaxed max-w-md" style={{ fontFamily: 'Lato, sans-serif' }}>
                 {feature.description}
               </p>
               <Link href={feature.link}>
                 <Button 
                   variant="outline"
-                  className="border-2 border-[#C97A2C] text-[#C97A2C] hover:bg-[#C97A2C] hover:text-white transition-all duration-300 font-medium uppercase tracking-wide"
+                  className="border border-pantanal-green-900 text-pantanal-green-900 bg-transparent hover:bg-sand-beige-400 uppercase font-medium text-xs py-2 px-4 rounded-md transition-all duration-300"
                   style={{ fontFamily: 'Lato, sans-serif' }}
                 >
                   Saiba mais

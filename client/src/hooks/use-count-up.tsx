@@ -10,7 +10,7 @@ interface UseCountUpOptions {
 export function useCountUp({ end, start = 0, duration = 2000, delay = 0 }: UseCountUpOptions) {
   const [count, setCount] = useState(start);
   const [isVisible, setIsVisible] = useState(false);
-  const elementRef = useRef<HTMLElement>(null);
+  const elementRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>();
 
   useEffect(() => {
