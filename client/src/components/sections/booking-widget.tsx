@@ -120,9 +120,9 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
             <Button 
               type="submit" 
               disabled={isLoading}
-              className="bg-sunset-amber-600 hover:bg-sunset-amber-700 text-white hover:text-white font-lato font-semibold uppercase text-xs tracking-wider py-3 px-6 rounded-md transition-colors duration-200"
+              className="font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-6 rounded-md transition-colors duration-150"
             >
-              {isLoading ? 'Verificando...' : 'RESERVAR'}
+              {isLoading ? 'VERIFICANDO...' : 'RESERVAR'}
             </Button>
           </form>
         </div>
@@ -219,9 +219,9 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
               <Button 
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-[#C8860D] hover:bg-[#C8860D]/90 text-white py-4 text-lg font-semibold transition-colors duration-200"
+                className="w-full font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-6 rounded-md transition-colors duration-150"
               >
-                {isLoading ? 'Pesquisando Disponibilidade...' : 'Pesquisar Disponibilidade'}
+                {isLoading ? 'VERIFICANDO...' : 'RESERVAR'}
               </Button>
             </form>
           </CardContent>
