@@ -40,7 +40,7 @@ export function Footer() {
               </a>
               <a 
                 href="#" 
-                className="w-10 h-10 bg-itaicy-primary rounded-full flex items-center justify-center hover:bg-itaicy-secondary transition-colors"
+                className="w-10 h-10 bg-itaicy-primary rounded-full flex items-center justify-center hover:bg-itaicy-secondary transition-colors text-[#1b5048]"
                 aria-label="Facebook"
               >
                 <Facebook className="h-5 w-5" />
