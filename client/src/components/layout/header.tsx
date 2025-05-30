@@ -48,14 +48,14 @@ export function Header() {
 
   const headerClasses = `fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
     isSticky 
-      ? 'bg-[#064737]/90 backdrop-blur-xl shadow-lg' 
-      : 'bg-transparent'
+      ? 'bg-[#D9CEB3] shadow-sm' 
+      : 'bg-transparent backdrop-blur-[90%]'
   }`;
 
-  const linkClasses = `text-sm font-light tracking-[0.08em] uppercase transition-colors duration-200 ${
+  const linkClasses = `text-sm font-semibold tracking-[0.05em] uppercase transition-colors duration-200 px-6 ${
     isSticky 
-      ? 'text-white hover:text-[#D9CEB3]' 
-      : 'text-white hover:text-[#D9CEB3]'
+      ? 'text-[#064737] hover:text-[#064737] hover:underline' 
+      : 'text-[#FAF9F6] hover:text-[#D9CEB3] hover:underline'
   }`;
 
   const isCurrentPage = (href: string) => {
@@ -67,11 +67,11 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0" aria-label="Itaicy Pantanal Eco Lodge">
+          <Link href="/" className="flex-shrink-0 mt-2" aria-label="Itaicy Pantanal Eco Lodge">
             <img 
               src={logoPath} 
               alt="Itaicy Pantanal Eco Lodge" 
-              className="h-14 w-auto"
+              className="max-h-12 w-auto"
             />
           </Link>
 
@@ -87,12 +87,12 @@ export function Header() {
                 <Link
                   href={item.href}
                   className={`${linkClasses} ${
-                    isCurrentPage(item.href) ? 'text-[#C8860D] border-b-2 border-[#C8860D]' : ''
+                    isCurrentPage(item.href) ? 'text-[#C97A2C] border-b-2 border-[#C97A2C]' : ''
                   } pb-1 flex items-center`}
                   aria-current={isCurrentPage(item.href) ? 'page' : undefined}
                 >
                   {item.name}
-                  {item.megaMenu && <ChevronDown className="inline-block ml-1 h-3 w-3" />}
+                  {item.megaMenu && <ChevronDown className="inline-block ml-1 h-2 w-2 align-middle" />}
                 </Link>
 
                 {/* Mega Menu */}
@@ -101,7 +101,7 @@ export function Header() {
                     <div className="px-8 py-6">
                       <div className="grid grid-cols-3 gap-8">
                         <div>
-                          <h3 className="text-base font-medium text-[#064737] mb-4 uppercase tracking-wide">
+                          <h3 className="text-base font-semibold text-[#064737] mb-4 uppercase tracking-wide" style={{ fontFamily: 'Lato, sans-serif' }}>
                             {item.name}
                           </h3>
                           <ul className="space-y-2">
@@ -109,7 +109,7 @@ export function Header() {
                               <li key={subItem.name}>
                                 <Link
                                   href={subItem.href}
-                                  className="block text-gray-700 hover:text-[#C8860D] transition-colors duration-150"
+                                  className="block text-[#64748B] hover:text-[#064737] transition-colors duration-150 font-normal"
                                   onClick={() => setActiveDropdown(null)}
                                 >
                                   {subItem.name}
@@ -119,13 +119,13 @@ export function Header() {
                           </ul>
                         </div>
                         <div>
-                          <h3 className="text-base font-medium text-[#064737] mb-4 uppercase tracking-wide">
+                          <h3 className="text-base font-normal text-[#064737] mb-4 tracking-wide" style={{ fontFamily: 'Lato, sans-serif' }}>
                             Planeje-se
                           </h3>
                           <ul className="space-y-2">
-                            <li><Link href="/como-chegar" className="block text-gray-700 hover:text-[#C8860D] transition-colors">Como Chegar</Link></li>
-                            <li><Link href="/melhor-epoca" className="block text-gray-700 hover:text-[#C8860D] transition-colors">Melhor Época</Link></li>
-                            <li><Link href="/faq" className="block text-gray-700 hover:text-[#C8860D] transition-colors">FAQ</Link></li>
+                            <li><Link href="/como-chegar" className="block text-[#64748B] hover:text-[#064737] transition-colors font-normal">Como Chegar</Link></li>
+                            <li><Link href="/melhor-epoca" className="block text-[#64748B] hover:text-[#064737] transition-colors font-normal">Melhor Época</Link></li>
+                            <li><Link href="/faq" className="block text-[#64748B] hover:text-[#064737] transition-colors font-normal">FAQ</Link></li>
                           </ul>
                         </div>
                         <div>
@@ -151,7 +151,11 @@ export function Header() {
           <div className="flex items-center space-x-6">
             {/* Chat button */}
             <button 
-              className="text-white hover:text-[#D9CEB3] transition-colors"
+              className={`transition-colors ${
+                isSticky 
+                  ? 'text-[#064737] hover:text-[#064737]/80' 
+                  : 'text-[#FAF9F6] hover:text-[#D9CEB3]'
+              }`}
               aria-label="Abrir chat de atendimento"
             >
               <MessageCircle className="h-6 w-6" />
@@ -162,10 +166,10 @@ export function Header() {
               <Button 
                 variant={isSticky ? "default" : "ghost"}
                 size="sm"
-                className={`hidden sm:inline-flex font-light tracking-[0.08em] uppercase ${
+                className={`hidden sm:inline-flex font-semibold tracking-[0.05em] uppercase ${
                   isSticky 
-                    ? 'bg-[#C8860D] hover:bg-[#C8860D]/90 text-white' 
-                    : 'text-white border-white hover:bg-white hover:text-[#064737]'
+                    ? 'bg-[#C97A2C] hover:bg-[#C97A2C]/92 text-[#FAF9F6] shadow-sm' 
+                    : 'text-[#FAF9F6] border-[#FAF9F6] hover:bg-[#FAF9F6] hover:text-[#064737]'
                 }`}
               >
                 RESERVAR
