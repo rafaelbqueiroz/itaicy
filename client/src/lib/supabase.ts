@@ -105,19 +105,11 @@ export class CMSService {
   }
 
   static async publishBlock(blockId: string): Promise<Block> {
-    // Copia o payload para published
-    const { data: block, error: fetchError } = await supabase
-      .from('blocks')
-      .select('*')
-      .eq('id', blockId)
-      .single();
-
-    if (fetchError || !block) throw fetchError;
-
+    // Marcar o bloco como publicado (published = true)
     const { data: updatedBlock, error } = await supabase
       .from('blocks')
       .update({ 
-        published: block.payload,
+        published: true,
         updated_at: new Date().toISOString()
       })
       .eq('id', blockId)

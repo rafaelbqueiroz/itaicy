@@ -43,16 +43,16 @@ export function LivePreview({ pageSlug, previewToken }: LivePreviewProps) {
         {
           event: '*',
           schema: 'public',
-          table: 'blocks',
-          filter: `page_id=eq.${pageSlug}`
+          table: 'blocks'
         },
         (payload) => {
           console.log('🔄 Mudança detectada no bloco:', payload);
           
-          // Recarregar iframe quando houver mudanças
-          if (iframeRef.current) {
+          // Adicionar delay antes de recarregar para garantir que a mudança foi processada
+          setTimeout(() => {
             setRefreshKey(prev => prev + 1);
-          }
+            console.log('🔄 Preview recarregado');
+          }, 500);
         }
       )
       .subscribe();
