@@ -1,0 +1,121 @@
+## 🔍 Auditoria rápida do mock-up – problemas & causa-raiz
+
+| Componente                     | Problema visível                                                             | Por que está fora do DS 1.0?                                                                           |
+| ------------------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Widget de Reserva**          | Só a faixa “Reserve sua experiência”, sem inputs. BG bege, títulos Playfair. | DS prevê *Sticky Booking Bar* branco (`cloud-white/0`), campos **Forms & Inputs** e botão **Primary**. |
+| **Language Switcher**          | Cápsula cinza-escura, texto “PT”, popover sem contraste.                     | Token errado (`river-slate` ao invés de `pantanal-green/900`), flag badge ausente, fonte não-caps.     |
+| **Botão “Reservar” no header** | Parece link; cor herdada do texto.                                           | Dev esqueceu variant **Primary**: BG `sunset-amber/600`, radius 8 px, Lato 600 CAPS.                   |
+| **Logo / menu spacing**        | Respiro vertical desigual; distância logo-menu pequena.                      | Falta `space-6` (24 px) do grid; logo máx-height não aplicado.                                         |
+| **Cards 50/50 (Safári etc.)**  | Título verde‐escuro + subtexto cinza = bom, mas CTA “Saiba mais” minúsculo.  | Botão deveria ser **Secondary** (caps) com border `pantanal-green/900`.                                |
+| **Counters Ribbon**            | Números soltos (166, 100 %, 1897, ⭐) sem rótulo.                             | Deve usar componente **Counters Ribbon** com anim. `countUp`.                                          |
+| **Testimonials duplicado**     | Título repetido.                                                             | Provavelmente erro de slice/component.                                                                 |
+| **FAQ heading**                | Repete “O que nossos hóspedes dizem”.                                        | Copiar/colar incorreto.                                                                                |
+
+---
+
+## 📐 Correções por componente
+
+### 1. *Sticky Booking Bar* (desktop e mobile)
+
+| Elemento               | Token / classe Tailwind                                                                                                                                                  | Observações                         |          |               |                 |                               |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------- | -------- | ------------- | --------------- | ----------------------------- |
+| Container              | `bg-cloud-white/0 shadow-lvl2 rounded-lg w-[min(1016px,90%)] -mt-12 mx-auto`                                                                                             | Sobrepõe hero com translateY –50 %. |          |               |                 |                               |
+| Campo (input / select) | `border border-river-slate/30 rounded-md py-3 px-4 text-sm text-river-slate/800 placeholder:text-river-slate/800/40 focus:(outline-none ring-2 ring-pantanal-green/700)` | Usa tokens spacing 12/16.           |          |               |                 |                               |
+| Botão                  | variant **Primary** ➜ `bg-sunset-amber/600 hover:bg-sunset-amber/700 text-cloud-white/0 font-lato font-semibold uppercase py-3 px-6 rounded-md shadow-lvl1`              | `transition-colors` 160 ms.         |          |               |                 |                               |
+| Fields order           | \`Check-in                                                                                                                                                               | Check-out                           | Hóspedes | Experiência ▼ | \[ Reservar ]\` | Alinha à grade; mobile stack. |
+| Sem título             | Remova “Reserve sua experiência” – hero já cumpre o papel.                                                                                                               |                                     |          |               |                 |                               |
+
+**Motion** : slide-up 240 ms com `opacity`. Aparecer ao rolar > 40 vh (desktop) ou fixar bottom (mobile).
+
+---
+
+### 2. Language Switcher refinado
+
+```tsx
+<button className="flex items-center gap-1 bg-cloud-white/20 backdrop-blur px-3 py-[6px] rounded-md hover:bg-cloud-white/30 focus-visible:outline-2 focus-visible:outline-pantanal-green/700">
+  <GlobeIcon className="w-4 h-4 text-cloud-white/0" />
+  <svg className="w-4 h-4" aria-hidden><use href="/flags.svg#flag-br" /></svg>
+  <span className="text-xs font-medium tracking-widest text-cloud-white/0">PT</span>
+  <ChevronDown className="w-3 h-3 text-cloud-white/0 transition-transform group-aria-expanded:rotate-180" />
+</button>
+```
+
+Popover: width 184 px, bg cloud-white, sombra lvl-3. Itens levam flag + nome completo. Trocar cor do casulo escura → translucida branca para contraste sobre hero.
+
+---
+
+### 3. Botão *Reservar* (navbar)
+
+* Classes: `hidden lg:inline-flex items-center bg-sunset-amber/600 text-cloud-white/0 font-lato font-semibold tracking-widest uppercase py-2 px-5 rounded-md shadow-lvl1 hover:bg-sunset-amber/700 focus-visible:outline-pantanal-green/700`.
+* Modo sticky (bg-cloud-white nav): botão permanece laranja, adiciona shadow-lvl2 para destaque.
+
+---
+
+### 4. Header spacing & logo
+
+* `.logo { max-height: 48px; margin-top: 8px; }`
+* `nav ul li + li { margin-left: var(--space-6); }`
+  (24 px entre itens, 32 px entre logo e primeiro link).
+* Sticky: aplica `backdrop-blur` + `bg-cloud-white/90` + shadow-lvl1.
+
+---
+
+### 5. Section 50/50 cards
+
+* Título H3 → Playfair 700 1.75 rem `text-pantanal-green/900`.
+* Descrição Body-S.
+* CTA → **Secondary** button `border border-pantanal-green/900 text-pantanal-green/900 bg-transparent uppercase font-lato font-medium text-xs py-2 px-4 rounded-md hover:bg-sand-beige/400`.
+
+---
+
+### 6. Counters Ribbon (ex.: 166 Espécies)
+
+```html
+<section class="bg-sand-beige/400 py-16 flex justify-center gap-24">
+  <div class="text-center">
+    <span class="font-playfair text-4xl text-pantanal-green/900 counter" data-to="166">0</span>
+    <p class="font-lato text-sm uppercase tracking-wide text-river-slate/800 mt-2">Espécies</p>
+  </div>
+  …
+</section>
+```
+
+`counter.js` anima `innerText` on-visible.
+
+---
+
+### 7. Outros ajustes rápidos
+
+| Item                                     | Ajuste                                                                                                   |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **CTA branco “Conheça as experiências”** | Usar variant **Secondary** (ghost dark) ou remover se o Booking Bar já cobre conversão.                  |
+| **Testemunhos duplicados**               | Remover bloco extra; manter um por página.                                                               |
+| **Heading FAQ**                          | Trocar para `Perguntas Frequentes`.                                                                      |
+| **Ruínas da Usina card**                 | Falta imagem; placeholder `ratio-[16/9] bg-sand-beige/400 animate-pulse`.                                |
+| **Newsletter section**                   | Título Playfair H3, BG pantanal-green/900, texto cloud-white/0, input field mesma estilização dos forms. |
+| **Dark-mode**                            | Verificar contraste dos links dentro do mega-menu.                                                       |
+
+---
+
+## 🛠 Checklist de Implementação
+
+1. **Design**
+
+   * [ ] Atualizar Figma Components: Booking Bar, Flag-Switch, Nav-Button.
+   * [ ] Revisar `8-pt spacing` nas seções 50/50 (auto-layout).
+
+2. **Front-end**
+
+   * [ ] Refatorar `BookingBar.tsx` → inputs + button, sem título.
+   * [ ] Substituir antigo `LocaleSwitcher` pelo novo; adicionar sprite `flags.svg`.
+   * [ ] Aplicar tokens Tailwind (`theme.extend.colors`) para sunset-amber, sand-beige, etc.
+   * [ ] Ajustar navbar padding / gap via `space-6`.
+   * [ ] Criar hook `useCountUp`.
+
+3. **QA**
+
+   * [ ] Lighthouse: verificar contraste buttons & locale switcher (>= 4.5 : 1).
+   * [ ] Core Web Vitals: Booking Bar imagem-free, só JS ≤ 3 kB.
+   * [ ] A11y: tab-order nav → booking → hero skip link.
+
+Quando esses pontos estiverem em staging, compartilhe o link e eu faço uma revisão visual final!

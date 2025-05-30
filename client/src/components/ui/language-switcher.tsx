@@ -60,7 +60,7 @@ export function LanguageSwitcher() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         onKeyDown={(e) => handleKeyDown(e)}
-        className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-[#D9CEB3]/20 focus-visible:outline-2 focus-visible:outline-[#064737] transition-colors duration-150"
+        className="flex items-center gap-1 bg-cloud-white-0/20 backdrop-blur px-3 py-1.5 rounded-md hover:bg-cloud-white-0/30 focus-visible:outline-2 focus-visible:outline-pantanal-green-700 transition-colors duration-150"
         aria-label="Seleção de idioma"
         aria-expanded={isOpen}
         aria-haspopup="listbox"

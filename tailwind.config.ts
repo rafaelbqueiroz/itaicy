@@ -14,6 +14,25 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        // Design System v1.1 Colors
+        'pantanal-green': {
+          700: '#075948',
+          900: '#064737',
+        },
+        'sand-beige': {
+          200: '#E8DCC7',
+          400: '#D9CEB3',
+        },
+        'cloud-white': {
+          0: '#FAF9F6',
+        },
+        'sunset-amber': {
+          600: '#C97A2C',
+          700: '#B86A25',
+        },
+        'river-slate': {
+          800: '#64748B',
+        },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

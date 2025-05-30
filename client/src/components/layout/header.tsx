@@ -177,10 +177,10 @@ export function Header() {
               <Button 
                 variant={isSticky ? "default" : "ghost"}
                 size="sm"
-                className={`hidden sm:inline-flex font-medium tracking-[0.05em] uppercase text-xs ${
+                className={`hidden lg:inline-flex items-center font-semibold tracking-widest uppercase py-2 px-5 rounded-md shadow-md transition-colors duration-150 ${
                   isSticky 
-                    ? 'bg-[#C97A2C] hover:bg-[#C97A2C]/92 text-[#FAF9F6] shadow-sm' 
-                    : 'text-[#FAF9F6] border-[#FAF9F6] hover:bg-[#FAF9F6] hover:text-[#064737]'
+                    ? 'bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 shadow-xl' 
+                    : 'bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0'
                 }`}
                 style={{ fontFamily: 'Lato, sans-serif' }}
               >

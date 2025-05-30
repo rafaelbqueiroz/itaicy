@@ -1,4 +1,5 @@
 import { useLanguage } from '@/hooks/use-language';
+import { useCountUp } from '@/hooks/use-count-up';
 import { Fish, Leaf, History, Award } from 'lucide-react';
 
 export function Highlights() {
@@ -7,46 +8,65 @@ export function Highlights() {
   const highlights = [
     {
       icon: Fish,
-      number: '166',
+      number: 166,
+      suffix: '',
       title: 'Espécies',
       description: 'Aves registradas no Pantanal',
     },
     {
       icon: Leaf,
-      number: '100%',
+      number: 100,
+      suffix: '%',
       title: 'Sustentável',
       description: 'Compromisso com conservação',
     },
     {
       icon: History,
-      number: '1897',
+      number: 1897,
+      suffix: '',
       title: 'Desde',
       description: 'História no Rio Cuiabá',
     },
     {
       icon: Award,
-      number: '⭐',
+      number: 25,
+      suffix: '+',
       title: 'Guias Premiados',
-      description: 'Especialistas certificados',
+      description: 'Anos de experiência',
     },
   ];
 
+  const CounterItem = ({ highlight, index }: { highlight: typeof highlights[0], index: number }) => {
+    const { count, ref } = useCountUp({ 
+      end: highlight.number, 
+      duration: 2000, 
+      delay: index * 200 
+    });
+
+    return (
+      <div className="text-center">
+        <div 
+          ref={ref}
+          className="text-4xl font-bold text-sunset-amber-600 playfair mb-2"
+        >
+          {count}{highlight.suffix}
+        </div>
+        <p className="text-sm text-pantanal-green-900 font-medium uppercase tracking-wide mb-1" style={{ fontFamily: 'Lato, sans-serif' }}>
+          {highlight.title}
+        </p>
+        <p className="text-xs text-river-slate-800" style={{ fontFamily: 'Lato, sans-serif' }}>
+          {highlight.description}
+        </p>
+      </div>
+    );
+  };
+
   return (
-    <section className="py-20 bg-itaicy-primary text-white">
+    <section className="py-16 bg-sand-beige-400">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="flex justify-center gap-24">
           {highlights.map((highlight, index) => (
-            <div key={index} className="text-center">
-              <div className="text-4xl font-bold text-[#C97A2C] playfair mb-2">
-                {highlight.number}
-              </div>
-              <p className="text-sm text-white font-medium uppercase tracking-wide mb-1" style={{ fontFamily: 'Lato, sans-serif' }}>
-                {highlight.title}
-              </p>
-              <p className="text-xs text-white/80" style={{ fontFamily: 'Lato, sans-serif' }}>
-                {highlight.description}
-              </p>
-            </div>
+            <CounterItem key={index} highlight={highlight} index={index} />
           ))}
         </div>
       </div>

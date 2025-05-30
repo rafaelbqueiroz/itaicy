@@ -52,22 +52,81 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
   if (variant === 'floating') {
     return (
       <div className={containerClasses}>
-        <Card className="shadow-2xl max-w-[840px] mx-auto" aria-label="Formulário de reserva">
-          <div className="bg-[#D4B896] p-6 text-center">
-            <h3 className="playfair text-2xl font-semibold text-[#064737]">
-              Reserve Sua Experiência
-            </h3>
-            <p className="text-[#064737] opacity-80 mt-2">
-              Encontre as datas perfeitas para sua estadia no Pantanal
-            </p>
-          </div>
-          
-          <div className="p-8">
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {/* Same form content as below */}
-            </form>
-          </div>
-        </Card>
+        <div className="bg-[#FAF9F6] shadow-xl rounded-lg w-full max-w-[1016px] mx-auto p-6" aria-label="Formulário de reserva">
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+            {/* Check-in */}
+            <div className="space-y-2">
+              <Label htmlFor="checkin-floating" className="text-sm font-medium text-[#64748B]" style={{ fontFamily: 'Lato, sans-serif' }}>
+                Check-in
+              </Label>
+              <Input
+                id="checkin-floating"
+                type="date"
+                value={formData.checkIn}
+                onChange={(e) => setFormData(prev => ({ ...prev, checkIn: e.target.value }))}
+                className="border border-[#64748B]/30 rounded-md py-3 px-4 text-sm text-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#064737]"
+              />
+            </div>
+            
+            {/* Check-out */}
+            <div className="space-y-2">
+              <Label htmlFor="checkout-floating" className="text-sm font-medium text-[#64748B]" style={{ fontFamily: 'Lato, sans-serif' }}>
+                Check-out
+              </Label>
+              <Input
+                id="checkout-floating"
+                type="date"
+                value={formData.checkOut}
+                onChange={(e) => setFormData(prev => ({ ...prev, checkOut: e.target.value }))}
+                className="border border-[#64748B]/30 rounded-md py-3 px-4 text-sm text-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#064737]"
+              />
+            </div>
+            
+            {/* Adults */}
+            <div className="space-y-2">
+              <Label htmlFor="adults-floating" className="text-sm font-medium text-[#64748B]" style={{ fontFamily: 'Lato, sans-serif' }}>
+                Adultos
+              </Label>
+              <select
+                id="adults-floating"
+                value={formData.guests}
+                onChange={(e) => setFormData(prev => ({ ...prev, guests: e.target.value }))}
+                className="w-full border border-[#64748B]/30 rounded-md py-3 px-4 text-sm text-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#064737]"
+              >
+                {GUEST_OPTIONS.map(option => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Experience */}
+            <div className="space-y-2">
+              <Label htmlFor="experience-floating" className="text-sm font-medium text-[#64748B]" style={{ fontFamily: 'Lato, sans-serif' }}>
+                Experiência
+              </Label>
+              <select
+                id="experience-floating"
+                value={formData.experience}
+                onChange={(e) => setFormData(prev => ({ ...prev, experience: e.target.value }))}
+                className="w-full border border-[#64748B]/30 rounded-md py-3 px-4 text-sm text-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#064737]"
+              >
+                {BOOKING_EXPERIENCES.map(exp => (
+                  <option key={exp.value} value={exp.label}>{exp.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Submit Button */}
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="bg-[#C97A2C] hover:bg-[#C97A2C]/90 text-[#FAF9F6] font-semibold uppercase py-3 px-6 rounded-md shadow-md transition-colors duration-150"
+              style={{ fontFamily: 'Lato, sans-serif' }}
+            >
+              {isLoading ? 'Verificando...' : 'Ver disponibilidade'}
+            </Button>
+          </form>
+        </div>
       </div>
     );
   }
