@@ -83,7 +83,7 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
               disabled={isLoading}
               className="ml-auto order-last font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-6 rounded-md transition-colors duration-150 whitespace-nowrap"
             >
-              {isLoading ? 'VERIFICANDO...' : 'RESERVAR'}
+              {isLoading ? 'VERIFICANDO...' : t('booking.reserve')}
             </Button>
 
             {/* Container dos campos com order menor */}
