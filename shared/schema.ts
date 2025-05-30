@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, jsonb, varchar, date } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -99,6 +99,89 @@ export const newsletterSubscriptions = pgTable("newsletter_subscriptions", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// CMS Content Management Tables
+export const cmsPages = pgTable("cms_pages", {
+  id: serial("id").primaryKey(),
+  slug: varchar("slug", { length: 100 }).notNull().unique(),
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content"),
+  metaTitle: varchar("meta_title", { length: 255 }),
+  metaDescription: varchar("meta_description", { length: 500 }),
+  isPublished: boolean("is_published").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const cmsMedia = pgTable("cms_media", {
+  id: serial("id").primaryKey(),
+  filename: varchar("filename", { length: 255 }).notNull(),
+  originalName: varchar("original_name", { length: 255 }).notNull(),
+  mimeType: varchar("mime_type", { length: 100 }).notNull(),
+  size: integer("size").notNull(),
+  url: varchar("url", { length: 500 }).notNull(),
+  alt: varchar("alt", { length: 255 }),
+  caption: text("caption"),
+  uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+});
+
+export const cmsVirtualTours = pgTable("cms_virtual_tours", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  category: varchar("category", { length: 50 }).notNull(),
+  thumbnailId: integer("thumbnail_id").references(() => cmsMedia.id),
+  tourUrl: varchar("tour_url", { length: 500 }).notNull(),
+  capacity: integer("capacity"),
+  amenities: text("amenities").array(),
+  isActive: boolean("is_active").default(true),
+  sortOrder: integer("sort_order").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const cmsTestimonials = pgTable("cms_testimonials", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  location: varchar("location", { length: 255 }),
+  rating: integer("rating").notNull(),
+  content: text("content").notNull(),
+  avatarId: integer("avatar_id").references(() => cmsMedia.id),
+  isActive: boolean("is_active").default(true),
+  featured: boolean("featured").default(false),
+  stayDate: date("stay_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const cmsBlogPosts = pgTable("cms_blog_posts", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  excerpt: text("excerpt"),
+  content: text("content").notNull(),
+  featuredImageId: integer("featured_image_id").references(() => cmsMedia.id),
+  category: varchar("category", { length: 100 }).notNull(),
+  tags: text("tags").array(),
+  authorName: varchar("author_name", { length: 255 }).notNull(),
+  authorBio: text("author_bio"),
+  authorAvatarId: integer("author_avatar_id").references(() => cmsMedia.id),
+  isPublished: boolean("is_published").default(false),
+  publishedAt: timestamp("published_at"),
+  metaTitle: varchar("meta_title", { length: 255 }),
+  metaDescription: varchar("meta_description", { length: 500 }),
+  readingTime: integer("reading_time"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const cmsSettings = pgTable("cms_settings", {
+  id: serial("id").primaryKey(),
+  key: varchar("key", { length: 100 }).notNull().unique(),
+  value: text("value"),
+  type: varchar("type", { length: 50 }).notNull(),
+  description: text("description"),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -145,6 +228,74 @@ export const insertNewsletterSubscriptionSchema = createInsertSchema(newsletterS
   createdAt: true,
 });
 
+// CMS Insert schemas
+export const insertCmsPageSchema = createInsertSchema(cmsPages).pick({
+  slug: true,
+  title: true,
+  content: true,
+  metaTitle: true,
+  metaDescription: true,
+  isPublished: true,
+});
+
+export const insertCmsMediaSchema = createInsertSchema(cmsMedia).pick({
+  filename: true,
+  originalName: true,
+  mimeType: true,
+  size: true,
+  url: true,
+  alt: true,
+  caption: true,
+});
+
+export const insertCmsVirtualTourSchema = createInsertSchema(cmsVirtualTours).pick({
+  title: true,
+  description: true,
+  category: true,
+  thumbnailId: true,
+  tourUrl: true,
+  capacity: true,
+  amenities: true,
+  isActive: true,
+  sortOrder: true,
+});
+
+export const insertCmsTestimonialSchema = createInsertSchema(cmsTestimonials).pick({
+  name: true,
+  location: true,
+  rating: true,
+  content: true,
+  avatarId: true,
+  isActive: true,
+  featured: true,
+  stayDate: true,
+});
+
+export const insertCmsBlogPostSchema = createInsertSchema(cmsBlogPosts).pick({
+  title: true,
+  slug: true,
+  excerpt: true,
+  content: true,
+  featuredImageId: true,
+  category: true,
+  tags: true,
+  authorName: true,
+  authorBio: true,
+  authorAvatarId: true,
+  isPublished: true,
+  publishedAt: true,
+  metaTitle: true,
+  metaDescription: true,
+  readingTime: true,
+});
+
+export const insertCmsSettingSchema = createInsertSchema(cmsSettings).pick({
+  key: true,
+  value: true,
+  type: true,
+  description: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -169,3 +320,22 @@ export type InsertContactSubmission = z.infer<typeof insertContactSubmissionSche
 
 export type NewsletterSubscription = typeof newsletterSubscriptions.$inferSelect;
 export type InsertNewsletterSubscription = z.infer<typeof insertNewsletterSubscriptionSchema>;
+
+// CMS Types
+export type CmsPage = typeof cmsPages.$inferSelect;
+export type InsertCmsPage = z.infer<typeof insertCmsPageSchema>;
+
+export type CmsMedia = typeof cmsMedia.$inferSelect;
+export type InsertCmsMedia = z.infer<typeof insertCmsMediaSchema>;
+
+export type CmsVirtualTour = typeof cmsVirtualTours.$inferSelect;
+export type InsertCmsVirtualTour = z.infer<typeof insertCmsVirtualTourSchema>;
+
+export type CmsTestimonial = typeof cmsTestimonials.$inferSelect;
+export type InsertCmsTestimonial = z.infer<typeof insertCmsTestimonialSchema>;
+
+export type CmsBlogPost = typeof cmsBlogPosts.$inferSelect;
+export type InsertCmsBlogPost = z.infer<typeof insertCmsBlogPostSchema>;
+
+export type CmsSetting = typeof cmsSettings.$inferSelect;
+export type InsertCmsSetting = z.infer<typeof insertCmsSettingSchema>;
