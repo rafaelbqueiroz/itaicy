@@ -100,36 +100,46 @@ export function Header() {
 
                 {/* Mega Menu */}
                 {item.megaMenu && activeDropdown === item.name && (
-                  <div className="fixed left-0 right-0 top-20 w-screen bg-[#faf9f6] shadow-lg z-40 animate-fade-in">
-                    <div className="max-w-7xl mx-auto px-8 py-12">
-                      <div className="grid grid-cols-12 gap-10" role="navigation">
-                        <div className="col-span-3" aria-label="Experiências">
-                          <h3 className="text-[0.875rem] font-medium text-[#064737] mb-4 uppercase tracking-wide" style={{ fontFamily: 'Lato, sans-serif' }}>
+                  <div className="fixed left-0 right-0 top-20 w-screen bg-[rgba(217,206,179,0.1)] shadow-lg z-40 animate-fade-in">
+                    <div className="max-w-[1120px] mx-auto px-6 py-8">
+                      <div className="grid grid-cols-12 gap-8" role="navigation">
+                        <div className="col-span-4" aria-label="Experiências">
+                          <h3 className="text-[1.25rem] font-semibold text-[#064737] mb-3" style={{ fontFamily: 'Playfair Display, serif' }}>
                             {item.name}
                           </h3>
-                          <ul className="space-y-3">
+                          <ul className="space-y-2">
                             {item.megaMenu.map((subItem) => (
                               <li key={subItem.name}>
                                 <Link
                                   href={subItem.href}
-                                  className="block text-[1rem] text-[#64748B] hover:text-[#064737] hover:bg-[#D9CEB3] hover:rounded px-2 py-1 transition-all duration-150 font-medium"
+                                  className="flex items-center text-[0.9375rem] text-[#64748B] hover:text-[#064737] hover:bg-[#D9CEB3] hover:rounded px-2 py-1 transition-all duration-150 font-normal"
                                   style={{ fontFamily: 'Lato, sans-serif' }}
                                   onClick={() => setActiveDropdown(null)}
                                 >
+                                  <span className="text-lg mr-2">🐟</span>
                                   {subItem.name}
                                 </Link>
                               </li>
                             ))}
                           </ul>
                         </div>
-                        <div className="col-span-3" aria-label="Planeje sua visita">
-                          <h3 className="text-[0.875rem] font-medium text-[#064737] mb-4 uppercase tracking-wide" style={{ fontFamily: 'Lato, sans-serif' }}>
-                            Planeje-se
+                        <div className="col-span-3" aria-label="Lodge">
+                          <h3 className="text-[1.25rem] font-semibold text-[#064737] mb-3" style={{ fontFamily: 'Playfair Display, serif' }}>
+                            LODGE
                           </h3>
-                          <ul className="space-y-3">
-                            <li><Link href="/como-chegar" className="block text-[0.9375rem] text-[#64748B] hover:text-[#064737] hover:bg-[#D9CEB3] hover:rounded px-2 py-1 transition-all duration-150 font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Como Chegar</Link></li>
-                            <li><Link href="/melhor-epoca" className="block text-[0.9375rem] text-[#64748B] hover:text-[#064737] hover:bg-[#D9CEB3] hover:rounded px-2 py-1 transition-all duration-150 font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Melhor Época</Link></li>
-                            <li><Link href="/faq" className="block text-[0.9375rem] text-[#64748B] hover:text-[#064737] hover:bg-[#D9CEB3] hover:rounded px-2 py-1 transition-all duration-150 font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>FAQ</Link></li>
+                          <ul className="space-y-2">
+                            <li>
+                              <Link href="/acomodacoes" className="flex items-center text-[0.9375rem] text-[#64748B] hover:text-[#064737] hover:bg-[#D9CEB3] hover:rounded px-2 py-1 transition-all duration-150 font-normal" style={{ fontFamily: 'Lato, sans-serif' }} onClick={() => setActiveDropdown(null)}>
+                                <span className="text-lg mr-2">🏨</span>
+                                Acomodações
+                              </Link>
+                            </li>
+                            <li>
+                              <Link href="/gastronomia" className="flex items-center text-[0.9375rem] text-[#64748B] hover:text-[#064737] hover:bg-[#D9CEB3] hover:rounded px-2 py-1 transition-all duration-150 font-normal" style={{ fontFamily: 'Lato, sans-serif' }} onClick={() => setActiveDropdown(null)}>
+                                <span className="text-lg mr-2">🍽️</span>
+                                Gastronomia
+                              </Link>
+                            </li>
                           </ul>
                         </div>
                         <div className="col-span-6">
@@ -173,6 +183,9 @@ export function Header() {
               <MessageCircle className="h-6 w-6" />
             </button>
 
+            {/* Language switcher */}
+            <LanguageSwitcher isSticky={isSticky} />
+
             {/* Reserve button */}
             <Link href="/reservar">
               <Button 
@@ -185,9 +198,6 @@ export function Header() {
                 RESERVAR
               </Button>
             </Link>
-
-            {/* Language switcher */}
-            <LanguageSwitcher isSticky={isSticky} />
             
             {/* Mobile menu button */}
             <button
