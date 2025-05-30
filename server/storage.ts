@@ -203,6 +203,87 @@ export class MemStorage implements IStorage {
     ];
 
     sampleSuites.forEach(suite => this.createCmsSuite(suite));
+
+    // Initialize testimonials
+    const sampleTestimonials = [
+      {
+        name: 'Ana Carvalho',
+        city: 'Rio de Janeiro',
+        rating: 5,
+        quote: 'Dormir ouvindo as araras e acordar com a vista do rio foi uma experiência transformadora.',
+        featured: true,
+        stayDate: '2024-08-15'
+      },
+      {
+        name: 'Carlos Silva',
+        city: 'São Paulo', 
+        rating: 5,
+        quote: 'A pesca esportiva superou todas as expectativas. Guias experientes e peixes gigantes!',
+        featured: true,
+        stayDate: '2024-07-22'
+      },
+      {
+        name: 'Maria Santos',
+        city: 'Brasília',
+        rating: 5,
+        quote: 'Lugar mágico para desconectar e se reconectar com a natureza. Voltaremos em breve!',
+        featured: false,
+        stayDate: '2024-09-10'
+      }
+    ];
+
+    sampleTestimonials.forEach(testimonial => this.createTestimonial(testimonial));
+
+    // Initialize FAQs
+    const sampleFaqs = [
+      {
+        category: 'geral',
+        question: 'Qual a melhor época para visitar?',
+        answer: 'A temporada de pesca vai de março a outubro, com águas mais claras. Para birdwatching, recomendamos maio a setembro quando as aves estão mais ativas.',
+        sortOrder: 1
+      },
+      {
+        category: 'hospedagem',
+        question: 'As suítes têm ar-condicionado?',
+        answer: 'Sim, todas as suítes possuem ar-condicionado, Wi-Fi satelital e varanda privativa com rede para contemplação.',
+        sortOrder: 2
+      },
+      {
+        category: 'pesca',
+        question: 'Preciso levar equipamentos de pesca?',
+        answer: 'Não é necessário. Fornecemos todos os equipamentos profissionais: varas, molinetes, iscas vivas e acessórios para pesca esportiva.',
+        sortOrder: 3
+      },
+      {
+        category: 'transporte',
+        question: 'Como chegar ao lodge?',
+        answer: 'Oferecemos transfer gratuito do aeroporto de Cuiabá. O trajeto dura aproximadamente 2h30 por estrada asfaltada até nosso píer privativo.',
+        sortOrder: 4
+      }
+    ];
+
+    sampleFaqs.forEach(faq => this.createFaq(faq));
+
+    // Initialize stats
+    const sampleStats = [
+      { code: 'BIRD_SPECIES', value: 4700, unit: 'espécies' },
+      { code: 'FISH_SPECIES', value: 400, unit: 'espécies' },
+      { code: 'SINCE_YEAR', value: 1897, unit: null },
+      { code: 'PROTECTED_AREA', value: 650, unit: 'hectares' }
+    ];
+
+    sampleStats.forEach(stat => {
+      this.stats.set(stat.code, stat);
+    });
+
+    // Initialize settings
+    this.settings = {
+      primaryColor: '#C97A2C',
+      accentColor: '#064737',
+      email: 'reservas@itaicy.com.br',
+      phone: '+55 65 9999-9999',
+      whatsapp: '+55 65 9999-9999'
+    };
   }
 
   // User methods

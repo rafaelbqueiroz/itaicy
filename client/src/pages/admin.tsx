@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'wouter';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,9 +9,24 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { PlusCircle, Edit, Save, Settings, BarChart3, MessageSquare, HelpCircle, Home } from 'lucide-react';
+import { PlusCircle, Edit, Save, Settings, BarChart3, MessageSquare, HelpCircle, Home, LogOut } from 'lucide-react';
 
 export default function AdminPage() {
+  const [, setLocation] = useLocation();
+
+  // Verificar se está logado
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('adminLoggedIn');
+    if (!isLoggedIn) {
+      setLocation('/login');
+    }
+  }, [setLocation]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminLoggedIn');
+    localStorage.removeItem('adminUser');
+    setLocation('/');
+  };
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [editingItem, setEditingItem] = useState<any>(null);
@@ -104,10 +120,18 @@ export default function AdminPage() {
             <Settings className="h-6 w-6" />
             <h1 className="text-xl font-bold">Painel Administrativo - Itaicy Lodge</h1>
           </div>
-          <Button variant="outline" size="sm" className="text-forest-green-800 border-white hover:bg-white">
-            <Home className="h-4 w-4 mr-2" />
-            Voltar ao Site
-          </Button>
+          <div className="flex space-x-2">
+            <Button variant="outline" size="sm" className="text-forest-green-800 border-white hover:bg-white"
+              onClick={() => setLocation('/')}>
+              <Home className="h-4 w-4 mr-2" />
+              Voltar ao Site
+            </Button>
+            <Button variant="outline" size="sm" className="text-forest-green-800 border-white hover:bg-white"
+              onClick={handleLogout}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Sair
+            </Button>
+          </div>
         </div>
       </div>
 
