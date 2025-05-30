@@ -14,9 +14,23 @@ export function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [location] = useLocation();
 
-  // Pages that should start with sticky header (no full-width background image)
-  const pagesWithStickyStart = ['/experiencias', '/galeria', '/blog', '/contato', '/sobre-nos', '/gastronomia', '/sustentabilidade'];
-  const shouldStartSticky = pagesWithStickyStart.some(path => location.startsWith(path));
+  // Page template configuration - this will later come from CMS
+  const pageTemplates = {
+    '/': { headerType: 'transparent', hasHeroImage: true },
+    '/lodge': { headerType: 'transparent', hasHeroImage: true },
+    '/acomodacoes': { headerType: 'transparent', hasHeroImage: true },
+    '/experiencias/pesca': { headerType: 'transparent', hasHeroImage: true },
+    '/experiencias': { headerType: 'sticky', hasHeroImage: false },
+    '/galeria': { headerType: 'sticky', hasHeroImage: false },
+    '/blog': { headerType: 'sticky', hasHeroImage: false },
+    '/contato': { headerType: 'sticky', hasHeroImage: false },
+    '/sobre-nos': { headerType: 'sticky', hasHeroImage: false },
+    '/gastronomia': { headerType: 'sticky', hasHeroImage: false },
+    '/sustentabilidade': { headerType: 'sticky', hasHeroImage: false },
+  };
+
+  const currentTemplate = pageTemplates[location as keyof typeof pageTemplates] || { headerType: 'sticky', hasHeroImage: false };
+  const shouldStartSticky = currentTemplate.headerType === 'sticky';
 
   // Sticky header behavior
   useEffect(() => {

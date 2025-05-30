@@ -1,11 +1,12 @@
 import { 
   users, experiences, accommodations, blogPosts, gallery, bookings, 
-  contactSubmissions, newsletterSubscriptions,
+  contactSubmissions, newsletterSubscriptions, cmsSuites,
   type User, type InsertUser, type Experience, type InsertExperience,
   type Accommodation, type InsertAccommodation, type BlogPost, type InsertBlogPost,
   type GalleryItem, type InsertGalleryItem, type Booking, type InsertBooking,
   type ContactSubmission, type InsertContactSubmission,
-  type NewsletterSubscription, type InsertNewsletterSubscription
+  type NewsletterSubscription, type InsertNewsletterSubscription,
+  type CmsSuite, type InsertCmsSuite
 } from "@shared/schema";
 
 export interface IStorage {
