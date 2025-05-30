@@ -166,11 +166,12 @@ export function Header() {
               <Button 
                 variant={isSticky ? "default" : "ghost"}
                 size="sm"
-                className={`hidden sm:inline-flex font-semibold tracking-[0.05em] uppercase ${
+                className={`hidden sm:inline-flex font-medium tracking-[0.05em] uppercase text-xs ${
                   isSticky 
                     ? 'bg-[#C97A2C] hover:bg-[#C97A2C]/92 text-[#FAF9F6] shadow-sm' 
                     : 'text-[#FAF9F6] border-[#FAF9F6] hover:bg-[#FAF9F6] hover:text-[#064737]'
                 }`}
+                style={{ fontFamily: 'Lato, sans-serif' }}
               >
                 RESERVAR
               </Button>
