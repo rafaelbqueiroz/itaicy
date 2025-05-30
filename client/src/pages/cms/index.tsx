@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Pencil, Eye, ExternalLink } from 'lucide-react';
-import BlockForm from '@/components/cms/BlockForm';
+import { FormGenerator } from '@/cms/components/FormGenerator';
+import { validateBlockPayload, type BlockType } from '@/cms/schemas';
 
 export default function CMSPage() {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
