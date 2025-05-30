@@ -1,0 +1,114 @@
+1. Transcode para codecs mais eficientes
+WEBM (VP9) e/ou AV1
+
+São muito mais compactos que H.264.
+
+Exemplo de comando FFmpeg para VP9:
+
+bash
+Copiar
+Editar
+ffmpeg -i input.mp4 \
+  -c:v libvpx-vp9 -b:v 0 -crf 30 \
+  -an \
+  -pass 1 -f null /dev/null && \
+ffmpeg -i input.mp4 \
+  -c:v libvpx-vp9 -b:v 0 -crf 30 \
+  -an \
+  -pass 2 output-vp9.webm
+Para AV1 (libaom-av1):
+
+bash
+Copiar
+Editar
+ffmpeg -i input.mp4 \
+  -c:v libaom-av1 -crf 35 -b:v 0 \
+  -an \
+  output-av1.mkv
+Meta: reduzir ~40 % em relação a H.264 mantendo qualidade similar.
+
+Múltiplas fontes
+Ofereça <source> em WebM e H.264 (fallback), deixando o browser escolher o mais leve.
+
+html
+Copiar
+Editar
+<video autoplay muted loop playsinline poster="poster.jpg">
+  <source src="hero-vp9.webm" type="video/webm">
+  <source src="hero-h264.mp4" type="video/mp4">
+</video>
+2. Ajuste de resolução e framerate
+Diminuir resolução
+
+Se seu hero ocupa full-width mas não precisa de 4K, reduza a 1280×720 ou até 960×540:
+
+bash
+Copiar
+Editar
+ffmpeg -i input.mp4 -vf "scale=1280:-2" -c:v libx264 -crf 28 -an output-720.mp4
+Reduzir fps
+
+Para um fundo em loop, 24 fps costuma bastar:
+
+bash
+Copiar
+Editar
+ffmpeg -i input.mp4 -r 24 -c:v libx264 -crf 28 -an output-24fps.mp4
+3. Streaming Adaptativo (HLS/DASH)
+Em vez de forçar o navegador baixar 100 % do arquivo, divida em “chunks” e carregue só o bitrate necessário:
+
+HLS com FFmpeg
+
+bash
+Copiar
+Editar
+ffmpeg -i input.mp4 \
+  -vf "scale=1280:-2" -c:v libx264 -crf 28 -g 48 -keyint_min 48 \
+  -sc_threshold 0 -profile:v main -b:v 800k -maxrate 856k -bufsize 1200k \
+  -hls_time 6 -hls_playlist_type vod \
+  -hls_segment_filename 'seg_%03d.ts' index.m3u8
+Vantagem:
+
+Carrega só o seg_000.ts inicial até ter buffer suficiente.
+
+Usa bitrate adaptativo conforme conexão do usuário.
+
+4. CDN & Otimização no Build
+Servir via CDN de Vídeo
+
+Cloudflare Stream, Mux ou AWS MediaConvert fazem a transcodificação e segmentação HLS/DASH automaticamente, entregando pelo edge mais próximo do usuário.
+
+Pipeline de Build
+
+Inclua um step no seu CI (GitHub Actions, GitLab CI) que roda FFmpeg nos arquivos .mp4 antes de subir ao bucket/S3.
+
+Armazene no formato otimizado (.webm + .mp4 H.264 + HLS manifest).
+
+5. Lazy-Loading & Fallback
+Preload: use preload="metadata" para baixar só cabeçalho inicial.
+
+Poster estático: exiba uma imagem leve (<video poster="poster.jpg">) até o JS carregar e iniciar o HLS/webm.
+
+IntersectionObserver: só comece a carregar o vídeo quando a section de hero ficar, digamos, 50 % visível.
+
+6. Remoção de dados extras
+Strip metadata:
+
+bash
+Copiar
+Editar
+ffmpeg -i input.mp4 -map_metadata -1 -c:v copy -c:a copy output.mp4
+Remover áudio (se não for necessário): -an.
+
+Exemplo de setup recomendado
+CI/Build gera três assets por vídeo:
+
+hero-720p-vp9.webm (CRF 30)
+
+hero-720p-h264.mp4 (CRF 28)
+
+hero-hls/index.m3u8 + seg_000.ts…
+
+Front-end usa <video> com múltiplos <source> e preload="metadata".
+
+CDN faz cache de todos os arquivos, servido em HTTP/2.

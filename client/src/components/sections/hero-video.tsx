@@ -2,6 +2,7 @@ import { useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/use-language';
 import { ChevronDown } from 'lucide-react';
+import heroVideo from '@assets/itaicy-video-bg.mp4';
 
 export function HeroVideo() {
   const { t } = useLanguage();
@@ -22,14 +23,22 @@ export function HeroVideo() {
   };
 
   return (
-    <section className="relative h-[75vh] sm:h-screen flex items-center justify-center overflow-hidden">
-      {/* Aerial Drone Background - Pantanal River */}
-      <div 
-        className="absolute inset-0 z-0 bg-cover bg-center"
-        style={{
-          backgroundImage: `linear-gradient(180deg, rgba(6, 71, 55, 0.53) 0%, rgba(6, 71, 55, 0) 45%), url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop')`
-        }}
-      />
+    <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
+      {/* Background Video */}
+      <video
+        ref={videoRef}
+        className="absolute inset-0 w-full h-full object-cover z-0"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+      >
+        <source src={heroVideo} type="video/mp4" />
+      </video>
+      
+      {/* Overlay Gradient */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-pantanal-green-900/50 via-transparent to-pantanal-green-900/30" />
       
       {/* Hero Content */}
       <div className="relative z-20 text-center text-white max-w-4xl mx-auto px-4">
