@@ -91,7 +91,7 @@ export function VirtualTourGallery() {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   // Fetch virtual tours from CMS
-  const { data: tours = [], isLoading } = useQuery<CmsVirtualTour[]>({
+  const { data: tours = [], isLoading, error } = useQuery<CmsVirtualTour[]>({
     queryKey: ['/api/cms/virtual-tours', selectedCategory],
     queryFn: async () => {
       const url = selectedCategory === 'all' 
@@ -100,7 +100,8 @@ export function VirtualTourGallery() {
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch tours');
       return response.json();
-    }
+    },
+    retry: 1
   });
 
   const filteredTours = tours;

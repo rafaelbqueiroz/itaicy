@@ -15,6 +15,7 @@ import SobreNos from "@/pages/sobre-nos";
 import Galeria from "@/pages/galeria";
 import Blog from "@/pages/blog";
 import Contato from "@/pages/contato";
+import Admin from "@/pages/admin";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -32,6 +33,7 @@ function Router() {
           <Route path="/galeria" component={Galeria} />
           <Route path="/blog" component={Blog} />
           <Route path="/contato" component={Contato} />
+          <Route path="/admin" component={Admin} />
           <Route component={NotFound} />
         </Switch>
       </main>
