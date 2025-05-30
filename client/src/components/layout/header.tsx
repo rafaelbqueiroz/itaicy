@@ -52,7 +52,7 @@ export function Header() {
       : 'bg-transparent backdrop-blur-[90%]'
   }`;
 
-  const linkClasses = `text-sm font-semibold tracking-[0.05em] uppercase transition-colors duration-200 px-6 ${
+  const linkClasses = `text-sm font-medium tracking-[0.05em] uppercase transition-colors duration-200 px-6 ${
     isSticky 
       ? 'text-[#064737] hover:text-[#064737] hover:underline' 
       : 'text-[#FAF9F6] hover:text-[#D9CEB3] hover:underline'
@@ -101,7 +101,7 @@ export function Header() {
                     <div className="px-8 py-6">
                       <div className="grid grid-cols-3 gap-8">
                         <div>
-                          <h3 className="text-base font-semibold text-[#064737] mb-4 uppercase tracking-wide" style={{ fontFamily: 'Lato, sans-serif' }}>
+                          <h3 className="text-base font-medium text-[#064737] mb-4 uppercase tracking-wide" style={{ fontFamily: 'Lato, sans-serif' }}>
                             {item.name}
                           </h3>
                           <ul className="space-y-2">
