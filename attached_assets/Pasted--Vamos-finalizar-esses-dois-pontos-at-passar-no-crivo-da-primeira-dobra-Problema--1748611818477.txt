@@ -1,0 +1,60 @@
+### Vamos finalizar esses dois pontos até “passar no crivo da primeira dobra”
+
+| Problema                                      | Por que incomoda                                                                                                                                                  | Correção “pixel-perfect”                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Ícones coloridos nos cards 50/50**       | São a única peça “ilustrativa” no site – criam micro-ruído que desvia do visual editorial (foto + texto).                                                         | **Remover** os ícones e manter apenas:<br>`<span class="block w-6 h-px bg-sunset-amber-600 mt-1 mb-4" />`<br>Uma barra fina sunset-amber funciona como “bullet” premium e ecoa a cor dos CTAs.                                                                                                                                                                                                                                                                                                                               |
+| **2. Counter-Ribbon ainda parece “estranho”** | a) Algarismo & label não estão visualmente ligados.<br>b) Quatro colunas ocupam 100 vw sem respiro.<br>c) Fundo sand-beige sem gradiente deixa a faixa “chapada”. | **a) Tipografia:**<br>`html<br><span class="font-display italic text-[clamp(2.5rem,5vw,4rem)] leading-none">650+</span><br><span class="mt-1 text-sm font-semibold uppercase tracking-wide text-pantanal-green-900">Espécies</span><br><span class="text-[0.875rem] text-river-slate-800">Biodiversidade</span>`<br>**b) Grid:** `max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-y-10 px-6` (entra respiro lateral).<br>**c) Fundo:** adicionar leve **radial-gradient** (rgba 0,0,0,0.04 → 0) para dar profundidade. |
+
+---
+
+## Snippet Tailwind revisto
+
+```tsx
+<section className="relative bg-sand-beige-400">
+  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.05),transparent_70%)]" />
+  <div className="relative max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-y-10 py-16 px-6 text-center">
+    {[
+      {n:'650+', lbl:'Espécies', sub:'Biodiversidade'},
+      {n:'325+', lbl:'Peixes', sub:'Dourados etc'},
+      {n:'166 / 5 dias', lbl:'Birds Checklist', sub:'Maratona Jan 24'},
+      {n:'1897', lbl:'Desde', sub:'Patrimônio'}
+    ].map(({n,lbl,sub})=>(
+      <div key={lbl}>
+        <p className="font-display italic text-[clamp(2.5rem,5vw,4rem)] text-sunset-amber-600">{n}</p>
+        <p className="mt-1 text-sm font-semibold uppercase tracking-wide text-pantanal-green-900">{lbl}</p>
+        <p className="text-[0.875rem] text-river-slate-800">{sub}</p>
+      </div>
+    ))}
+  </div>
+</section>
+```
+
+---
+
+## Cards 50/50 sem ícone
+
+```tsx
+<article className="grid gap-8 md:grid-cols-2 items-center mb-24">
+  <img src="/img/fish.jpg" .../>
+  <div>
+    <span className="block w-6 h-px bg-sunset-amber-600 mt-1 mb-4" />
+    <h2 className="font-display text-2xl md:text-3xl text-pantanal-green-900 mb-3">
+      Pesca catch-and-release 100 % cota-zero
+    </h2>
+    <p className="text-river-slate-800 mb-6 max-w-prose">
+      Barcos ágeis em águas preservadas; guia local premiado garante emoção sem impacto. <strong>Viva a aventura, preserve o Pantanal.</strong>
+    </p>
+    <Button variant="secondary">Saiba mais</Button>
+  </div>
+</article>
+```
+
+---
+
+### Resultado esperado
+
+* Cards visualmente limpos, sem “clip-art”, mantendo o acento sunset-amber.
+* Counter-ribbon agora herda a sofisticação da hero: tipografia Playfair + fundo com leve profundidade e margens laterais.
+* Site inteiro segue a mesma linguagem declarada no Design-System v1 (tokens de cor, tipos e espaçamentos).
+
+> **Próximo passo** – após aplicar, faça um rápido *scroll audit* em 1440 px e 375 px: se elementos de texto encostarem nas bordas, aumente `px-6 → px-8` na ribbon ou `gap-y-12` entre cards para conservar a “respiração” premium.

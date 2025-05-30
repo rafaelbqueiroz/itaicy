@@ -7,7 +7,7 @@ export function FeatureBlocks() {
   const features = [
     {
       id: 'pesca',
-      title: '🎣 Pesca catch-and-release 100% cota-zero',
+      title: 'Pesca catch-and-release 100% cota-zero',
       description: 'Barcos ágeis em águas preservadas; guia local premiado garante emoção sem impacto. Viva a aventura, preserve o Pantanal.',
       image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=800&h=600&auto=format&fit=crop',
       imagePosition: 'left',
@@ -15,7 +15,7 @@ export function FeatureBlocks() {
     },
     {
       id: 'safari',
-      title: '🦜 Safáris, trilhas & birdwatching',
+      title: 'Safáris, trilhas & birdwatching',
       description: 'Mais de 650 espécies no Pantanal — e 166 avistadas em apenas 5 dias na última expedição Itaicy. Sinta o frio na barriga ao avistar tuiuiús e onças.',
       image: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=800&h=600&auto=format&fit=crop',
       imagePosition: 'right',
@@ -23,7 +23,7 @@ export function FeatureBlocks() {
     },
     {
       id: 'gastronomia',
-      title: '🍽️ Gastronomia de origem',
+      title: 'Gastronomia de origem',
       description: 'Buffet pantaneiro com ingredientes colhidos na hora e petiscos ao entardecer. Delicie-se com sabores autênticos e afetivos da região.',
       image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=800&h=600&auto=format&fit=crop',
       imagePosition: 'left',
@@ -31,7 +31,7 @@ export function FeatureBlocks() {
     },
     {
       id: 'historia',
-      title: '🏛️ História viva – Usina Itaicy (1897)',
+      title: 'História viva – Usina Itaicy (1897)',
       description: 'Passeie pelas relíquias centenárias da antiga usina às margens do Rio Cuiabá. Descubra como evoluímos de geradora de energia a eco-lodge de referência.',
       image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?q=80&w=800&h=600&auto=format&fit=crop',
       imagePosition: 'right',
@@ -59,18 +59,15 @@ export function FeatureBlocks() {
           </figure>
 
           {/* Content */}
-          <div className="w-full flex flex-col gap-4" style={{ direction: 'ltr' }}>
-            <h3 className="font-playfair font-bold text-[2rem] leading-[1.15] tracking-tight text-pantanal-green-900">
+          <div className="w-full flex flex-col" style={{ direction: 'ltr' }}>
+            <span className="block w-6 h-px bg-sunset-amber-600 mt-1 mb-4"></span>
+            <h2 className="font-playfair text-2xl md:text-3xl text-pantanal-green-900 mb-3">
               {feature.title}
-            </h3>
-            <p className="font-lato text-[1.125rem] leading-[1.5] text-river-slate-800">
+            </h2>
+            <p className="text-river-slate-800 mb-6 max-w-prose">
               {feature.description.split('. ').map((sentence, sentenceIndex, array) => (
                 <span key={sentenceIndex}>
-                  {sentence.includes('166 espécies') ? (
-                    <>
-                      Mais de <strong className="text-pantanal-green-900">166 espécies</strong> já registradas em roteiros ao amanhecer e pôr-do-sol
-                    </>
-                  ) : sentence.includes('Viva a aventura') ? (
+                  {sentence.includes('Viva a aventura') ? (
                     <>
                       {sentence.split('Viva a aventura')[0]}
                       <strong className="text-pantanal-green-900">Viva a aventura, preserve o Pantanal</strong>
@@ -82,7 +79,7 @@ export function FeatureBlocks() {
                 </span>
               ))}
             </p>
-            <Link href={feature.link} className="inline-block">
+            <Link href={feature.link}>
               <Button 
                 variant="outline"
                 className="inline-flex items-center border border-pantanal-green-900 text-pantanal-green-900 bg-transparent hover:bg-sand-beige-400 font-lato font-semibold uppercase text-[0.875rem] tracking-wider px-6 py-3 rounded-lg transition-all duration-200"
