@@ -9,12 +9,18 @@ import { useToast } from '@/hooks/use-toast';
 import { Pencil, Eye, ExternalLink } from 'lucide-react';
 import { FormGenerator } from '@/cms/components/FormGenerator';
 import { validateBlockPayload, type BlockType } from '@/cms/schemas';
+import { CMSLayout, SidebarTree } from '@/cms/components/CMSLayout';
+import { DraggableBlockList } from '@/cms/components/DraggableBlockList';
+import { LivePreview, usePreviewMode } from '@/cms/components/LivePreview';
+import { MediaLibrary } from '@/cms/components/MediaLibrary';
 
 export default function CMSPage() {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
   const [editingBlock, setEditingBlock] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'editor' | 'preview' | 'media'>('editor');
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isPreviewMode, previewToken, enablePreview, disablePreview } = usePreviewMode();
 
   // Buscar todas as páginas
   const { data: pages = [], isLoading: pagesLoading } = useQuery({
@@ -63,6 +69,28 @@ export default function CMSPage() {
       queryClient.invalidateQueries({ queryKey: ['cms-page-blocks'] });
       toast({ title: 'Página publicada com sucesso!' });
     },
+  });
+
+  // Mutação para reordenar blocos
+  const reorderBlocksMutation = useMutation({
+    mutationFn: async (blocks: Block[]) => {
+      const updates = blocks.map(block => 
+        CMSService.updateBlockPosition(block.id, block.position)
+      );
+      await Promise.all(updates);
+      return blocks;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cms-page-blocks'] });
+      toast({ title: 'Ordem dos blocos atualizada!' });
+    },
+    onError: (error) => {
+      toast({
+        title: 'Erro ao reordenar blocos',
+        description: error.message,
+        variant: 'destructive'
+      });
+    }
   });
 
   const handleSaveBlock = (blockId: string, blockType: string, payload: Record<string, any>) => {
