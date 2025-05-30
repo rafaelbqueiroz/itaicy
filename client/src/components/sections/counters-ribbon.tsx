@@ -21,74 +21,64 @@ export function CountersRibbon() {
 
   const counters = [
     {
-      count: speciesCount.count,
+      display: `${speciesCount.count}+`,
       ref: speciesCount.ref,
       label: t('highlights.speciesLabel'),
       description: t('highlights.speciesDesc'),
-      suffix: '+',
     },
     {
-      count: fishCount.count,
+      display: `${fishCount.count}+`,
       ref: fishCount.ref,
       label: t('highlights.fishLabel'),
       description: t('highlights.fishDesc'),
-      suffix: '+',
     },
     {
-      count: birdsCount.count,
+      display: `${birdsCount.count} aves / 5 dias`,
       ref: birdsCount.ref,
       label: t('highlights.birdsLabel'),
       description: t('highlights.birdsDesc'),
-      tooltip: t('highlights.birdsTooltip'),
-      suffix: ' / 5 dias',
+      tooltip: '166 espécies registradas durante expedição guiada (5 dias, jan 2024). Baixe a lista oficial.',
     },
     {
-      count: historyCount.count,
+      display: `${historyCount.count}`,
       ref: historyCount.ref,
       label: t('highlights.historyLabel'),
       description: t('highlights.historyDesc'),
-      suffix: '',
     },
   ];
 
   return (
     <section className="relative bg-sand-beige-400">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.05),transparent_70%)]" />
-      <div className="relative max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-y-10 py-16 px-6 text-center">
+      <div className="absolute inset-0 bg-[radial-gradient(200%_200%_at_80%_40%,rgba(0,0,0,.03),transparent_70%)]" />
+      <div className="relative max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-8 py-14 px-6 md:px-8">
         {counters.map((counter, index) => (
-          <div key={index} ref={counter.ref}>
-            <div className="flex items-center justify-center gap-1 mb-1">
-              <p 
-                className="font-playfair italic text-sunset-amber-600"
-                style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)' }}
-                data-count={counter.count}
-              >
-                {counter.count}{counter.suffix}
-              </p>
+          <div key={index} ref={counter.ref} className="text-center">
+            <p 
+              className="font-playfair italic text-sunset-amber-600 leading-none"
+              style={{ fontSize: 'clamp(2.25rem, 4vw, 3.5rem)' }}
+            >
+              {counter.display}
               {counter.tooltip && (
-                <div className="relative">
-                  <button
-                    onMouseEnter={() => setShowTooltip(true)}
-                    onMouseLeave={() => setShowTooltip(false)}
-                    onClick={() => setShowTooltip(!showTooltip)}
-                    className="text-pantanal-green-900 hover:text-pantanal-green-700 transition-colors ml-1"
-                    aria-label="Como medimos"
-                  >
-                    <Info className="w-4 h-4" strokeWidth={1.5} />
-                  </button>
-                  {showTooltip && (
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 p-3 bg-cloud-white-0 text-pantanal-green-900 text-sm rounded-lg shadow-lg border border-sand-beige-400/20 z-50">
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-cloud-white-0"></div>
-                      {counter.tooltip}
-                    </div>
-                  )}
-                </div>
+                <span 
+                  className="inline-block align-baseline ml-1 text-[0.75rem] text-pantanal-green-900 cursor-help"
+                  title={counter.tooltip}
+                  onMouseEnter={() => setShowTooltip(true)}
+                  onMouseLeave={() => setShowTooltip(false)}
+                  onClick={() => setShowTooltip(!showTooltip)}
+                >
+                  ⓘ
+                </span>
               )}
-            </div>
-            <p className="mt-1 text-sm font-semibold uppercase tracking-wide text-pantanal-green-900">
+            </p>
+            {counter.tooltip && showTooltip && (
+              <div className="absolute mt-2 w-60 p-3 bg-white text-pantanal-green-900 text-sm rounded-lg shadow-lg border border-sand-beige-400/20 z-50 left-1/2 transform -translate-x-1/2">
+                {counter.tooltip}
+              </div>
+            )}
+            <p className="mt-1 text-xs md:text-sm font-semibold uppercase tracking-wide text-pantanal-green-900">
               {counter.label}
             </p>
-            <p className="text-[0.875rem] text-river-slate-800">
+            <p className="text-[0.75rem] md:text-[0.875rem] text-river-slate-800">
               {counter.description}
             </p>
           </div>

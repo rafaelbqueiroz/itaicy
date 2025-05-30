@@ -1,0 +1,56 @@
+### Ajustes finais para o **Counter-Ribbon**
+
+| Item                                  | Problema atual                            | Ajuste proposto                                                                                                                                          |
+| ------------------------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Escala tipográfica**                | Algarismos chegam a ≈9 rem em desktop     | Reduzir para `clamp(2.25rem, 4vw, 3.5rem)`; mantém hierarquia sem “gritar”.                                                                              |
+| **Quebra de linha “166 / 5<br>dias”** | Lê-se truncado e ocupa altura dupla       | Usar uma só linha “166 aves / 5 dias” e empurrar explicação para subtítulo.                                                                              |
+| **Tooltip**                           | Mensagem genérica, não conecta valor      | Micro-cópia: <br>**“166 espécies avistadas na última ‘Maratona Birdwatching’ (5 dias, jan 2024 – lista oficial link).”** Inclui link para PDF/Checklist. |
+| **Layout**                            | Info-icon distante do número              | Posicionar ícone inline (`align-baseline`) após a barra “/”, com `ml-1 text-[0.75rem]`.                                                                  |
+| **Espaçamento coluna**                | Vão muito largo em 4k, apertado em mobile | `max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-8 px-6 md:px-8`.                                                                        |
+| **Legibilidade fundo**                | Radial muito presente em ±50 % alpha      | Diminuir para `rgba(0,0,0,.03)` e raio maior (`200% 200% at 80% 40%`).                                                                                   |
+
+---
+
+#### Tailwind / React snippet
+
+```tsx
+const stats = [
+  { n: '650+', unit: 'Espécies', sub: 'Biodiversidade' },
+  { n: '325+', unit: 'Peixes', sub: 'Dourados etc' },
+  { n: '166 aves / 5 dias', unit: 'Birds checklist', sub: 'Maratona Bird ’24', tip:
+    '166 espécies registradas durante expedição guiada (5 dias, jan 2024). Baixe a lista oficial.' },
+  { n: '1897', unit: 'Desde', sub: 'Patrimônio' },
+];
+
+<section className="relative bg-sand-beige-400">
+  <div className="absolute inset-0 bg-[radial-gradient(200%_200%_at_80%_40%,rgba(0,0,0,.03),transparent_70%)]" />
+  <div className="relative max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-8 py-14 px-6 md:px-8">
+    {stats.map(({ n, unit, sub, tip }) => (
+      <div key={unit} className="text-center">
+        <p className="font-display italic text-[clamp(2.25rem,4vw,3.5rem)] text-sunset-amber-600 leading-none">
+          {n}
+          {tip && (
+            <Tooltip content={tip}>
+              <span className="inline-block align-baseline ml-1 text-[0.75rem] text-pantanal-green-900">ⓘ</span>
+            </Tooltip>
+          )}
+        </p>
+        <p className="mt-1 text-xs md:text-sm font-semibold uppercase tracking-wide text-pantanal-green-900">
+          {unit}
+        </p>
+        <p className="text-[0.75rem] md:text-[0.875rem] text-river-slate-800">{sub}</p>
+      </div>
+    ))}
+  </div>
+</section>
+```
+
+> **Tooltip component** – pode usar Headless UI `<Popover>` simplificado 240 px / bg-white / shadow-lvl-2 / caret CSS.
+
+---
+
+### Resultado
+
+* Contador cabe em uma linha em desktop ≥1280 px; em mobile continua legível.
+* Mensagem de valor (“166 aves / 5 dias”) se entende sem passar o mouse; tooltip adiciona prova social + link.
+* Coerência de cores e tamanhos com a “primeira dobra” preservada.
