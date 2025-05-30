@@ -43,7 +43,8 @@ export function HeroVideo() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{ animationDelay: '0.4s' }}>
           <Button 
             size="lg"
-            className="bg-[#C8860D] hover:bg-[#C8860D]/90 text-white px-8 py-4 text-lg font-semibold transition-all duration-300 hover:translate-y-[-2px] shadow-lg"
+            className="bg-[#C97A2C] hover:bg-[#C97A2C]/92 text-[#FAF9F6] px-8 py-4 text-lg font-semibold transition-all duration-300 hover:translate-y-[-2px] shadow-lg uppercase tracking-[0.05em]"
+            style={{ fontFamily: 'Lato, sans-serif' }}
             onClick={scrollToBooking}
           >
             Reservar Agora
@@ -51,7 +52,8 @@ export function HeroVideo() {
           <Button 
             variant="outline"
             size="lg"
-            className="border-2 border-white text-white hover:bg-white hover:text-[#064737] px-8 py-4 text-lg font-semibold transition-all duration-300"
+            className="border-2 border-[#FAF9F6] text-[#FAF9F6] hover:bg-[#FAF9F6] hover:text-[#064737] px-8 py-4 text-lg font-semibold transition-all duration-300 uppercase tracking-[0.05em]"
+            style={{ fontFamily: 'Lato, sans-serif' }}
             onClick={() => document.getElementById('experiencias')?.scrollIntoView({ behavior: 'smooth' })}
           >
             Conheça as Experiências

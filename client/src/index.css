@@ -26,11 +26,19 @@
   --ring: 153 50% 21%; /* #1a4d3a */
   --radius: 0.5rem;
 
-  /* Custom Itaicy colors */
-  --itaicy-primary: 153 50% 21%; /* #1a4d3a */
-  --itaicy-secondary: 38 32% 56%; /* #b8956b */
-  --itaicy-cream: 42 15% 96%; /* #f5f1e8 */
-  --itaicy-charcoal: 210 11% 18%; /* #2d2d2d */
+  /* Design System v1.1 Colors */
+  --clr-green-900: #064737;
+  --clr-beige-400: #D9CEB3;
+  --clr-white: #FAF9F6;
+  --clr-amber-600: #C97A2C;
+  --clr-slate-800: #64748B;
+
+  /* Typography */
+  --font-display: 'Playfair Display', serif;
+  --font-sans: 'Lato', sans-serif;
+
+  /* Layout */
+  --header-h: 80px;
 }
 
 .dark {
@@ -109,6 +117,12 @@
 .card-hover:hover {
   transform: translateY(-4px);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Accessibility: Focus states */
+*:focus-visible {
+  outline: 2px solid #064737;
+  outline-offset: 2px;
 }
 
 @layer components {
