@@ -1,0 +1,78 @@
+as suítes sao todas iguais e genericas. o ideal é nao fazer 'marketing delas' o que sugere?
+
+O ChatGPT disse:
+
+Pensou por 7 segundos
+Quando só existe uma categoria de suíte, “inventar” três modelos diferentes confunde e desperdiça credibilidade.
+A melhor estratégia é transformar o foco do quarto para a experiência – e tornar a reserva o mais direta possível.
+
+📐 Nova arquitetura da página Acomodações
+Dobra	Bloco	Conteúdo	Objetivo
+Hero	Foto 100 vh + header transparente	H1: “Suíte Pantaneira à Beira-Rio”
+Sub: “Onze unidades privativas para dormir embalado pelo canto da mata.”
+CTA primário: Ver Disponibilidade (ancora p/ módulo de reserva)	Criar impacto sensorial e deixar claro que só há uma tipologia.
+Por que ficar aqui?	Strip 4 ícones	🌿 Materiais Locais • 🌊 Varanda sobre o Rio • ❄️ Climatização 24 h • ☕ Café Pantaneiro Incluso	Dar o “snapshot” de benefício antes de detalhes técnicos.
+A Suíte	Seção em 2 col.	• Galeria slider (6 fotos + vídeo curto)
+• Tabela lateral “Fatos rápidos” — 28 m² • Até 2 hóspedes • Cama king • Rede na varanda • Wi-Fi satelital	Mostrar tudo que a pessoa precisa para decidir se cabe no plano dela.
+Tarifas & Datas	Widget de reserva (check-in/out, nº hóspedes) + tabela sazonal	Alta (set–nov) R$ 900 • Baixa (dez–ago) R$ 800	Transparência e conversão sem fricção.
+O que está incluso	Card amplo	Transfer aeroporto, café pantaneiro, Wi-Fi, estacionamento, lavanderia de pesca.	Reduz “perguntas de suporte”.
+Depoimento	Quote + foto hóspede	“A varanda sobre o rio vale cada km de viagem.” – Carla M., SP	Prova social específica do quarto, não da pesca.
+Banner Escassez	Fundo verde, texto branco	“Só 11 suítes – últimas datas para a temporada de seca” + CTA “Garanta a sua”	Gatilho de urgência sem artificialidade.
+
+Observação: qualquer upsell (ex.: day-use pesca, passeio de onça) é apresentado após a escolha da suíte, na página de checkout ou e-mail de confirmação.
+
+✍️ Copy-guide (sem “marketing das suítes”)
+Elemento	Exemplo de copy	Tom
+Título suíte	“Suíte Pantaneira”	Claro, descritivo, sem adjetivos vazios.
+Descrição curta	“28 m² de aconchego, varanda privativa com rede e vista para o Rio Cuiabá.”	Pinta a experiência em 1 frase.
+Benefícios	“Ar-condicionado silencioso, cama king com lençóis 300 fios, ducha pressurizada.”	Especificidade técnica objetiva.
+Inclui	“Café da manhã no deck, água filtrada ilimitada, transfer 4×4 aeroporto.”	Mostra valor agregado, não “luxo”.
+
+🛠️ Impacto no CMS / Supabase
+Tabela suites vira singleton
+
+sql
+Copiar
+Editar
+id uuid PRIMARY KEY
+title text
+description text
+area_m2 int
+capacity int
+rate_high numeric
+rate_low numeric
+amenities jsonb
+gallery (Supabase Storage folder)
+Módulo “Tarifas” lê json season_prices em vez de múltiplas linhas.
+
+Editor WYSIWYG mostra apenas um card — evita criar “Compacta/Ampla/Master”.
+
+Banner de escassez: campo boolean highlight_high_season + texto personalizável.
+
+Widget de reserva: consulta ocupação (integração futura PMS) mas exibe botão direto enquanto não houver API.
+
+🎨 UX Racional
+Princípio da parcimônia (Nielsen #8): menos componentes, mais objetivo.
+
+Consistência: mantemos hero + strip de benefícios, igual Home.
+
+Controle do usuário: comparação de preços e disponibilidade em um único passo.
+
+Credibilidade: depoimento nichado reforça a decisão.
+
+➡️ Próximas tasks
+ID	Descrição	Tipo	Pts
+SUITE-CMS-01	Migrar tabela suites para singleton + seed inicial	BE	2
+SUITE-FE-02	Refatorar page /acomodacoes para novo layout (Hero, strip, seção única, widget)	FE	5
+BOOK-03	Simplified booking widget (check-in/out, pax) com fallback mailto	FE	3
+BANNER-04	Componente ScarcityBanner parametrizado via CMS	FE	2
+COPY-05	Atualizar textos no CMS conforme guia acima	Content	1
+
+Total ≈ 13 pts → < 1 sprint.
+
+Resultado
+Transparência: hóspede entende que há uma categoria e toma decisão rápida.
+
+Conversão limpa: CTA único + escassez real (11 suítes).
+
+Credibilidade: copy sincera, sem artifícios de “marketing de produto” inexistente.

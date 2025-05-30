@@ -1,249 +1,429 @@
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { MobileBookingBar } from '@/components/sections/mobile-booking-bar';
-import { useLanguage } from '@/hooks/use-language';
-import { useQuery } from '@tanstack/react-query';
-import { Leaf, Waves, Snowflake, Coffee, Wifi, Shield, TreePine, Bath, Wine, Users, Star } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { 
+  Wifi, Car, Coffee, AirVent, Bed, 
+  Users, Ruler, MapPin, Calendar,
+  ChevronLeft, ChevronRight, Star,
+  Thermometer, Droplets, Leaf, Shield
+} from 'lucide-react';
 
 export default function Acomodacoes() {
-  const { t } = useLanguage();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [guests, setGuests] = useState('2');
+  const [isPreview, setIsPreview] = useState(false);
 
-  // Fetch dynamic suites data from CMS API
-  const { data: suites = [], isLoading } = useQuery({
-    queryKey: ['/api/cms/suites'],
+  // Detecta modo preview
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    setIsPreview(urlParams.has('preview'));
+  }, []);
+
+  // Busca dados dinâmicos da suíte
+  const { data: pageContent } = useQuery({
+    queryKey: ['/api/cms/content/acomodacoes'],
+    refetchInterval: isPreview ? 2000 : false,
   });
 
-  const benefits = [
-    {
-      icon: Leaf,
-      title: 'Design Sustentável',
-      description: 'Materiais locais & energia solar'
-    },
-    {
-      icon: Waves,
-      title: 'Varanda com Vista',
-      description: 'Rede privativa sobre o rio'
-    },
-    {
-      icon: Snowflake,
-      title: 'Climatização 24h',
-      description: 'Fresco no verão, aconchegante no inverno'
-    },
-    {
-      icon: Coffee,
-      title: 'Café Pantaneiro',
-      description: 'Buffet regional incluído'
-    }
+  const suiteImages = [
+    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM0YzdkNTIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMzNDU5M2UiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkludGVyaW9yIGRhIFN1w610ZTwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU1JSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE2IiBmaWxsPSIjZGRkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5WaXN0YSBwYW50YW5laXJhPC90ZXh0Pjwvc3ZnPg==',
+    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImIiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM2ZDhiZGYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0YzYzYjMiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2IpIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlZhcmFuZGEgUHJpdmF0aXZhPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeSI9IjU1JSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE2IiBmaWxsPSIjZGRkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5WaXN0YSBwYXJhIG8gcmlvPC90ZXh0Pjwvc3ZnPg==',
+    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImMiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNiMzc2NGYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM4NjU3M2EiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2MpIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkJhbmhlaXJvIFByaXZhdGl2bzwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU1JSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE2IiBmaWxsPSIjZGRkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5EdWNoYSBwcmVzc3VyaXphZGE8L3RleHQ+PC9zdmc+',
+    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZjk5NDEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZjczMDAiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2QpIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlZpc3RhIE5vdHVybmE8L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI1NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0iI2RkZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UMO0ci1kby1zb2wgcGFudGFuZWlybzwvdGV4dD48L3N2Zz4=',
+    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImUiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM2N2QzOTEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0ZGE2NjQiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2UpIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkVudG9ybm8gTmF0dXJhbDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU1JSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE2IiBmaWxsPSIjZGRkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5JbnRlZ3Jhw6fDo28gY29tIGEgbWF0YTwvdGV4dD48L3N2Zz4=',
+    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImYiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNiMzMwN2EiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM4MzIzNWIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2YpIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkVudGFyZGVjZXI8L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI1NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0iI2RkZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VHJhbnF1aWxpZGFkZSBwYW50YW5laXJhPC90ZXh0Pjwvc3ZnPg=='
   ];
 
-  // Icon mapping for amenities
-  const getAmenityIcon = (amenity: string) => {
-    if (amenity.toLowerCase().includes('varanda') || amenity.toLowerCase().includes('rede')) return TreePine;
-    if (amenity.toLowerCase().includes('ar-condicionado') || amenity.toLowerCase().includes('climatização')) return Snowflake;
-    if (amenity.toLowerCase().includes('wi-fi') || amenity.toLowerCase().includes('wifi')) return Wifi;
-    if (amenity.toLowerCase().includes('cofre')) return Shield;
-    if (amenity.toLowerCase().includes('minibar') || amenity.toLowerCase().includes('frigobar')) return Wine;
-    if (amenity.toLowerCase().includes('banheira')) return Bath;
-    return Shield; // default icon
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % suiteImages.length);
   };
 
-  const inclusions = [
-    'Transfer aeroporto ⇄ lodge',
-    'Café da manhã pantaneiro',
-    'Wi-Fi ilimitado',
-    'Estacionamento gratuito',
-    'Taxas e ISS inclusos'
-  ];
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + suiteImages.length) % suiteImages.length);
+  };
 
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen">
+      {/* Banner de preview */}
+      {isPreview && (
+        <div className="bg-orange-500 text-white text-center py-2 text-sm">
+          🔍 Modo Preview - Versão de teste, não indexada pelos buscadores
+        </div>
+      )}
+
       {/* Hero Section */}
-      <section 
-        className="relative h-[60vh] min-h-[500px] bg-cover bg-center bg-no-repeat flex items-center justify-center"
-        style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080)' }}
-      >
-        <div className="absolute inset-0 bg-black/40"></div>
-        <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4 sm:px-6">
-          <h1 className="font-playfair text-4xl sm:text-5xl md:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
-            Suítes à Beira-Rio
+      <section className="relative h-screen flex items-center justify-center text-white overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${suiteImages[0]})`,
+          }}
+        >
+          <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        </div>
+        
+        <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+            Suíte Pantaneira à Beira-Rio
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 font-light leading-relaxed">
-            Conforto contemporâneo envolto pela mata do Pantanal
+          <p className="text-xl md:text-2xl mb-8 text-gray-200">
+            Onze unidades privativas para dormir embalado pelo canto da mata
           </p>
-          <Button className="font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-8 rounded-md transition-colors duration-150">
+          <Button 
+            size="lg" 
+            className="bg-orange-500 hover:bg-orange-600 text-white px-12 py-4 rounded-full text-lg"
+            onClick={() => document.getElementById('booking-section')?.scrollIntoView({ behavior: 'smooth' })}
+          >
             Ver Disponibilidade
           </Button>
         </div>
       </section>
 
-      {/* Benefits Strip */}
-      <section className="py-8 sm:py-12 bg-white border-b border-sand-beige-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
-            {benefits.map((benefit, index) => (
-              <div key={index} className="text-center">
-                <div className="w-12 h-12 mx-auto mb-3 bg-pantanal-green-100 rounded-lg flex items-center justify-center">
-                  <benefit.icon className="h-6 w-6 text-pantanal-green-600" strokeWidth={1.5} />
-                </div>
-                <h3 className="font-lato font-semibold text-xs sm:text-sm text-river-slate-800 mb-1 leading-tight">
-                  {benefit.title}
-                </h3>
-                <p className="text-xs text-river-slate-600 leading-relaxed">
-                  {benefit.description}
-                </p>
-              </div>
-            ))}
+      {/* Por que ficar aqui? - Strip de benefícios */}
+      <section className="bg-white py-16">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+            Por que ficar aqui?
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div className="flex flex-col items-center">
+              <Leaf className="h-12 w-12 text-green-600 mb-4" />
+              <h3 className="font-semibold text-gray-900 mb-2">Materiais Locais</h3>
+              <p className="text-sm text-gray-600">Arquitetura sustentável em harmonia com o ambiente</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <MapPin className="h-12 w-12 text-green-600 mb-4" />
+              <h3 className="font-semibold text-gray-900 mb-2">Varanda sobre o Rio</h3>
+              <p className="text-sm text-gray-600">Vista privilegiada do Rio Cuiabá com rede privativa</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <Thermometer className="h-12 w-12 text-green-600 mb-4" />
+              <h3 className="font-semibold text-gray-900 mb-2">Climatização 24h</h3>
+              <p className="text-sm text-gray-600">Ar-condicionado silencioso para noites tranquilas</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <Coffee className="h-12 w-12 text-green-600 mb-4" />
+              <h3 className="font-semibold text-gray-900 mb-2">Café Pantaneiro Incluso</h3>
+              <p className="text-sm text-gray-600">Café da manhã no deck com produtos regionais</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Suites Grid */}
-      <section className="py-12 sm:py-16 md:py-20 bg-sand-beige-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="font-playfair text-2xl sm:text-3xl md:text-4xl font-bold text-river-slate-800 mb-4">
-              Escolha sua Suíte
-            </h2>
-          </div>
-
-          {isLoading ? (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-              {[1, 2, 3].map((i) => (
-                <Card key={i} className="overflow-hidden shadow-lg border-0 bg-white animate-pulse">
-                  <div className="h-48 sm:h-56 bg-sand-beige-200"></div>
-                  <CardContent className="p-4 sm:p-6">
-                    <div className="h-6 bg-sand-beige-200 rounded mb-2"></div>
-                    <div className="h-4 bg-sand-beige-200 rounded mb-4 w-2/3"></div>
-                    <div className="space-y-2 mb-4">
-                      {[1, 2, 3, 4].map((j) => (
-                        <div key={j} className="h-4 bg-sand-beige-200 rounded"></div>
-                      ))}
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <div className="h-8 bg-sand-beige-200 rounded w-1/3"></div>
-                      <div className="h-10 bg-sand-beige-200 rounded w-1/3"></div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-              {suites.map((suite: any) => (
-                <Card key={suite.id} className="overflow-hidden shadow-lg border-0 bg-white">
-                  <div className="relative">
-                    <img 
-                      src={suite.images?.[0] || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600'}
-                      alt={`Interior da ${suite.name} com varanda e vista para o rio`}
-                      className="w-full h-48 sm:h-56 object-cover"
+      {/* A Suíte - Seção principal */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Galeria de imagens */}
+            <div className="relative">
+              <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+                <img 
+                  src={suiteImages[currentImageIndex]}
+                  alt={`Suíte Pantaneira - Imagem ${currentImageIndex + 1}`}
+                  className="w-full h-full object-cover"
+                />
+                
+                <button 
+                  onClick={prevImage}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-90 text-gray-800 p-3 rounded-full hover:bg-opacity-100 shadow-lg transition-all"
+                >
+                  <ChevronLeft className="h-6 w-6" />
+                </button>
+                
+                <button 
+                  onClick={nextImage}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-90 text-gray-800 p-3 rounded-full hover:bg-opacity-100 shadow-lg transition-all"
+                >
+                  <ChevronRight className="h-6 w-6" />
+                </button>
+                
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                  {suiteImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`w-3 h-3 rounded-full transition-all ${
+                        index === currentImageIndex ? 'bg-white scale-125' : 'bg-white bg-opacity-60'
+                      }`}
                     />
-                  </div>
-                  <CardContent className="p-4 sm:p-6">
-                    <h3 className="font-playfair text-lg sm:text-xl font-bold text-river-slate-800 mb-2">
-                      {suite.name}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-river-slate-600 mb-4">
-                      {suite.size} • Até {suite.capacity} hóspedes
-                    </p>
-                    <div className="border-t border-sand-beige-200 pt-4 mb-4">
-                      <div className="grid grid-cols-1 gap-2">
-                        {suite.amenities?.slice(0, 4).map((amenity: string, index: number) => {
-                          const IconComponent = getAmenityIcon(amenity);
-                          return (
-                            <div key={index} className="flex items-center text-xs sm:text-sm text-river-slate-600">
-                              <IconComponent className="h-3 w-3 sm:h-4 sm:w-4 mr-2 text-pantanal-green-600 flex-shrink-0" strokeWidth={1.5} />
-                              {amenity}
-                            </div>
-                          );
-                        })}
-                        {suite.amenities?.length > 4 && (
-                          <p className="text-xs text-river-slate-500 mt-1">
-                            +{suite.amenities.length - 4} comodidades
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                      <div>
-                        <span className="text-xl sm:text-2xl font-bold text-river-slate-800">
-                          R$ {Math.floor((suite.price || 0) / 100).toLocaleString()}
-                        </span>
-                        <span className="text-xs sm:text-sm text-river-slate-500 block">por noite</span>
-                      </div>
-                      <Button className="w-full sm:w-auto font-lato font-medium text-xs sm:text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-2 px-4 rounded-md transition-colors duration-150">
-                        Ver Datas
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* What's Included */}
-      <section className="py-12 sm:py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="max-w-3xl mx-auto">
-            <Card className="shadow-lg border-0 bg-sand-beige-50">
-              <CardContent className="p-6 sm:p-8">
-                <h2 className="font-playfair text-xl sm:text-2xl font-bold text-river-slate-800 mb-6 text-center">
-                  Tudo isso já vem com sua reserva
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  {inclusions.map((inclusion, index) => (
-                    <div key={index} className="flex items-center text-sm sm:text-base text-river-slate-700">
-                      <div className="w-2 h-2 bg-pantanal-green-600 rounded-full mr-3 flex-shrink-0"></div>
-                      {inclusion}
-                    </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
+
+            {/* Fatos rápidos */}
+            <div>
+              <h2 className="text-4xl font-bold text-gray-900 mb-8">A Suíte</h2>
+              
+              <div className="bg-white rounded-xl p-6 shadow-lg mb-8">
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">Fatos Rápidos</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                    <div className="flex items-center">
+                      <Ruler className="h-5 w-5 text-green-600 mr-3" />
+                      <span className="text-gray-700">Área</span>
+                    </div>
+                    <span className="font-semibold">28 m²</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                    <div className="flex items-center">
+                      <Users className="h-5 w-5 text-green-600 mr-3" />
+                      <span className="text-gray-700">Ocupação</span>
+                    </div>
+                    <span className="font-semibold">Até 2 hóspedes</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                    <div className="flex items-center">
+                      <Bed className="h-5 w-5 text-green-600 mr-3" />
+                      <span className="text-gray-700">Cama</span>
+                    </div>
+                    <span className="font-semibold">King size</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                    <div className="flex items-center">
+                      <MapPin className="h-5 w-5 text-green-600 mr-3" />
+                      <span className="text-gray-700">Varanda</span>
+                    </div>
+                    <span className="font-semibold">Rede privativa</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2">
+                    <div className="flex items-center">
+                      <Wifi className="h-5 w-5 text-green-600 mr-3" />
+                      <span className="text-gray-700">Internet</span>
+                    </div>
+                    <span className="font-semibold">Wi-Fi satelital</span>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-gray-600 leading-relaxed">
+                28 m² de aconchego, varanda privativa com rede e vista para o Rio Cuiabá. 
+                Ar-condicionado silencioso, cama king com lençóis 300 fios, ducha pressurizada. 
+                Cada detalhe pensado para conectar você com a natureza sem abrir mão do conforto.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonial */}
-      <section className="py-12 sm:py-16 bg-sand-beige-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="font-playfair text-xl sm:text-2xl font-bold text-river-slate-800 mb-6">
-            O Que Nossos Hóspedes Dizem
-          </h2>
-          <blockquote className="text-base sm:text-lg text-river-slate-700 mb-4 italic leading-relaxed">
-            "Dormir ouvindo as araras e acordar com a vista do rio foi uma experiência transformadora."
-          </blockquote>
-          <div className="flex items-center justify-center gap-2">
-            <div className="flex text-yellow-400">
+      {/* Tarifas & Datas */}
+      <section id="booking-section" className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Tarifas & Disponibilidade</h2>
+            <p className="text-xl text-gray-600">Transparência total em nossas tarifas sazonais</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Widget de reserva */}
+            <Card className="p-6">
+              <h3 className="text-2xl font-semibold text-gray-900 mb-6">Consultar Disponibilidade</h3>
+              
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="checkin">Check-in</Label>
+                    <Input 
+                      id="checkin"
+                      type="date" 
+                      value={checkIn}
+                      onChange={(e) => setCheckIn(e.target.value)}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="checkout">Check-out</Label>
+                    <Input 
+                      id="checkout"
+                      type="date" 
+                      value={checkOut}
+                      onChange={(e) => setCheckOut(e.target.value)}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="guests">Hóspedes</Label>
+                  <select 
+                    id="guests"
+                    value={guests}
+                    onChange={(e) => setGuests(e.target.value)}
+                    className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="1">1 hóspede</option>
+                    <option value="2">2 hóspedes</option>
+                  </select>
+                </div>
+                
+                <Button className="w-full bg-green-600 hover:bg-green-700 text-white py-3">
+                  <Calendar className="h-5 w-5 mr-2" />
+                  Verificar Disponibilidade
+                </Button>
+              </div>
+            </Card>
+
+            {/* Tabela de tarifas */}
+            <div>
+              <h3 className="text-2xl font-semibold text-gray-900 mb-6">Tarifas Sazonais</h3>
+              
+              <div className="space-y-4">
+                <Card className="p-4 border-l-4 border-l-orange-500">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Temporada Alta</h4>
+                      <p className="text-sm text-gray-600">Setembro - Novembro (Seca)</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-gray-900">R$ 900</p>
+                      <p className="text-sm text-gray-500">por noite</p>
+                    </div>
+                  </div>
+                </Card>
+                
+                <Card className="p-4 border-l-4 border-l-green-500">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Temporada Baixa</h4>
+                      <p className="text-sm text-gray-600">Dezembro - Agosto (Cheia)</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-gray-900">R$ 800</p>
+                      <p className="text-sm text-gray-500">por noite</p>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+              
+              <p className="text-sm text-gray-500 mt-4">
+                * Tarifas por suíte, impostos não incluídos. Mínimo 2 diárias.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* O que está incluso */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">O que está incluso</h2>
+            <p className="text-xl text-gray-600">Tudo para uma experiência completa no Pantanal</p>
+          </div>
+
+          <Card className="p-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="flex items-start space-x-4">
+                <Car className="h-8 w-8 text-green-600 mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Transfer Aeroporto</h3>
+                  <p className="text-gray-600 text-sm">Transporte 4x4 do aeroporto de Cuiabá até o lodge</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-4">
+                <Coffee className="h-8 w-8 text-green-600 mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Café Pantaneiro</h3>
+                  <p className="text-gray-600 text-sm">Café da manhã completo com produtos regionais</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-4">
+                <Wifi className="h-8 w-8 text-green-600 mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Wi-Fi Satelital</h3>
+                  <p className="text-gray-600 text-sm">Internet de alta velocidade em todo o lodge</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-4">
+                <Car className="h-8 w-8 text-green-600 mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Estacionamento</h3>
+                  <p className="text-gray-600 text-sm">Vaga coberta e segura para seu veículo</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-4">
+                <Droplets className="h-8 w-8 text-green-600 mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Lavanderia de Pesca</h3>
+                  <p className="text-gray-600 text-sm">Limpeza e secagem de equipamentos de pesca</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-4">
+                <Shield className="h-8 w-8 text-green-600 mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Segurança 24h</h3>
+                  <p className="text-gray-600 text-sm">Monitoramento e segurança em tempo integral</p>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* Depoimento */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <div className="bg-green-50 rounded-2xl p-12">
+            <div className="flex justify-center mb-6">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="h-4 w-4 fill-current" />
+                <Star key={i} className="h-6 w-6 text-yellow-400 fill-current" />
               ))}
             </div>
-            <span className="text-sm text-river-slate-600 ml-2">
-              Ana Carvalho, Rio de Janeiro
-            </span>
+            
+            <blockquote className="text-2xl md:text-3xl font-light text-gray-900 mb-8 italic">
+              "A varanda sobre o rio vale cada quilômetro de viagem. Acordar com o canto dos pássaros e adormecer com o som do rio foi inesquecível."
+            </blockquote>
+            
+            <div className="flex items-center justify-center space-x-4">
+              <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
+                <span className="text-gray-600 font-semibold">CM</span>
+              </div>
+              <div className="text-left">
+                <p className="font-semibold text-gray-900">Carla M.</p>
+                <p className="text-gray-600 text-sm">São Paulo, SP</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-12 sm:py-16 bg-pantanal-green-700 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="font-playfair text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
-            Últimas datas de alta temporada
+      {/* Banner de escassez */}
+      <section className="py-12 bg-green-600">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Apenas 11 suítes disponíveis
           </h2>
-          <p className="text-base sm:text-lg mb-6 opacity-90">
-            Garanta já sua suíte para setembro
+          <p className="text-xl text-green-100 mb-8">
+            Últimas datas para a temporada de seca - Reserve agora para garantir sua experiência pantaneira
           </p>
-          <Button className="font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-8 rounded-md transition-colors duration-150">
-            Ver Pacotes
+          <Button 
+            size="lg" 
+            className="bg-orange-500 hover:bg-orange-600 text-white px-12 py-4 rounded-full text-lg font-semibold"
+          >
+            Garanta a sua suíte
           </Button>
         </div>
       </section>
 
-      <MobileBookingBar />
+      {/* Indicador de sincronização para preview */}
+      {isPreview && (
+        <div className="fixed bottom-4 right-4 bg-blue-500 text-white px-3 py-2 rounded-lg text-sm shadow-lg z-50">
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span>Sincronizado com CMS</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
