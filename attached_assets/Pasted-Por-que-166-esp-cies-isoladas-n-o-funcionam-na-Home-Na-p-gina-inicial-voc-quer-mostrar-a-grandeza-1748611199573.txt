@@ -1,0 +1,51 @@
+Por que “166 espécies” isoladas não funcionam na Home
+Na página inicial você quer mostrar a grandeza total do Itaicy (pesca +toda a vida selvagem) e, ao mesmo tempo, destacar a façanha dos 166 registros em 5 dias sem parecer que o lodge virou “apenas birding”.
+
+Problema atual	Risco	O que mudar
+Counter “166 ESPÉCIES” aparece sozinho	Parece que o Pantanal inteiro só tem isso; rebaixa o valor para quem não é birder	Apresentar número-macro da fauna e, dentro dele, a marca dos 166 como sub-proof
+Copy do hero cita 166 aves logo na 1ª frase	Puxa a narrativa muito cedo para Birdwatching	Trazer o dado-macro no hero e guardar a façanha de 5 dias para o bloco #2 (Safáris)
+SEO-title e meta ainda usam “166 aves”	Relevância baixa para quem procura “pesca no Pantanal”	Title principal continua focado em “Eco Lodge & Pesca”; 166 entra em H2 do bloco Bird
+Tooltip inexistente	Usuário não entende “166/5d”	Tooltip ou micro-copy explicando ➜ “Checklist oficial de 5 dias – Exped. jan/24”
+
+Dados corretos e fontes rápidas
+650 + espécies de aves catalogadas em todo o Pantanal (fonte: guias de turismo e pontos WWF)
+
+166 aves em 5 dias = resultado da expedição Itaicy 2024 (PDF interno).
+
+325 + espécies de peixes (catálogo Embrapa Pantanal¹).
+
+120+ mamíferos / 90 répteis (ICMBio e WWF).
+
+¹ se quiser citar peixes troféu use “20 kg dourado recorde Itaicy – 2023”.
+
+Nova estrutura para a ribbon de números (Home)
+plaintext
+Copiar
+Editar
+┌──────────────────────────────────────────────────────────────┐
+│ 650+            325+          166 / 5 dias°     1897         │
+│ ESPÉCIES         PEIXES        BIRDS CHECKLIST   DESDE       │
+│ Biodiversidade   Dourados etc  Maratona Bird '24 Patrimônio  │
+└──────────────────────────────────────────────────────────────┘
+650+ – mostra autoridade de ecoturismo.
+
+325+ – ancora a pesca como carro-chefe.
+
+166 / 5 dias° – nota de rodapé/tooltip “° Checklist oficial, expedição guiada jan 2024”.
+
+1897 – herança Usina.
+
+Visual: numeração sunset-amber/600, legendas pantanal-green/900, subtítulos Body-S river-slate/800.
+
+Ajustes de copy na Home
+Seção	Antes	Depois
+Hero sub-headline	“... fotografe 166 aves ...”	“... fotografe uma fauna de 650 + espécies e adormeça...”
+Bloco #2 – Safáris & Birdwatching	“166 espécies registradas...”	H2 “Safáris, trilhas & birdwatching”
+Lead “Mais de 650 espécies no Pantanal — e 166 avistadas em apenas 5 dias na última expedição Itaicy.”
+Meta-description	“…166 aves…”	“Pesca catch-and-release, safáris fotográficos e birdwatching em meio a 650 + espécies do Pantanal. Reserve online.”
+Schema FAQ	adicionar	“Quantas espécies posso fotografar numa semana?” → resposta com 166/5d dado real + link PDF checklist.
+
+Micro-UX
+Tooltip: ícone ⓘ ao lado de “166 / 5 dias” → on-hover mostra texto “Expedição Itaicy jan 2024 (checklist completo PDF)”.
+
+Bird card CTA: “Baixar lista de 650 + espécies” (leva ao PDF geral) e botão secundário “Ver roteiro 5-dias”.

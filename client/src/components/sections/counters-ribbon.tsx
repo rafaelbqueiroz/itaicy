@@ -15,7 +15,9 @@ export function CountersRibbon() {
   const [showTooltip, setShowTooltip] = useState(false);
 
   const speciesCount = useCountUp({ end: 650, duration: 2500, delay: 200 });
-  const spottedCount = useCountUp({ end: 166, duration: 2000, delay: 400 });
+  const fishCount = useCountUp({ end: 325, duration: 2200, delay: 300 });
+  const birdsCount = useCountUp({ end: 166, duration: 2000, delay: 400 });
+  const historyCount = useCountUp({ end: 1897, duration: 2800, delay: 500 });
 
   const counters = [
     {
@@ -26,12 +28,26 @@ export function CountersRibbon() {
       suffix: '+',
     },
     {
-      count: spottedCount.count,
-      ref: spottedCount.ref,
-      label: t('highlights.spottedLabel'),
-      description: t('highlights.spottedDesc'),
-      tooltip: t('highlights.spottedTooltip'),
+      count: fishCount.count,
+      ref: fishCount.ref,
+      label: t('highlights.fishLabel'),
+      description: t('highlights.fishDesc'),
+      suffix: '+',
+    },
+    {
+      count: birdsCount.count,
+      ref: birdsCount.ref,
+      label: t('highlights.birdsLabel'),
+      description: t('highlights.birdsDesc'),
+      tooltip: t('highlights.birdsTooltip'),
       suffix: ' / 5 dias',
+    },
+    {
+      count: historyCount.count,
+      ref: historyCount.ref,
+      label: t('highlights.historyLabel'),
+      description: t('highlights.historyDesc'),
+      suffix: '',
     },
   ];
 
@@ -41,7 +57,7 @@ export function CountersRibbon() {
       className="w-full bg-gradient-to-r from-sunset-amber-600 to-sunset-amber-700 py-16"
     >
       <div className="max-w-[1440px] mx-auto px-4 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
           {counters.map((counter, index) => (
             <div key={index} ref={counter.ref} className="flex flex-col items-center">
               <div className="flex items-center gap-2 mb-2">
