@@ -143,6 +143,17 @@ export class CMSService {
     if (error) throw error;
   }
 
+  static async getPageBySlug(slug: string): Promise<Page | null> {
+    const { data, error } = await supabase
+      .from('pages')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+
+    if (error && error.code !== 'PGRST116') throw error;
+    return data;
+  }
+
   static async getGlobalSettings(): Promise<GlobalSetting[]> {
     const { data, error } = await supabase
       .from('global_settings')
