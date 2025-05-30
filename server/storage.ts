@@ -322,7 +322,5 @@ export class MemStorage implements IStorage {
   }
 }
 
-import { DatabaseStorage } from './database-storage';
-
-// Always use database storage since we have the connection configured
-export const storage = new DatabaseStorage();
+// Temporarily use memory storage until database connection is resolved
+export const storage = new MemStorage();
