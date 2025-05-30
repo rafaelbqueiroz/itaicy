@@ -1,0 +1,44 @@
+O menu está descendo porque o elemento “painel” está sendo ancorado ao **body** e não ao wrapper do cabeçalho; como o cabeçalho tem `position: relative` (ou deveria ter), basta ancorar o pop-up a ele e remover o deslocamento extra que a lib “dropdown” costuma injetar.
+
+```css
+/* Header wrapper (onde vivem logo, nav e botão)  */
+header#site-header {
+  position: relative;         /* ① vira o contexto do absolute */
+}
+
+/* Painel do mega-menu */
+.mega-panel {
+  position: absolute;
+  inset: auto 0 0 0;          /* top:100% deixa colado na borda inferior   */
+  top: 100%;                  /* ② encosta no header */
+  width: 100vw;               /* ocupa toda a viewport p/ alinhar ao grid   */
+  padding: 0;                 /* zera o extra que empurrava p/ baixo        */
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,.05);
+  z-index: 50;
+}
+
+/* Grid interno mantém o mesmo gutter do header */
+.mega-panel__grid {
+  max-width: 1440px;          /* mesmo wrapper da 1ª dobra                   */
+  margin-inline: auto;
+  padding: 3rem 2rem;         /* 48 px vertical / 32 px horizontal           */
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 2.5rem 4rem;           /* 40 px linha / 64 px coluna                  */
+}
+```
+
+### Passo-a-passo de ajuste
+
+1. **Garanta** `header` ou `.nav-wrapper` com `position: relative;`.
+2. No componente do menu substitua o contêiner por `.mega-panel` e **remova** qualquer classe da lib que insira `margin-top` ou `translateY`.
+3. Confirme no DevTools: o painel deve começar exatamente na base do header (sem lacuna) e medir a mesma largura do viewport; o grid interno centraliza o conteúdo para alinhar com logo ← → botão **Reservar**.
+
+---
+
+#### Dica
+
+Se usar Headless UI / Radix / ShadCN Popover, passe `position="popper"` → `position="item-aligned"` ou sobrescreva com `style={{ insetInline: 0, top: '100%' }}` para evitar o deslocamento automático.
+
+Isso faz o mega-menu abrir colado ao header em qualquer largura de tela, sem “pular” alguns pixels para baixo.
