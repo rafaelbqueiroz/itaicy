@@ -43,8 +43,11 @@ export function HeroVideo() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{ animationDelay: '0.4s' }}>
           <Button 
             size="lg"
-            className="bg-[#C97A2C] hover:bg-[#C97A2C]/92 text-[#FAF9F6] px-8 py-4 text-base font-medium transition-all duration-300 hover:translate-y-[-2px] shadow-lg uppercase tracking-[0.05em]"
-            style={{ fontFamily: 'Lato, sans-serif' }}
+            className="bg-[#C97A2C] hover:brightness-[0.92] text-[#FAF9F6] py-3 px-7 text-[0.9rem] font-medium transition-all duration-300 shadow-md hover:shadow-sm uppercase tracking-[0.06em] rounded-lg"
+            style={{ 
+              fontFamily: 'Lato, sans-serif',
+              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
+            }}
             onClick={scrollToBooking}
           >
             Reservar Agora
@@ -52,7 +55,7 @@ export function HeroVideo() {
           <Button 
             variant="outline"
             size="lg"
-            className="border-2 border-[#FAF9F6] text-[#FAF9F6] hover:bg-[#FAF9F6] hover:text-[#064737] px-8 py-4 text-base font-medium transition-all duration-300 uppercase tracking-[0.05em]"
+            className="border-2 border-[#FAF9F6] text-[#FAF9F6] hover:bg-[#FAF9F6] hover:text-[#064737] py-3 px-7 text-[0.9rem] font-medium transition-all duration-300 uppercase tracking-[0.06em] rounded-lg"
             style={{ fontFamily: 'Lato, sans-serif' }}
             onClick={() => document.getElementById('experiencias')?.scrollIntoView({ behavior: 'smooth' })}
           >

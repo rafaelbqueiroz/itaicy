@@ -48,9 +48,11 @@ export function Header() {
 
   const headerClasses = `fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
     isSticky 
-      ? 'bg-[#D9CEB3] shadow-sm' 
+      ? 'bg-[#D9CEB3]' 
       : 'bg-transparent backdrop-blur-[90%]'
   }`;
+  
+  const stickyStyles = isSticky ? { boxShadow: '0 2px 4px rgba(0,0,0,0.05)' } : {};
 
   const linkClasses = `text-sm font-medium tracking-[0.05em] uppercase transition-colors duration-200 px-6 ${
     isSticky 
@@ -63,11 +65,11 @@ export function Header() {
   };
 
   return (
-    <header className={headerClasses}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className={headerClasses} style={stickyStyles}>
+      <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 mt-2" aria-label="Itaicy Pantanal Eco Lodge">
+          <Link href="/" className="flex-shrink-0 mt-2 mr-10" aria-label="Itaicy Pantanal Eco Lodge">
             <img 
               src={logoPath} 
               alt="Itaicy Pantanal Eco Lodge" 
@@ -76,7 +78,7 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-10 xl:space-x-12" aria-label="Menu principal">
+          <nav className="hidden lg:flex items-center gap-6" aria-label="Menu principal">
             {navigation.map((item) => (
               <div 
                 key={item.name}
@@ -97,19 +99,20 @@ export function Header() {
 
                 {/* Mega Menu */}
                 {item.megaMenu && activeDropdown === item.name && (
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-screen max-w-7xl mt-2 bg-[#faf9f6] shadow-2xl rounded-lg overflow-hidden animate-fade-in">
-                    <div className="px-8 py-6">
-                      <div className="grid grid-cols-3 gap-8">
-                        <div>
-                          <h3 className="text-base font-medium text-[#064737] mb-4 uppercase tracking-wide" style={{ fontFamily: 'Lato, sans-serif' }}>
+                  <div className="fixed left-0 right-0 top-20 w-screen bg-[#faf9f6] shadow-lg z-40 animate-fade-in">
+                    <div className="max-w-7xl mx-auto px-8 py-12">
+                      <div className="grid grid-cols-12 gap-10" role="navigation">
+                        <div className="col-span-3" aria-label="Experiências">
+                          <h3 className="text-[0.875rem] font-medium text-[#064737] mb-4 uppercase tracking-wide" style={{ fontFamily: 'Lato, sans-serif' }}>
                             {item.name}
                           </h3>
-                          <ul className="space-y-2">
+                          <ul className="space-y-3">
                             {item.megaMenu.map((subItem) => (
                               <li key={subItem.name}>
                                 <Link
                                   href={subItem.href}
-                                  className="block text-[#64748B] hover:text-[#064737] transition-colors duration-150 font-normal"
+                                  className="block text-[1rem] text-[#64748B] hover:text-[#064737] hover:bg-[#D9CEB3] hover:rounded px-2 py-1 transition-all duration-150 font-medium"
+                                  style={{ fontFamily: 'Lato, sans-serif' }}
                                   onClick={() => setActiveDropdown(null)}
                                 >
                                   {subItem.name}

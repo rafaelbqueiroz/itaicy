@@ -1,0 +1,123 @@
+### Ajustes prioritários – Header, Botões Hero e Mega-menu
+
+*(v1.2 – incremental sobre o Design System)*
+
+---
+
+## 1. Header (navbar) – espaçamento & harmonia
+
+| Elemento                       | Token / Medida revisada            | Como aplicar                                                  |
+| ------------------------------ | ---------------------------------- | ------------------------------------------------------------- |
+| **Padding horizontal nav-bar** | `px-6 (24 px)` desktop             | `.navbar{padding-inline:var(--space-6);}`                     |
+| **Gap entre itens de menu**    | `gap-6 (24 px)`                    | use `display:flex; gap:var(--space-6);` → mantém ritmo visual |
+| **Logo → primeiro link**       | `margin-right:40 px`               | garante “respiro” sem colar no LODGE                          |
+| **Alinhamento vertical**       | `line-height:64 px`                | altura da nav mobile/tablet; desktop =`80 px` já ok           |
+| **Estado sticky shadow**       | `box-shadow:0 2 4 rgba(0,0,0,.05)` | cria separação suave do conteúdo                              |
+
+> **Teste rápido**: em desktop 1440 px a soma Logo (190 px) + gaps + itens = ≤ 1140 px → cabe sem quebra; em 1280 px a quebra ocorre a partir de 7 itens, mas nosso menu tem 6 (logo incluso).
+
+---
+
+## 2. Botões da Hero
+
+| Propriedade              | Antes               | Agora (v1.2)                        |
+| ------------------------ | ------------------- | ----------------------------------- |
+| Typeface                 | Lato **600** caps   | Lato **500** caps (conforme menu)   |
+| Font-size desktop        | 1 rem (16 px)       | **0.9 rem** (≈ 14.4 px, -10 %)      |
+| Letter-spacing           | 0.05 em             | 0.06 em (compensa redução do corpo) |
+| Padding                  | 14 px 32 → 12 px 28 | equilibra texto menor               |
+| Shadow hover (primary)   | lvl-1               | igual porém blur 6 px → 4 px        |
+| Icon spacing (se houver) | 8 px                | 6 px                                |
+
+> **CSS snippet**
+
+```css
+.btn-primary{
+  @apply font-medium uppercase tracking-wider text-[0.9rem] 
+         bg-[var(--clr-amber-600)] text-[var(--clr-white)] 
+         py-3 px-7 rounded-lg shadow-md transition;
+}
+.btn-primary:hover{filter:brightness(0.92) drop-shadow(0 2px 4px rgba(0,0,0,.1));}
+```
+
+---
+
+## 3. Mega-menu – problemas vistos & solução rápida
+
+### 3.1 Largura & ancoragem
+
+* Abrir **full-width** (`position:fixed; inset-inline:0; max-width:100vw;`) ancorado logo abaixo da navbar (`top:var(--header-h)`).
+
+### 3.2 Grid revisado
+
+```text
+| col-span 3 | col-span 3 | col-span 6 |
+| Experiências | Planeje-se | Cartão destaque (img 320×210 + título + teaser) |
+```
+
+* **Gap colunas** : 40 px
+* **Padding bloco** : 48 px top/bottom, 32 px sides
+
+### 3.3 Tipografia
+
+| Camada              | Fonte                 | Peso       | Tamanho |
+| ------------------- | --------------------- | ---------- | ------- |
+| Cabeçalho de coluna | Lato 500 uppercase    | 0.875 rem  |         |
+| Links primários     | Lato 500 sentencecase | 1 rem      |         |
+| Links secundários   | Lato 400 sentencecase | 0.9375 rem |         |
+
+### 3.4 Estados / interação
+
+| Estado      | Cor texto                                       | BG link                        |
+| ----------- | ----------------------------------------------- | ------------------------------ |
+| default     | `river-slate/800`                               | none                           |
+| hover       | `pantanal-green/900`                            | `sand-beige/400` (radius 4 px) |
+| focus / tab | igual hover + outline 2 px `pantanal-green/700` |                                |
+
+*Animação*: fade-in + translateY 16 px (120 ms) ao abrir; fechar em 90 ms.
+
+---
+
+## 4. Tokens atualizados
+
+```css
+/* Font weight map */
+--fw-menu:500;
+--fw-button:500;
+/* Button size */
+--fs-button:0.9rem;
+/* Spacing */
+--gap-nav:24px;
+--mr-logo:40px;
+```
+
+Atualize as variáveis no arquivo `tokens.css` ou no tema Tailwind (`theme.extend`).
+
+---
+
+## 5. Checklist de implementação
+
+1. **NavBar.tsx / .vue / .jsx**
+
+   * Adicionar `class="flex gap-[var(--gap-nav)] ml-[var(--mr-logo)]"` ao container de links.
+   * Logo: `class="max-h-12 mt-2"` (48 px).
+
+2. **Button component**
+
+   * Recebe `variant` → injeta classes já com peso 500 & font-size tokenizado.
+
+3. **MegaMenu component**
+
+   * Trocar wrapper por `header-height` offset + `fixed`.
+   * Grid Tailwind: `grid grid-cols-12 gap-10 px-8 py-12`.
+   * Acessibilidade: adicionar `role="navigation"` e `aria-label` por coluna.
+
+4. **QA visual**
+
+   * Lighthouse contraste > AA.
+   * Testar \:hover & \:focus com teclado.
+   * Ver se shadow hero gradiente não interfere na legibilidade depois da redução de fonte.
+
+---
+
+Com essas correções o header ganhará ritmo consistente, os botões da hero ficarão proporcionais e o mega-menu passará a transmitir a elegância que buscamos. Assim que aplicar, envie um novo print (desktop e mobile) – revisamos mais rápido que um tuiuiú em voo! 😉
