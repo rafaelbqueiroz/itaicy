@@ -94,28 +94,23 @@ export function DatePickerWithRange({
             numberOfMonths={2}
             fromDate={new Date()}
             disabled={{ before: new Date() }}
-            modifiers={{
-              start: range?.from,
-              end: range?.to,
-            }}
-            modifiersClassNames={{
-              start: "rdp-start",
-              end: "rdp-end",
-            }}
             styles={{
-              day_range_middle: {
-                backgroundColor: "#D9CEB3", // sand-beige-400
-                color: "#64748B", // river-slate-800
+              // cada dia selecionado (início e fim)
+              selected: {
+                backgroundColor: "#C97A2C", // sunset-amber/600
+                color: "#FAF9F6",           // cloud-white/0
               },
-              day_selected: {
-                backgroundColor: "#C97A2C", // sunset-amber-600
-                color: "#FAF9F6", // cloud-white-0
+              // período inteiro - faixa intermediária
+              range_middle: {
+                backgroundColor: "rgba(217,206,179,0.4)", // sand-beige/400 @ 40%
+                color: "#64748B", // river-slate/800
               },
-              day_range_start: {
+              // bordas arredondadas nas extremidades
+              range_start: {
                 borderTopLeftRadius: "8px",
                 borderBottomLeftRadius: "8px",
               },
-              day_range_end: {
+              range_end: {
                 borderTopRightRadius: "8px",
                 borderBottomRightRadius: "8px",
               },

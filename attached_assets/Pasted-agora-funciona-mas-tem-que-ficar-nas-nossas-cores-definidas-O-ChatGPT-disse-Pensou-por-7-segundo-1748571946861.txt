@@ -1,0 +1,92 @@
+agora funciona, mas tem que ficar nas nossas cores definidas
+
+O ChatGPT disse:
+
+Pensou por 7 segundos
+Para trocar aquele azul-padrão pelo nosso sunset-amber/600 e a faixa intermediária por um leve sand-beige, basta injetar um pouco de CSS ou usar o prop styles do React-Day-Picker. Exemplo (supondo que você já esteja usando v8+):
+
+tsx
+Copiar
+Editar
+"use client"
+
+import * as React from "react"
+import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
+import { CalendarIcon } from "lucide-react"
+import { DateRange, DayPicker } from "react-day-picker"
+import { Button } from "@/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import "react-day-picker/dist/style.css"
+
+export function ReservationPicker() {
+  const [range, setRange] = React.useState<DateRange | undefined>()
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="w-full md:w-64 justify-start text-left">
+          <CalendarIcon className="mr-2" />
+          {range?.from
+            ? range.to
+              ? `${format(range.from, "dd/MM/yyyy")} – ${format(range.to, "dd/MM/yyyy")}`
+              : format(range.from, "dd/MM/yyyy")
+            : "Selecione período"}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="p-0">
+        <DayPicker
+          locale={ptBR}
+          mode="range"
+          selected={range}
+          onSelect={setRange}
+          numberOfMonths={2}
+          fromDate={new Date()}
+          disabled={{ before: new Date() }}
+          modifiersClassNames={{
+            selected: "rdp-day_selected",
+            range_middle: "rdp-day_range_middle",
+            selected_start: "rdp-day_selected_start",
+            selected_end: "rdp-day_selected_end",
+          }}
+          styles={{
+            // período inteiro
+            day_range_middle: {
+              backgroundColor: "rgba(217,206,179,0.4)",  // sand-beige/400 @ 40%
+            },
+            // dia inicial / final
+            day_selected_start: {
+              borderTopLeftRadius: "8px",
+              borderBottomLeftRadius: "8px",
+            },
+            day_selected_end: {
+              borderTopRightRadius: "8px",
+              borderBottomRightRadius: "8px",
+            },
+            // cada dia selecionado
+            day_selected: {
+              backgroundColor: "#C97A2C",  // sunset-amber/600
+              color: "#FAF9F6",            // cloud-white/0
+            },
+          }}
+        />
+      </PopoverContent>
+    </Popover>
+  )
+}
+O que esse snippet faz
+locale={ptBR} → dias e cabeçalhos em Português.
+
+mode="range" + selected/onSelect → ativa seleção de intervalo controlada.
+
+disabled/before → não permite datas passadas.
+
+modifiersClassNames → atribui classes semânticas para início, meio e fim do range.
+
+styles → sobrescreve diretamente as cores usando nossos tokens:
+
+day_selected (início/fim): sunset-amber/600 + texto cloud-white/0.
+
+day_range_middle: leve overlay sand-beige/400 transparente.
+
+arredonda apenas as extremidades do bloco selecionado.
