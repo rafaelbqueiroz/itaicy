@@ -686,6 +686,341 @@ function SEOForm({ seo, onSave, isLoading }: any) {
   );
 }
 
+// Componente principal do editor de blocos
+function BlocksEditor() {
+  const [selectedPage, setSelectedPage] = useState('home');
+  const { data: pages = [] } = useQuery({
+    queryKey: ['/api/cms/pages'],
+  });
+
+  const pageOptions = [
+    { value: 'home', label: 'Página Inicial' },
+    { value: 'acomodacoes', label: 'Acomodações' },
+    { value: 'experiencias', label: 'Experiências' },
+    { value: 'galeria', label: 'Galeria' },
+    { value: 'contato', label: 'Contato' }
+  ];
+
+  const selectedPageData = pages.find((p: any) => p.slug === selectedPage);
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center space-x-4">
+        <Label htmlFor="page-select">Selecionar Página:</Label>
+        <select
+          id="page-select"
+          value={selectedPage}
+          onChange={(e) => setSelectedPage(e.target.value)}
+          className="border rounded px-3 py-2"
+        >
+          {pageOptions.map(page => (
+            <option key={page.value} value={page.value}>
+              {page.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {selectedPageData && (
+        <PageBlocksManager pageId={selectedPageData.id} pageName={selectedPage} />
+      )}
+    </div>
+  );
+}
+
+// Componente para gerenciar blocos de uma página específica
+function PageBlocksManager({ pageId, pageName }: { pageId: number; pageName: string }) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: blocks = [], isLoading } = useQuery({
+    queryKey: [`/api/cms/pages/${pageId}/blocks`],
+  });
+
+  const updateBlockMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+      const response = await fetch(`/api/cms/blocks/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/cms/pages/${pageId}/blocks`] });
+      toast({ title: "Sucesso", description: "Bloco atualizado!" });
+    },
+  });
+
+  if (isLoading) {
+    return <div className="text-center py-8">Carregando blocos...</div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold">
+        Editando: {pageName.charAt(0).toUpperCase() + pageName.slice(1)}
+      </h3>
+      
+      <div className="space-y-4">
+        {blocks.map((block: any) => (
+          <BlockEditor
+            key={block.id}
+            block={block}
+            onUpdate={(data) => updateBlockMutation.mutate({ id: block.id, data })}
+            isLoading={updateBlockMutation.isPending}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Componente para editar um bloco específico
+function BlockEditor({ block, onUpdate, isLoading }: any) {
+  const [editing, setEditing] = useState(false);
+  const [formData, setFormData] = useState(block);
+
+  const handleSave = () => {
+    onUpdate(formData);
+    setEditing(false);
+  };
+
+  const getBlockTypeLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      'hero_video': 'Vídeo Hero',
+      'hero_image': 'Imagem Hero',
+      'page_header': 'Cabeçalho da Página',
+      'stats_strip': 'Faixa de Estatísticas',
+      'experiences_grid': 'Grade de Experiências',
+      'image_gallery': 'Galeria de Imagens',
+      'contact_info': 'Informações de Contato',
+      'contact_form': 'Formulário de Contato'
+    };
+    return labels[type] || type;
+  };
+
+  return (
+    <div className="border rounded-lg p-6 bg-white">
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <h4 className="font-semibold text-lg">{getBlockTypeLabel(block.type)}</h4>
+          <p className="text-sm text-gray-600">Ordem: {block.order}</p>
+        </div>
+        <Button size="sm" onClick={() => setEditing(!editing)}>
+          <Edit className="h-4 w-4 mr-2" />
+          {editing ? 'Cancelar' : 'Editar'}
+        </Button>
+      </div>
+
+      {editing ? (
+        <div className="space-y-4">
+          <DynamicBlockForm
+            blockType={block.type}
+            props={formData.props}
+            onChange={(newProps) => setFormData({ ...formData, props: newProps })}
+          />
+          <div className="flex space-x-2">
+            <Button onClick={handleSave} disabled={isLoading}>
+              <Save className="h-4 w-4 mr-2" />
+              {isLoading ? 'Salvando...' : 'Salvar'}
+            </Button>
+            <Button variant="outline" onClick={() => setEditing(false)}>
+              Cancelar
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <BlockPreview blockType={block.type} props={block.props} />
+      )}
+    </div>
+  );
+}
+
+// Componente para preview do bloco
+function BlockPreview({ blockType, props }: { blockType: string; props: any }) {
+  return (
+    <div className="bg-gray-50 p-4 rounded border-2 border-dashed border-gray-300">
+      <div className="space-y-2 text-sm">
+        {blockType === 'hero_video' && (
+          <>
+            <div><strong>Título:</strong> {props.title}</div>
+            <div><strong>Subtítulo:</strong> {props.subtitle}</div>
+            <div><strong>Vídeo:</strong> {props.videoUrl}</div>
+          </>
+        )}
+        {blockType === 'page_header' && (
+          <>
+            <div><strong>Título:</strong> {props.title}</div>
+            <div><strong>Subtítulo:</strong> {props.subtitle}</div>
+            <div><strong>Descrição:</strong> {props.description}</div>
+          </>
+        )}
+        {blockType === 'contact_info' && (
+          <>
+            <div><strong>Email:</strong> {props.email}</div>
+            <div><strong>Telefone:</strong> {props.phone}</div>
+            <div><strong>WhatsApp:</strong> {props.whatsapp}</div>
+            <div><strong>Endereço:</strong> {props.address}</div>
+          </>
+        )}
+        {blockType === 'stats_strip' && (
+          <div><strong>Título:</strong> {props.title}</div>
+        )}
+        {blockType === 'experiences_grid' && (
+          <>
+            <div><strong>Título:</strong> {props.title}</div>
+            <div><strong>Subtítulo:</strong> {props.subtitle}</div>
+            <div><strong>Cards:</strong> {props.cards?.length || 0} experiências</div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Componente para formulário dinâmico baseado no tipo de bloco
+function DynamicBlockForm({ blockType, props, onChange }: any) {
+  const updateProp = (key: string, value: any) => {
+    onChange({ ...props, [key]: value });
+  };
+
+  if (blockType === 'hero_video' || blockType === 'page_header') {
+    return (
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="title">Título</Label>
+          <Input
+            id="title"
+            value={props.title || ''}
+            onChange={(e) => updateProp('title', e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="subtitle">Subtítulo</Label>
+          <Textarea
+            id="subtitle"
+            value={props.subtitle || ''}
+            onChange={(e) => updateProp('subtitle', e.target.value)}
+            rows={2}
+          />
+        </div>
+        {blockType === 'page_header' && (
+          <div>
+            <Label htmlFor="description">Descrição</Label>
+            <Textarea
+              id="description"
+              value={props.description || ''}
+              onChange={(e) => updateProp('description', e.target.value)}
+              rows={3}
+            />
+          </div>
+        )}
+        {blockType === 'hero_video' && (
+          <div>
+            <Label htmlFor="videoUrl">URL do Vídeo</Label>
+            <Input
+              id="videoUrl"
+              value={props.videoUrl || ''}
+              onChange={(e) => updateProp('videoUrl', e.target.value)}
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (blockType === 'contact_info') {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="email">E-mail</Label>
+          <Input
+            id="email"
+            type="email"
+            value={props.email || ''}
+            onChange={(e) => updateProp('email', e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="phone">Telefone</Label>
+          <Input
+            id="phone"
+            value={props.phone || ''}
+            onChange={(e) => updateProp('phone', e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="whatsapp">WhatsApp</Label>
+          <Input
+            id="whatsapp"
+            value={props.whatsapp || ''}
+            onChange={(e) => updateProp('whatsapp', e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="address">Endereço</Label>
+          <Input
+            id="address"
+            value={props.address || ''}
+            onChange={(e) => updateProp('address', e.target.value)}
+          />
+        </div>
+        <div className="md:col-span-2">
+          <Label htmlFor="hours">Horário de Atendimento</Label>
+          <Input
+            id="hours"
+            value={props.hours || ''}
+            onChange={(e) => updateProp('hours', e.target.value)}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (blockType === 'stats_strip') {
+    return (
+      <div>
+        <Label htmlFor="title">Título da Seção</Label>
+        <Input
+          id="title"
+          value={props.title || ''}
+          onChange={(e) => updateProp('title', e.target.value)}
+        />
+      </div>
+    );
+  }
+
+  if (blockType === 'experiences_grid') {
+    return (
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="title">Título</Label>
+          <Input
+            id="title"
+            value={props.title || ''}
+            onChange={(e) => updateProp('title', e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="subtitle">Subtítulo</Label>
+          <Input
+            id="subtitle"
+            value={props.subtitle || ''}
+            onChange={(e) => updateProp('subtitle', e.target.value)}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-center py-4 text-gray-500">
+      Editor específico para este tipo de bloco em desenvolvimento
+    </div>
+  );
+}
+
 // Componente para configurações
 function SettingsForm({ settings, onSave, isLoading }: any) {
   const [formData, setFormData] = useState(settings);
