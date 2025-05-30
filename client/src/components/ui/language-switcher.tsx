@@ -60,28 +60,28 @@ export function LanguageSwitcher() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         onKeyDown={(e) => handleKeyDown(e)}
-        className="flex items-center gap-1 bg-cloud-white-0/20 backdrop-blur px-3 py-1.5 rounded-md hover:bg-cloud-white-0/30 focus-visible:outline-2 focus-visible:outline-pantanal-green-700 transition-colors duration-150"
+        className="flex items-center gap-2 bg-cloud-white-0/20 backdrop-blur px-3 py-1.5 rounded-md hover:bg-cloud-white-0/30 focus-visible:outline-2 focus-visible:outline-pantanal-green-700 transition-colors duration-150 text-cloud-white-0 hover:text-cloud-white-0 focus:text-cloud-white-0"
         aria-label="Seleção de idioma"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
-        <Globe className="w-5 h-5" />
+        <Globe className="w-5 h-5 text-cloud-white-0" />
         <div className="flex items-center gap-1">
           <span 
-            className="w-4 h-4 rounded-full border border-[#D9CEB3]/40 flex items-center justify-center text-xs"
+            className="w-4 h-4 rounded-full border border-cloud-white-0/40 flex items-center justify-center text-xs text-cloud-white-0"
             aria-hidden="true"
           >
             {currentLang.flag}
           </span>
           <span 
-            className="text-xs font-medium tracking-widest uppercase"
+            className="text-xs font-medium tracking-widest uppercase text-cloud-white-0"
             style={{ fontFamily: 'Lato, sans-serif' }}
           >
             {currentLang.code}
           </span>
         </div>
         <ChevronDown 
-          className={`w-4 h-4 transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`} 
+          className={`w-4 h-4 transition-transform duration-150 text-cloud-white-0 ${isOpen ? 'rotate-180' : ''}`} 
         />
       </button>
 
