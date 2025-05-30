@@ -1,0 +1,168 @@
+2. Lodge / Estrutura & Conforto
+Seção	Copy	Observação
+Hero	H1 “Seu refúgio de madeira e vento de rio”	Foto drone do lodge
+Descritivo	“Onze apartamentos climatizados, varanda com rede, Wi-Fi satelital e piscina de borda infinita sobre o Rio Cuiabá.”	
+Galeria grid	6 fotos	Lightbox lazy-load
+Infobox “O que está incluso”	Lista bullets: • Café premium • Lavanderia para roupas de pesca • Estacionamento gratuito	
+Destaque sustentabilidade	Mini-card: “Energia solar cobre 78 % do consumo anual”	
+CTA	Ver acomodações	
+
+3. Lodge / História & Sustentabilidade
+Seção	Copy
+Story 3 atos	H2 “Da usina centenária ao eco-lodge premiado”
+Ato 1 1897–1950: hidrelétrica movia fazendas.
+Ato 2 1982: tornou-se hotel de pesca pioneiro.
+Ato 3 Hoje: referência em conservação.
+Timeline gráfica	4 marcos
+5 Compromissos Verdes	Lista numerada
+Selo & métricas	“Certificação ABETA nível Ouro” + “Redução de CO₂: 12 t/ano”
+CTA	Saiba como você ajuda (leva a Experiências/Bird)
+
+4. Experiências / Pesca Esportiva
+Seção	Copy
+Hero	H1 “Dourados troféu em águas pouco batidas”
+Parágrafo-âncora	“Barcos 40 hp, isca viva à vontade e guias que conhecem cada curva do Velho Cuiabá.”
+Tabela preços	Cabeçalho: Individual / Dupla / Trio
+Valores: R$ 3 000 / 2 300 / 2 000 por pessoa/dia
+Includes	Bullets: Lancha exclusiva • Tuviras ilimitadas • Bebidas premium • Lavanderia diária
+FAQ inline	3 acordeões: “Preciso de licença?” “Posso alugar equipamento?” “Tem limite de peças?”
+CTA sticky	Ver datas da temporada
+
+5. Experiências / Ecoturismo & Birdwatching
+Seção	Copy
+Hero	H1 “166 espécies em 5 dias — e contando”
+Cards trilhas	Serra do Amolar – mirante 360°
+Planície Alagada – capivaras ao crepúsculo
+Lagoa Azul – nascer-do-sol cor de fogo
+Icon-list “O que esperar”	Tuiuiús • Araras-azuis • Jacarés • Onça-pintada (avistagem média 41 %)
+CTA PDF	Baixar lista oficial de aves
+Combo day-use	Banner: “Safári fotográfico 6h–18h + almoço ribeirinho – R$ 750”
+Testemunho fotógrafo	Quote 50 pal. + foto autor
+
+6. Experiências / Pacotes & Tarifas
+Sub-tabs (component Variant):
+
+Tab	Conteúdo resumido (exemplo)
+All-Inclusive Pesca	Bloco AIDA: título, foto drone, highlights, preço “a partir de R$ 12 000/4 dias”, CTA Reservar
+All-Inclusive Natureza	Ícone folhinha • 5 dias / 4 noites, trilhas + safári noturno, valor R$ 9 400
+Day-Use Pesca	Card: “6h–18h – café + almoço + lancha” – R$ 1 350 (dupla)
+
+Abaixo dos tabs:
+
+Política de pagamento: “30 % sinal + 70 % até 30 dias antes.”
+
+Widgets de escassez: “Últimas 2 vagas em setembro”.
+
+7. Galeria
+Seção	Copy / funcionalidade
+Filtro pills	Pesca • Natureza • Lodge • Equipe
+Masonry grid	Fotos 3 col desktop, 2 tablet, 1 mobile
+Legend	“Clique para ampliar” com ícone full-screen
+Lazy caption	“Dourado saltando no remanso – foto @Renato F.”
+
+8. Blog (landing)
+Seção	Copy
+Hero simples	H1 “Dicas e histórias do Pantanal”
+Cards artigo	Imagem 16:9 + categoria + título H3 (“Pantanal na cheia × na seca: qual escolher?”) + snippet 18 palavras
+Sidebar	Box newsletter + posts populares
+Pagination	“← Anteriores / Próximos →”
+
+9. Fale Conosco
+Seção	Copy
+Hero	H1 “Vamos planejar sua jornada?”
+Form multistep	Passo 1 Seus dados
+Passo 2 Datas
+Passo 3 Interesses (Pesca / Eco)
+Passo 4 Mensagem
+Labels & placeholders	Nome completo, E-mail, WhatsApp, Datas (date-picker), Mensagem
+Map embed	“Coordenadas 16° 20′ S – 56° 30′ W”
+WhatsApp button	Falar agora no Whats
+Infos rápidas	Tel.: +55 65 3 000-0000 • contato@itaicy.com.br --- veja se a copy a estrutura estao de acordo com as ultimas definições que tivemos sobre ecoturismo, birdwatching, pesca esportiva, etc... analise tambem a estrutura da home para ver como replicar e o que replicar para as outras paginas e manter o padrao 
+
+O ChatGPT disse:
+De uma forma geral, o wireframe e o texto de cada seção estão muito bem alinhados aos objetivos que definimos para Itaicy: reforçar a pesca esportiva como carro-chefe, introduzir o ecoturismo/birdwatching como nova aposta e manter clareza no storytelling. Eis o que eu recomendaria para garantir consistência e fluidez em toda a navegação:
+
+1. Validação da copy por página
+Página	Hero & Âncora	Pontos fortes	Pequenos ajustes sugeridos
+Home	“Viva o Pantanal Autêntico” + subline	Une pesca + ecoturismo + relax	Trocar “aviste 650+ aves” por “registre 650+ espécies de aves” – torna mais ativo e correto semanticamente.
+Lodge / Estrutura	“Seu refúgio de madeira e vento de rio”	Evoca acolhimento e ambiente	Incluir menção sutil a “paz noturna” para conectar ao áudio natural.
+Lodge / História	“Da usina centenária ao eco-lodge premiado”	StoryBrand nítido (passado → presente)	Destacar brevemente “nossa missão: conservar para você viver” no final do ato 3.
+Pesca Esportiva	“Dourados troféu em águas pouco batidas”	Apelo AIDA claríssimo	No parágrafo-âncora, acrescente “sem licença prévia” se for um benefício real.
+Ecoturismo & Birdwatching	“166 espécies em 5 dias — e contando”	Concretiza o novo diferencial	Sugiro “650+ espécies de aves no Pantanal — 166 registradas em 5 dias” para dar contexto geral + pique de “e contando”.
+Pacotes & Tarifas	AIDA + escassez	Ótimo para conversion rate	Padronizar CTA “Reservar agora” (mesmo texto e peso) em todos os cards.
+Galeria	Filtro → Masonry → Lightbox	Funcionalidade de descoberta	Reforçar no H2 “Explore em alta resolução” para SEO e utilidade.
+Blog	“Dicas e histórias do Pantanal”	Objetivo bem claro	Incluir descrição meta para cada post: “Como escolher temporadas de pesca” etc., no componente de cards.
+Fale Conosco	“Vamos planejar sua jornada?”	Convida ao diálogo	No CTA final do form, use “Solicitar proposta” para reforçar ação.
+
+2. Padrões de estrutura (replicar da Home)
+Hero full-bleed + subline
+
+Sempre 90vh com overlay suave.
+
+H1 em serif grande (xl/2xl), subline em sans médio.
+
+Barra sticky de reservas ou CTA secundário
+
+Fixa abaixo do header: menu de datas/adultos/crianças ou “Ver disponibilidade” no Pesca e Bird.
+
+Mesmos spacing (px-8, py-4) e borda-radius (rounded-lg).
+
+Blocos 50/50 em grid
+
+Imagem de um lado, texto+CTA do outro.
+
+Alternar imagem esquerda/direita a cada seção para dinamismo.
+
+Counters ribbon (quando fizer sentido)
+
+Em páginas de experiência usar contadores específicos (e.g. “3 roteiros”, “6h–18h”).
+
+Não reutilizar sempre o mesmo ribbon da home — cada página tem métricas próprias.
+
+Depoimentos & provas sociais
+
+Reaproveitar o slider de reviews, mas limitar a dois cards por página.
+
+Newsletter/CTA final
+
+Em todas as landings, fechar com form “Receba segredos do Pantanal…”
+
+Mesmos tokens de cor e espaçamento.
+
+3. Componentização
+HeroSection.jsx: recebe background, title, subtitle, primaryCTA
+
+StickyBar.jsx: form de “datas/adultos/crianças” ou botão “Ver disponibilidade”
+
+SplitBlock.jsx: props (imageSrc, reverse?, title, text, ctaLabel, ctaHref)
+
+StatsRibbon.jsx: array de { value, label, meta, tooltip? }
+
+TestimonialSlider.jsx: array de reviews
+
+NewsletterCTA.jsx: simples form de e-mail
+
+Ao compor cada página, basta importar em ordem:
+
+jsx
+Copiar
+Editar
+<HeroSection {...heroProps} />
+<StickyBar {...barProps} />
+<SplitBlock {...block1} />
+<SplitBlock {...block2} />
+{ pageHasRibbon && <StatsRibbon items={ribbonItems} /> }
+<TestimonialSlider reviews={reviewsData} />
+<NewsletterCTA />
+Isso garante consistência total de espaçamento, tipografia e tokens de cor.
+
+Resumo
+Ajuste pontual nas headlines para reforçar verbo ativo e contexto (“registre”, “viva a aventura”).
+
+Padronize Hero, StickyBar, SplitBlock, StatsRibbon e NewsletterCTA como componentes reutilizáveis.
+
+Conteúdos métricos (counters) devem ser específicos de cada seção, nunca reaproveitar um “166 aves” genérico.
+
+Copy tweaks finos (ex.: “paz noturna”, “sem licença”, “em alta resolução”) elevam a percepção de cuidado e autoridade.
+
+Me diz se faz sentido esse plano de componentização e tweaks de copy, que assim avançamos nas outras páginas sem retrabalho!
