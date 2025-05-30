@@ -34,11 +34,11 @@ export function HeroVideo() {
       {/* Hero Content */}
       <div className="relative z-20 text-center text-white max-w-4xl mx-auto px-4">
         <h1 className="playfair text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-up leading-tight text-[#FAF9F6]">
-          Experiência Autêntica<br />
-          no Coração do Pantanal
+          Viva o Pantanal<br />
+          Autêntico
         </h1>
         <p className="text-lg sm:text-xl md:text-2xl mb-8 opacity-90 max-w-2xl mx-auto animate-fade-up font-normal text-[#FAF9F6]" style={{ animationDelay: '0.2s', fontFamily: 'Lato, sans-serif' }}>
-          Descubra a maior planície alagável do mundo em nosso eco lodge sustentável
+          Pesque dourados gigantes, fotografe 166 aves e durma embalado pelo canto da mata.
         </p>
 
       </div>

@@ -1,7 +1,6 @@
 import { HeroVideo } from '@/components/sections/hero-video';
 import { BookingWidget } from '@/components/sections/booking-widget';
-import { Experiences } from '@/components/sections/experiences';
-import { LodgeOverview } from '@/components/sections/lodge-overview';
+import { FeatureBlocks } from '@/components/sections/feature-blocks';
 import { Highlights } from '@/components/sections/highlights';
 import { Testimonials } from '@/components/sections/testimonials';
 import { Newsletter } from '@/components/sections/newsletter';
@@ -12,8 +11,7 @@ export default function Home() {
     <div className="min-h-screen">
       <HeroVideo />
       <BookingWidget variant="floating" />
-      <Experiences />
-      <LodgeOverview />
+      <FeatureBlocks />
       <Highlights />
       <Testimonials />
       <Newsletter />

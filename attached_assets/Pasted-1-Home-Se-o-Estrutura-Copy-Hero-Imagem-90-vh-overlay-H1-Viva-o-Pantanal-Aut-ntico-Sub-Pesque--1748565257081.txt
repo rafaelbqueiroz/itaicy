@@ -1,0 +1,103 @@
+1. Home
+Seção	Estrutura	Copy
+Hero	Imagem 90 vh + overlay	H1 “Viva o Pantanal Autêntico”
+Sub “Pesque dourados gigantes, fotografe 166 aves e durma embalado pelo canto da mata.”
+CTA (primary) Reservar agora
+Reserva sticky	Barra flutuante	Labels: Check-in • Check-out • Adultos • Crianças • Experiência
+Botão: Ver disponibilidade
+Bloco 50/50 #1	Foto pesca esquerda	H2 “Pesca esportiva 100 % cota-zero”
+Texto 50 pal.: “Barcos rápidos, guias premiados e águas pouco batidas para fisgar dourados troféu.”
+CTA: Saiba mais
+Bloco 50/50 #2	Foto aves direita	H2 “Safári & Birdwatching”
+“166 espécies registradas, trilhas ao amanhecer e pôr-do-sol sobre lagoas azul-celeste.”
+Bloco 50/50 #3	Gastronomia	H2 “Sabores de origem”
+“Buffet pantaneiro, petiscos no deck e cerveja servida gelada ao som do rio.”
+Bloco 50/50 #4	História	H2 “Ruínas da Usina Itaicy (1897)”
+“Hospede-se onde a energia do passado encontrou a natureza bruta.”
+Counters ribbon	4 ícones	• 166 Espécies • 100 % Sustentável • Desde 1897 • Guias Premiados
+Depoimentos	Slider 2 cards	Quote curto + nome + cidade
+Newsletter	Form 1 campo	H3 “Receba segredos do Pantanal por e-mail”
+Placeholder: “Seu melhor e-mail”
+FAQ breve	Accordion 5 itens	Ex.: “Qual a melhor época para visitar?”
+Footer	Links rápidos, rede social	Copy rodapé “© 2024 Itaicy Pantanal Eco Lodge. Todos os direitos reservados.”
+
+2. Lodge / Estrutura & Conforto
+Seção	Copy	Observação
+Hero	H1 “Seu refúgio de madeira e vento de rio”	Foto drone do lodge
+Descritivo	“Onze apartamentos climatizados, varanda com rede, Wi-Fi satelital e piscina de borda infinita sobre o Rio Cuiabá.”	
+Galeria grid	6 fotos	Lightbox lazy-load
+Infobox “O que está incluso”	Lista bullets: • Café premium • Lavanderia para roupas de pesca • Estacionamento gratuito	
+Destaque sustentabilidade	Mini-card: “Energia solar cobre 78 % do consumo anual”	
+CTA	Ver acomodações	
+
+3. Lodge / História & Sustentabilidade
+Seção	Copy
+Story 3 atos	H2 “Da usina centenária ao eco-lodge premiado”
+Ato 1 1897–1950: hidrelétrica movia fazendas.
+Ato 2 1982: tornou-se hotel de pesca pioneiro.
+Ato 3 Hoje: referência em conservação.
+Timeline gráfica	4 marcos
+5 Compromissos Verdes	Lista numerada
+Selo & métricas	“Certificação ABETA nível Ouro” + “Redução de CO₂: 12 t/ano”
+CTA	Saiba como você ajuda (leva a Experiências/Bird)
+
+4. Experiências / Pesca Esportiva
+Seção	Copy
+Hero	H1 “Dourados troféu em águas pouco batidas”
+Parágrafo-âncora	“Barcos 40 hp, isca viva à vontade e guias que conhecem cada curva do Velho Cuiabá.”
+Tabela preços	Cabeçalho: Individual / Dupla / Trio
+Valores: R$ 3 000 / 2 300 / 2 000 por pessoa/dia
+Includes	Bullets: Lancha exclusiva • Tuviras ilimitadas • Bebidas premium • Lavanderia diária
+FAQ inline	3 acordeões: “Preciso de licença?” “Posso alugar equipamento?” “Tem limite de peças?”
+CTA sticky	Ver datas da temporada
+
+5. Experiências / Ecoturismo & Birdwatching
+Seção	Copy
+Hero	H1 “166 espécies em 5 dias — e contando”
+Cards trilhas	Serra do Amolar – mirante 360°
+Planície Alagada – capivaras ao crepúsculo
+Lagoa Azul – nascer-do-sol cor de fogo
+Icon-list “O que esperar”	Tuiuiús • Araras-azuis • Jacarés • Onça-pintada (avistagem média 41 %)
+CTA PDF	Baixar lista oficial de aves
+Combo day-use	Banner: “Safári fotográfico 6h–18h + almoço ribeirinho – R$ 750”
+Testemunho fotógrafo	Quote 50 pal. + foto autor
+
+6. Experiências / Pacotes & Tarifas
+Sub-tabs (component Variant):
+
+Tab	Conteúdo resumido (exemplo)
+All-Inclusive Pesca	Bloco AIDA: título, foto drone, highlights, preço “a partir de R$ 12 000/4 dias”, CTA Reservar
+All-Inclusive Natureza	Ícone folhinha • 5 dias / 4 noites, trilhas + safári noturno, valor R$ 9 400
+Day-Use Pesca	Card: “6h–18h – café + almoço + lancha” – R$ 1 350 (dupla)
+
+Abaixo dos tabs:
+
+Política de pagamento: “30 % sinal + 70 % até 30 dias antes.”
+
+Widgets de escassez: “Últimas 2 vagas em setembro”.
+
+7. Galeria
+Seção	Copy / funcionalidade
+Filtro pills	Pesca • Natureza • Lodge • Equipe
+Masonry grid	Fotos 3 col desktop, 2 tablet, 1 mobile
+Legend	“Clique para ampliar” com ícone full-screen
+Lazy caption	“Dourado saltando no remanso – foto @Renato F.”
+
+8. Blog (landing)
+Seção	Copy
+Hero simples	H1 “Dicas e histórias do Pantanal”
+Cards artigo	Imagem 16:9 + categoria + título H3 (“Pantanal na cheia × na seca: qual escolher?”) + snippet 18 palavras
+Sidebar	Box newsletter + posts populares
+Pagination	“← Anteriores / Próximos →”
+
+9. Fale Conosco
+Seção	Copy
+Hero	H1 “Vamos planejar sua jornada?”
+Form multistep	Passo 1 Seus dados
+Passo 2 Datas
+Passo 3 Interesses (Pesca / Eco)
+Passo 4 Mensagem
+Labels & placeholders	Nome completo, E-mail, WhatsApp, Datas (date-picker), Mensagem
+Map embed	“Coordenadas 16° 20′ S – 56° 30′ W”
+WhatsApp button	Falar agora no Whats
+Infos rápidas	Tel.: +55 65 3 000-0000 • contato@itaicy.com.br
