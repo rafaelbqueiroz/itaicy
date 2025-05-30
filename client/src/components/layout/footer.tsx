@@ -103,7 +103,7 @@ export function Footer() {
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link 
               href="/termos" 
-              className="text-gray-400 hover:text-itaicy-secondary text-sm transition-colors"
+              className="hover:text-itaicy-secondary text-sm transition-colors text-[#1b5038]"
             >
               {t('footer.terms')}
             </Link>
