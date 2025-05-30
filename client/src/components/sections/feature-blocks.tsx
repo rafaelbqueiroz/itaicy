@@ -6,35 +6,35 @@ export function FeatureBlocks() {
   const features = [
     {
       id: 'pesca',
-      title: 'Pesca esportiva 100% cota-zero',
-      description: 'Barcos rápidos, guias premiados e águas pouco batidas para fisgar dourados troféu.',
+      title: '🎣 Pesca catch-and-release 100% cota-zero',
+      description: 'Barcos ágeis em águas preservadas; guia local premiado garante emoção sem impacto. Viva a aventura, preserve o Pantanal.',
       image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=800&h=600&auto=format&fit=crop',
       imagePosition: 'left',
       link: '/experiencias/pesca'
     },
     {
       id: 'safari',
-      title: 'Safari & Birdwatching',
-      description: '166 espécies registradas, trilhas ao amanhecer e pôr-do-sol sobre lagoas azul-celeste.',
+      title: '🦜 Safáris, trilhas & birdwatching',
+      description: 'Mais de 166 espécies já registradas em roteiros ao amanhecer e pôr-do-sol. Sinta o frio na barriga ao avistar tuiuiús e onças.',
       image: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=800&h=600&auto=format&fit=crop',
       imagePosition: 'right',
-      link: '/experiencias/ecoturismo'
+      link: '/experiencias/birdwatching'
     },
     {
       id: 'gastronomia',
-      title: 'Sabores de origem',
-      description: 'Buffet pantaneiro, petiscos no deck e cerveja servida gelada ao som do rio.',
+      title: '🍽️ Gastronomia de origem',
+      description: 'Buffet pantaneiro com ingredientes colhidos na hora e petiscos ao entardecer. Delicie-se com sabores autênticos e afetivos da região.',
       image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=800&h=600&auto=format&fit=crop',
       imagePosition: 'left',
       link: '/gastronomia'
     },
     {
       id: 'historia',
-      title: 'Ruínas da Usina Itaicy (1897)',
-      description: 'Hospede-se onde a energia do passado encontrou a natureza bruta.',
+      title: '🏛️ História viva – Usina Itaicy (1897)',
+      description: 'Passeie pelas relíquias centenárias da antiga usina às margens do Rio Cuiabá. Descubra como evoluímos de geradora de energia a eco-lodge de referência.',
       image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?q=80&w=800&h=600&auto=format&fit=crop',
       imagePosition: 'right',
-      link: '/sobre-nos'
+      link: '/sobre/historia'
     }
   ];
 
@@ -63,7 +63,23 @@ export function FeatureBlocks() {
                 {feature.title}
               </h3>
               <p className="font-lato text-[1rem] leading-[1.5] text-river-slate-800 mb-4">
-                {feature.description}
+                {feature.description.split('. ').map((sentence, index, array) => (
+                  <span key={index}>
+                    {sentence.includes('166 espécies') ? (
+                      <>
+                        Mais de <strong className="text-pantanal-green-900">166 espécies</strong> já registradas em roteiros ao amanhecer e pôr-do-sol
+                      </>
+                    ) : sentence.includes('Viva a aventura') ? (
+                      <>
+                        {sentence.split('Viva a aventura')[0]}
+                        <strong className="text-pantanal-green-900">Viva a aventura, preserve o Pantanal</strong>
+                      </>
+                    ) : (
+                      sentence
+                    )}
+                    {index < array.length - 1 && '. '}
+                  </span>
+                ))}
               </p>
               <Link href={feature.link} className="self-start">
                 <Button 

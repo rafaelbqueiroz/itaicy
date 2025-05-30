@@ -1,0 +1,125 @@
+Vamos reestruturar os quatro blocos 50/50 imagem–texto exatamente no mesmo formato do exemplo anterior, mas com copy refinado e alinhado aos nossos frameworks (StoryBrand, SUCCESs e AIDA).
+
+1. Estrutura HTML/CSS (exemplo)
+html
+Copiar
+Editar
+<section class="section experiences-grid">
+  <!-- Card 1: Pesca -->
+  <article class="card">
+    <img src="pesca.jpg" alt="Pesca catch-and-release" class="card-image">
+    <div class="card-content">
+      <h3 class="card-title">🎣 Pesca catch-and-release 100 % cota-zero</h3>
+      <p class="card-text">
+        Barcos ágeis em águas preservadas; guia local premiado garante emoção sem impacto.  
+        <strong>Viva a aventura, preserve o Pantanal.</strong>
+      </p>
+      <a href="/experiencias/pesca" class="button-secondary">Saiba mais →</a>
+    </div>
+  </article>
+
+  <!-- Card 2: Safari & Birdwatching -->
+  <article class="card reverse">
+    <div class="card-content">
+      <h3 class="card-title">🦜 Safáris, trilhas & birdwatching</h3>
+      <p class="card-text">
+        Mais de <strong>166 espécies</strong> já registradas em roteiros ao amanhecer e pôr-do-sol.  
+        Sinta o frio na barriga ao avistar tuiuiús e onças.  
+      </p>
+      <a href="/experiencias/birdwatching" class="button-secondary">Saiba mais →</a>
+    </div>
+    <img src="safari.jpg" alt="Safári fotográfico no Pantanal" class="card-image">
+  </article>
+
+  <!-- Card 3: Gastronomia -->
+  <article class="card">
+    <img src="gastronomia.jpg" alt="Gastronomia pantaneira" class="card-image">
+    <div class="card-content">
+      <h3 class="card-title">🍽️ Gastronomia de origem</h3>
+      <p class="card-text">
+        Buffet pantaneiro com ingredientes colhidos na hora e petiscos ao entardecer.  
+        Delicie-se com sabores autênticos e afetivos da região.  
+      </p>
+      <a href="/gastronomia" class="button-secondary">Saiba mais →</a>
+    </div>
+  </article>
+
+  <!-- Card 4: História viva -->
+  <article class="card reverse">
+    <div class="card-content">
+      <h3 class="card-title">🏛️ História viva – Usina Itaicy (1897)</h3>
+      <p class="card-text">
+        Passeie pelas relíquias centenárias da antiga usina às margens do Rio Cuiabá.  
+        Descubra como evoluímos de geradora de energia a eco-lodge de referência.  
+      </p>
+      <a href="/sobre/historia" class="button-secondary">Saiba mais →</a>
+    </div>
+    <img src="usina.jpg" alt="Ruínas da Usina Itaicy" class="card-image">
+  </article>
+</section>
+CSS-chave
+
+.experiences-grid: display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+
+.card-image: height: 240px; object-fit: cover; border-radius: 8px;
+
+.card-content: padding: 24px; display: flex; flex-direction: column; justify-content: space-between;
+
+.reverse: inverte ordem no desktop (flex-direction: row-reverse).
+
+2. Quais frameworks usamos aqui?
+Camada	Framework	Aplicação
+Macro / Hero	StoryBrand	Posiciona o hóspede como herói, Itaicy como guia.
+Prova & Benefícios	SUCCESs	Concretude, emoção e credibilidade nos textos dos cards.
+Micro (CTA)	AIDA 2.0 + Loss-Aversion	Gatilhos de atenção, desejo e ação nos botões “Saiba mais →”.
+
+3. Como costuramos na prática
+Roteiro StoryBrand simplificado (para o hero):
+
+H1: “Você + o maior wetland do planeta”
+
+Problema: “Viajar ao Pantanal parece complexo…”
+
+Guia: “Nós moramos aqui há 20 anos.”
+
+Plano: “Escolha sua experiência → Reserve online → Desfrute.”
+
+CTA: “Reservar agora” / “Planejar roteiro”
+
+Sucesso: “Volte para casa com fotos de onça e recordes de dourado.”
+
+Falha evitada: “Sem perder tempo em intermediários.”
+
+Blocos SUCCESs (nos cards):
+
+Simple: título direto e icônico (“🎣 Pesca catch-and-release…”).
+
+Unexpected: “Aqui onça é vista de dia 4× mais que na Amazônia.” (pode entrar num futuro card ou num hover tooltip).
+
+Concrete: “166 espécies já registradas”.
+
+Credible: “Guia local premiado”.
+
+Emotional: “Sinta a emoção do troféu e preserve a vida”.
+
+Stories: cada card conta um mini-story (“do vapor da usina ao canto da mata”).
+
+AIDA nos CTAs:
+
+Atenção: emoji + título forte.
+
+Interesse: frase que destaca diferencial (“100 % cota-zero”, “buffet colhido na hora”).
+
+Desejo: uso de bold e “viva/deguste/sinta” (linguagem sensorial).
+
+Ação: botão “Saiba mais →” como gatilho direto.
+
+Loss-Aversion (opcional em pacotes): “Últimas vagas” ou “Temporada 2025 abrindo em breve”.
+
+Com esse setup, seus blocos 50/50 ficam visualmente coesos, com copy que:
+
+Convida o usuário a ser protagonista (StoryBrand)
+
+Entrega benefícios palpáveis e emocionais (SUCCESs)
+
+Gere conversão eficaz (AIDA + gatilhos de escassez)
