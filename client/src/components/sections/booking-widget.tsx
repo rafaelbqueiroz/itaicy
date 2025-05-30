@@ -52,11 +52,11 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
   if (variant === 'floating') {
     return (
       <div className={containerClasses}>
-        <div className="bg-[#FAF9F6] shadow-xl rounded-lg w-full max-w-[1016px] mx-auto p-6" aria-label="Formulário de reserva">
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+        <div className="bg-cloud-white-0 border border-river-slate-700/30 shadow-sm rounded-lg w-full max-w-[1016px] mx-auto py-6 px-8" aria-label="Formulário de reserva">
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
             {/* Check-in */}
             <div className="space-y-2">
-              <Label htmlFor="checkin-floating" className="text-sm font-medium text-[#64748B]" style={{ fontFamily: 'Lato, sans-serif' }}>
+              <Label htmlFor="checkin-floating" className="font-lato text-xs text-river-slate-800 mb-1">
                 Check-in
               </Label>
               <Input
@@ -64,13 +64,13 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
                 type="date"
                 value={formData.checkIn}
                 onChange={(e) => setFormData(prev => ({ ...prev, checkIn: e.target.value }))}
-                className="border border-[#64748B]/30 rounded-md py-3 px-4 text-sm text-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#064737]"
+                className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-4 py-3 text-sm font-lato placeholder:river-slate-500"
               />
             </div>
             
             {/* Check-out */}
             <div className="space-y-2">
-              <Label htmlFor="checkout-floating" className="text-sm font-medium text-[#64748B]" style={{ fontFamily: 'Lato, sans-serif' }}>
+              <Label htmlFor="checkout-floating" className="font-lato text-xs text-river-slate-800 mb-1">
                 Check-out
               </Label>
               <Input
@@ -78,20 +78,20 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
                 type="date"
                 value={formData.checkOut}
                 onChange={(e) => setFormData(prev => ({ ...prev, checkOut: e.target.value }))}
-                className="border border-[#64748B]/30 rounded-md py-3 px-4 text-sm text-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#064737]"
+                className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-4 py-3 text-sm font-lato placeholder:river-slate-500"
               />
             </div>
             
             {/* Adults */}
             <div className="space-y-2">
-              <Label htmlFor="adults-floating" className="text-sm font-medium text-[#64748B]" style={{ fontFamily: 'Lato, sans-serif' }}>
+              <Label htmlFor="adults-floating" className="font-lato text-xs text-river-slate-800 mb-1">
                 Adultos
               </Label>
               <select
                 id="adults-floating"
                 value={formData.guests}
                 onChange={(e) => setFormData(prev => ({ ...prev, guests: e.target.value }))}
-                className="w-full border border-[#64748B]/30 rounded-md py-3 px-4 text-sm text-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#064737]"
+                className="w-full bg-cloud-white-0 border border-river-slate-700/30 rounded px-4 py-3 text-sm font-lato"
               >
                 {GUEST_OPTIONS.map(option => (
                   <option key={option.value} value={option.value}>{option.label}</option>
@@ -101,14 +101,14 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
 
             {/* Experience */}
             <div className="space-y-2">
-              <Label htmlFor="experience-floating" className="text-sm font-medium text-[#64748B]" style={{ fontFamily: 'Lato, sans-serif' }}>
+              <Label htmlFor="experience-floating" className="font-lato text-xs text-river-slate-800 mb-1">
                 Experiência
               </Label>
               <select
                 id="experience-floating"
                 value={formData.experience}
                 onChange={(e) => setFormData(prev => ({ ...prev, experience: e.target.value }))}
-                className="w-full border border-[#64748B]/30 rounded-md py-3 px-4 text-sm text-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#064737]"
+                className="w-full bg-cloud-white-0 border border-river-slate-700/30 rounded px-4 py-3 text-sm font-lato"
               >
                 {BOOKING_EXPERIENCES.map(exp => (
                   <option key={exp.value} value={exp.label}>{exp.label}</option>
@@ -120,10 +120,9 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
             <Button 
               type="submit" 
               disabled={isLoading}
-              className="bg-[#C97A2C] hover:bg-[#C97A2C]/90 text-[#FAF9F6] font-semibold uppercase py-3 px-6 rounded-md shadow-md transition-colors duration-150"
-              style={{ fontFamily: 'Lato, sans-serif' }}
+              className="bg-sunset-amber-600 hover:bg-sunset-amber-700 text-white hover:text-white font-lato font-semibold uppercase text-xs tracking-wider py-3 px-6 rounded-md transition-colors duration-200"
             >
-              {isLoading ? 'Verificando...' : 'Ver disponibilidade'}
+              {isLoading ? 'Verificando...' : 'RESERVAR'}
             </Button>
           </form>
         </div>

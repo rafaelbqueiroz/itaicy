@@ -1,0 +1,79 @@
+Vamos por partes:
+
+1. Botão “Reservar” (hover)
+Estado	Problema atual	Correção segundo DS
+Hover	Fundo “sunset-amber/600” escurece, mas o texto vira verde (pantanal-green/900) – quebra o contraste.	🔹 Text color: sempre white.
+🔹 Hover BG: escurecer o sunset-amber em 8 % (já ok).
+🔹 Transição: transition-colors 200ms.
+
+Resultado: botãó escurece no hover mas mantém o texto legível em branco.
+
+2. Widget de reservas
+2.1 Aparência geral
+Fundo: usar cloud-white/0 puro (sem título “Reserve Sua Experiência”) para ficar “flutuando” sobre o hero.
+
+Borda e sombra: border 1px solid river-slate/30% + shadow-lvl1.
+
+Radius: rounded-lg (8 px).
+
+Padding: py-6 px-8 (space-6 e space-8).
+
+2.2 Campos
+Label: font-lato text-xs text-river-slate/800 mb-1.
+
+Input / Select: bg-cloud-white/0 border 1px river-slate/30% rounded px-4 py-3 text-sm font-lato placeholder:river-slate/500.
+
+Gap: space-x-6 entre campos (24 px).
+
+2.3 Botão interno
+Variant: Primary mas em tamanho “small”:
+
+bg-sunset-amber/600 text-white font-lato font-semibold uppercase text-xs tracking-wider py-3 px-6 rounded-md
+
+Hover: bg-sunset-amber/700.
+
+Fluxo: hero → apenas o widget aparece centralizado abaixo do headline (sem duplicar botões).
+
+3. Menu mobile vs. Mega-menu
+Aspecto	Mobile drawer	Mega-menu desktop	Unificação sugerida
+Fundo	pantanal-green/900	idem (full-width)	manter o mesmo verde escuro
+Topo	logo + X branco	logo + close ícone branco	mesclar, mesma altura e symetria
+Tipografia	Lato 500 uppercase branco, espaçamento tight	mesmo Lato 500 uppercase para títulos	aplicar igual (Lato 500, caps)
+Links	listagem simples, muito soltos	agrupados em colunas “Lodge” / “Planeje-se”	mobile: agrupar com headings e dividers idênticos
+Padding	py-4 px-6	py-8 px-12	usar py-6 px-8 para convergência
+
+Dica: replicar estrutura:
+
+scss
+Copiar
+Editar
+LODGE  
+• Estrutura & Conforto  
+• História & Sustentabilidade  
+ 
+EXPERIÊNCIAS  
+• Pesca Esportiva  
+• Ecoturismo & Birdwatching  
+• Pacotes & Tarifas  
+ 
+(etc.)  
+e manter hierarquia visual idêntica.
+
+4. Mega-menu: links “vazios” demais
+Adicionar micro-descrições sob cada link (6–10 palavras em Body-S) para contextualizar:
+
+“História & Sustentabilidade
+**Conheça nossa transição de usina a eco-lodge”_
+
+Ícones simples (linha de ícones Pantanal: árvore, peixe, pássaro) ao lado dos títulos de seção para enriquecer sem pesar.
+
+Hover state: sobre sand-beige/400 com transição, reforçando que são clicáveis.
+
+🌱 Próximos passos
+Ajustar CSS dos hover do botão “Reservar”.
+
+Refatorar o markup e classes do widget de reservas para alinhá-lo ao Design System.
+
+Sincronizar mobile drawer com mega-menu: mesma tipografia, espaçamentos e agrupamentos.
+
+Enriquecer mega-menu com descritores e ícones, melhorando escaneabilidade.

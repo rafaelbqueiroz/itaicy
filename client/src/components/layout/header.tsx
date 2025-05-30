@@ -3,7 +3,7 @@ import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/ui/language-switcher';
 import { useLanguage } from '@/hooks/use-language';
-import { Menu, X, MessageCircle, ChevronDown } from 'lucide-react';
+import { Menu, X, MessageCircle, ChevronDown, Fish, TreePine, Bird, Utensils, History, Leaf } from 'lucide-react';
 import logoSecondary from '@assets/itaicy-wordmark-secondary.png';
 import logoPrimary from '@assets/itaicy-wordmark-primary.png';
 
