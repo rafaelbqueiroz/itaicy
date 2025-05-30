@@ -93,12 +93,12 @@ export function Header() {
 
                 {/* Mega Menu */}
                 {item.megaMenu && activeDropdown === item.name && (
-                  <div className="absolute inset-x-0 top-full z-40">
-                    <div className="mx-auto max-w-[1440px] px-8 py-12 bg-white rounded-md shadow-[0_2px_4px_rgba(0,0,0,0.05)] grid grid-cols-1 md:grid-cols-3 gap-x-16 gap-y-8">
+                  <div className="absolute top-full left-0 w-screen shadow-lg z-50 bg-white border-t border-pantanal-green-900/10">
+                    <div className="mx-auto max-w-[1440px] px-8 grid md:grid-cols-3 gap-x-16 gap-y-8 py-12">
                       {/* Coluna 1: Lodge */}
                       <div>
                         <h3 className="font-playfair text-xl text-pantanal-green-900 mb-4">Lodge</h3>
-                        <ul className="space-y-2">
+                        <ul className="space-y-3">
                           <li>
                             <Link 
                               href="/acomodacoes" 
@@ -122,8 +122,8 @@ export function Header() {
 
                       {/* Coluna 2: Experiências */}
                       <div>
-                        <h3 className="font-playfair text-xl text-pantanal-green-900 mb-4">Experiências</h3>
-                        <ul className="space-y-2">
+                        <h3 className="font-playfair text-xl text-pantanal-green-900 mb-6">Experiências</h3>
+                        <ul className="space-y-3">
                           <li>
                             <Link 
                               href="/experiencias/pesca" 
@@ -139,48 +139,48 @@ export function Header() {
                               className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
                               onClick={() => setActiveDropdown(null)}
                             >
-                              Safáris & Trilhas
+                              Safáris & Birdwatching
                             </Link>
                           </li>
                           <li>
                             <Link 
-                              href="/experiencias/birdwatching" 
+                              href="/experiencias/pacotes" 
                               className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
                               onClick={() => setActiveDropdown(null)}
                             >
-                              Birdwatching
+                              Pacotes & Tarifas
                             </Link>
                           </li>
                         </ul>
                       </div>
 
                       {/* Coluna 3: Planejamento + Card */}
-                      <div className="md:col-start-3 md:row-start-1 row-span-full flex flex-col justify-between">
+                      <div className="flex flex-col gap-8">
                         <div>
-                          <h3 className="font-playfair text-xl text-pantanal-green-900 mb-4">Planejamento</h3>
-                          <ul className="space-y-2 mb-8">
-                            <li className="flex items-start gap-2">
-                              <MapPin className="w-4 h-4 mt-1 text-pantanal-green-900" />
+                          <h3 className="font-playfair text-xl text-pantanal-green-900 mb-6">Planejamento</h3>
+                          <ul className="space-y-3">
+                            <li className="flex items-center gap-2">
+                              <MapPin className="h-4 w-4 text-pantanal-green-900" />
                               <Link 
                                 href="/como-chegar" 
                                 className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
                                 onClick={() => setActiveDropdown(null)}
                               >
-                                Como Chegar
+                                Como chegar
                               </Link>
                             </li>
-                            <li className="flex items-start gap-2">
-                              <CalendarDays className="w-4 h-4 mt-1 text-pantanal-green-900" />
+                            <li className="flex items-center gap-2">
+                              <CalendarDays className="h-4 w-4 text-pantanal-green-900" />
                               <Link 
                                 href="/melhor-epoca" 
                                 className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
                                 onClick={() => setActiveDropdown(null)}
                               >
-                                Melhor Época
+                                Melhor época
                               </Link>
                             </li>
-                            <li className="flex items-start gap-2">
-                              <HelpCircle className="w-4 h-4 mt-1 text-pantanal-green-900" />
+                            <li className="flex items-center gap-2">
+                              <HelpCircle className="h-4 w-4 text-pantanal-green-900" />
                               <Link 
                                 href="/faq" 
                                 className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
@@ -195,13 +195,14 @@ export function Header() {
                         {/* Card Destaque */}
                         <Link
                           href="/experiencias/safari"
-                          className="block rounded-md overflow-hidden shadow-lg group"
+                          className="relative overflow-hidden rounded-md shadow-md group block"
                           onClick={() => setActiveDropdown(null)}
                         >
-                          <div className="p-4 bg-gradient-to-br from-pantanal-green-900 to-pantanal-green-800 text-white">
-                            <p className="font-playfair text-lg mb-2">Ver onças de perto</p>
-                            <p className="text-sm mb-4 opacity-90">Experiência única no Pantanal</p>
-                            <span className="inline-flex items-center text-sm font-medium">
+                          <div className="h-36 w-full bg-gradient-to-br from-pantanal-green-900 to-pantanal-green-800 p-4 flex flex-col justify-end">
+                            <h4 className="text-white text-lg font-semibold mb-2">
+                              Ver onças de perto
+                            </h4>
+                            <span className="inline-flex items-center text-white/90 text-sm font-medium group-hover:underline">
                               Saiba mais →
                             </span>
                           </div>

@@ -1,0 +1,160 @@
+Checklist rápido
+O que conferir	Como validar	Deve acontecer
+Margens laterais	Reduza/expanda o viewport até ~1500 px	O mega-menu sempre para 32 px antes da borda da janela, igual ao header
+Grid interno	Use DevTools → inspector → .wrapper	3 colunas de ~400–430 px (depende do espaço), gap 64 px
+Responsivo	⬇ 768 px	Cola em 1 coluna, card destaque desce para o fim
+Hover links	Passe o mouse nos links azuis	Cor muda para pantanal-green/700 (escurece levemente)
+Foco teclado	Tabulação pelos links	Borda 2 px dashed pantanal-green/700 (token foco)
+Scroll-lock	Roda a página com mega aberto	Não deve haver scroll de body (overflow-hidden)
+
+Possíveis ajustes finos
+Sintoma	Micro-tweak
+Card de destaque não alinha pela base	Adicionar self-end no card ou items-start no grid
+Sombra parece fraca em telas claras	Trocar rgba(0,0,0,.05) → .08
+Ícone plano de fundo aparece serrilhado	Use SVG inline (stroke-width:1.75) em vez de font-icons
+
+Próximos passos
+Performance adicione prefers-reduced-motion → desliga animação caso o usuário peça.
+
+A11y role-trap (FocusLock) dentro do mega para não “escapar” para trás do overlay.
+
+Analytics dispare evento GA4 “mega_menu_click” com rótulo de cada link para descobrir quais sessões são mais abertas.
+
+Se depois desses testes algo ainda fugir do grid (ex.: em laptops 1366 px), me avise qual breakpoint e mando o tweak exato.
+
+
+
+
+
+Você disse:
+
+vc não entendeu. ainda estáa com erro. como corrigir?
+
+O ChatGPT disse:
+Entendi – o componente ainda está renderizando como um “drop-down” estreito porque o wrapper que deveria expandir full-width está recebendo width: max-content (o default do menu suspenso) e não herdando o grid-container do cabeçalho.
+A correção é simples: forçamos o menu a:
+
+Esticar 100 % da viewport (ou do wrapper interno)
+
+Seguir o mesmo grid das 3 colunas
+
+Desligar o layout “inline-block” que o deixa colapsado
+
+ts
+Copiar
+Editar
+/* MegaMenu.tsx (ou .vue / .jsx) */
+export const MegaMenu = () => (
+  <div
+    className="
+      absolute top-full left-0 w-screen   /* 1️⃣ ocupa toda a largura */
+      shadow-lg z-50 bg-cloud-white
+      border-t border-pantanal-green/10
+    "
+  >
+    <div
+      className="
+        mx-auto max-w-[1440px] px-8   /* 1.1 alinha ao header wrapper */
+        grid md:grid-cols-3 gap-x-16 gap-y-8
+        py-12
+      "
+    >
+      {/* Coluna 1 -------------------------------------------------- */}
+      <div>
+        <h3 className="font-display text-xl text-pantanal-green-900 mb-6">
+          Lodge
+        </h3>
+        <ul className="space-y-3">
+          <li><a className="mega-link" href="/acomodacoes">Acomodações</a></li>
+          <li><a className="mega-link" href="/gastronomia">Gastronomia</a></li>
+        </ul>
+      </div>
+
+      {/* Coluna 2 */}
+      <div>
+        <h3 className="font-display text-xl text-pantanal-green-900 mb-6">
+          Experiências
+        </h3>
+        <ul className="space-y-3">
+          <li><a className="mega-link" href="/pesca">Pesca Esportiva</a></li>
+          <li><a className="mega-link" href="/bird">Safáris &amp; Birdwatching</a></li>
+          <li><a className="mega-link" href="/tarifas">Pacotes &amp; Tarifas</a></li>
+        </ul>
+      </div>
+
+      {/* Coluna 3 + card destaque --------------------------------- */}
+      <div className="flex flex-col gap-8">
+        <div>
+          <h3 className="font-display text-xl text-pantanal-green-900 mb-6">
+            Planejamento
+          </h3>
+          <ul className="space-y-3">
+            <li className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-pantanal-green-900" />
+              <a className="mega-link" href="/como-chegar">Como chegar</a>
+            </li>
+            <li className="flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-pantanal-green-900" />
+              <a className="mega-link" href="/melhor-epoca">Melhor época</a>
+            </li>
+            <li className="flex items-center gap-2">
+              <HelpCircle className="h-4 w-4 text-pantanal-green-900" />
+              <a className="mega-link" href="/faq">FAQ</a>
+            </li>
+          </ul>
+        </div>
+
+        {/* Card destaque */}
+        <a
+          href="/experiencias/onca"
+          className="
+            relative overflow-hidden rounded-md shadow-md
+            group block
+          "
+        >
+          <img
+            src="/img/onca-thumb.jpg"
+            alt="Onças no Pantanal"
+            className="h-36 w-full object-cover transition-scale duration-300 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-tr from-black/70 to-black/20 p-4 flex flex-col justify-end">
+            <h4 className="text-white text-lg font-semibold mb-2">
+              Ver onças de perto
+            </h4>
+            <span
+              className="inline-flex items-center text-white/90 text-sm font-medium group-hover:underline"
+            >
+              Saiba mais →
+            </span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+)
+
+/* util */
+.mega-link {
+  @apply text-river-slate-800 hover:text-pantanal-green-700 transition-colors;
+}
+O que muda
+Antes	Depois
+Wrapper de 240 px que colapsa	w-screen + grid ⇒ largura total
+Títulos desalinhados/no-wrap	font-display text-xl tokens corretos
+Links empilhados sem espaço	space-y-3 + cor token + hover
+Card destaque fora do fluxo	Fica na 3ª coluna dentro do grid
+
+Passos de verificação rápida
+Inspecione: o .absolute deve medir exatamente 100 % da viewport (mostra ~1900 px de largura).
+
+Resize (≥1366 ↔ 992 px): as 3 colunas entram/saem conforme md:grid-cols-3.
+Em tablets (sm) vira 2 colunas; em mobile uma.
+
+Focus/hover: links destacam em pantanal-green/700.
+
+Scroll: body trava (overflow-hidden) quando o menu está aberto.
+
+Dica extra
+Se o menu ainda se posicionar “quebrado” logo após abrir, confirme que o contêiner pai tem relative; sem ele o absolute se ancora ao body e pode sair da viewport.
+
+Isso resolve o colapso + alinhamento ao grid do cabeçalho. Teste no seu branch; se algo ainda escapar em breakpoints específicos, diga qual largura para eu ajustar o grid-template-columns.
