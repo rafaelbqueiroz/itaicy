@@ -190,12 +190,16 @@ export function Header() {
             </Link>
 
             {/* Language switcher */}
-            <LanguageSwitcher />
+            <LanguageSwitcher isSticky={isSticky} />
             
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2 rounded-md text-white hover:bg-white/10"
+              className={`lg:hidden p-2 rounded-md transition-colors ${
+                isSticky 
+                  ? 'text-pantanal-green-900 hover:bg-pantanal-green-900/10' 
+                  : 'text-white hover:bg-white/10'
+              }`}
               aria-label="Abrir menu"
             >
               {isMenuOpen ? (

@@ -2,13 +2,17 @@ import { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '@/hooks/use-language';
 import { Globe, ChevronDown } from 'lucide-react';
 
+interface LanguageSwitcherProps {
+  isSticky?: boolean;
+}
+
 const LANGUAGES = [
   { code: 'pt', name: 'Português', flag: '🇧🇷' },
   { code: 'en', name: 'English', flag: '🇺🇸' },
   { code: 'es', name: 'Español', flag: '🇪🇸' },
 ];
 
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ isSticky = false }: LanguageSwitcherProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { language, setLanguage } = useLanguage();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -60,28 +64,40 @@ export function LanguageSwitcher() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         onKeyDown={(e) => handleKeyDown(e)}
-        className="flex items-center gap-2 bg-cloud-white-0/20 backdrop-blur px-3 py-1.5 rounded-md hover:bg-cloud-white-0/30 focus-visible:outline-2 focus-visible:outline-pantanal-green-700 transition-colors duration-150 text-cloud-white-0 hover:text-cloud-white-0 focus:text-cloud-white-0"
+        className={`flex items-center gap-2 backdrop-blur px-3 py-1.5 rounded-md focus-visible:outline-2 focus-visible:outline-pantanal-green-700 transition-colors duration-150 ${
+          isSticky 
+            ? 'bg-sand-beige-400/20 hover:bg-sand-beige-400/30 text-pantanal-green-900 hover:text-pantanal-green-900 focus:text-pantanal-green-900'
+            : 'bg-cloud-white-0/20 hover:bg-cloud-white-0/30 text-cloud-white-0 hover:text-cloud-white-0 focus:text-cloud-white-0'
+        }`}
         aria-label="Seleção de idioma"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
-        <Globe className="w-5 h-5 text-cloud-white-0" />
+        <Globe className={`w-5 h-5 ${isSticky ? 'text-pantanal-green-900' : 'text-cloud-white-0'}`} />
         <div className="flex items-center gap-1">
           <span 
-            className="w-4 h-4 rounded-full border border-cloud-white-0/40 flex items-center justify-center text-xs text-cloud-white-0"
+            className={`w-4 h-4 rounded-full border flex items-center justify-center text-xs ${
+              isSticky 
+                ? 'border-pantanal-green-900/40 text-pantanal-green-900' 
+                : 'border-cloud-white-0/40 text-cloud-white-0'
+            }`}
             aria-hidden="true"
           >
             {currentLang.flag}
           </span>
           <span 
-            className="text-xs font-medium tracking-widest uppercase text-cloud-white-0"
+            className={`text-xs font-medium tracking-widest uppercase ${
+              isSticky ? 'text-pantanal-green-900' : 'text-cloud-white-0'
+            }`}
             style={{ fontFamily: 'Lato, sans-serif' }}
           >
             {currentLang.code}
           </span>
         </div>
         <ChevronDown 
-          className={`w-4 h-4 transition-transform duration-150 text-cloud-white-0 ${isOpen ? 'rotate-180' : ''}`} 
+          className={`w-4 h-4 transition-transform duration-150 ${
+            isSticky ? 'text-pantanal-green-900' : 'text-cloud-white-0'
+          } ${isOpen ? 'rotate-180' : ''}`} 
         />
       </button>
 
