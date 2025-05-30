@@ -59,7 +59,7 @@ export function Header() {
   };
 
   return (
-    <header className={`${headerClasses} relative`} style={stickyStyles}>
+    <header className={headerClasses} style={stickyStyles}>
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
@@ -91,133 +91,129 @@ export function Header() {
                   {item.megaMenu && <ChevronDown className="inline-block ml-1 h-2 w-2 align-middle" />}
                 </Link>
 
+                {/* Mega Menu */}
+                {item.megaMenu && activeDropdown === item.name && (
+                  <div className="absolute top-full left-0 w-screen shadow-lg z-50 bg-white border-t border-pantanal-green-900/10">
+                    <div className="mx-auto max-w-[1440px] px-8 grid md:grid-cols-3 gap-x-16 gap-y-8 py-12">
+                      {/* Coluna 1: Lodge */}
+                      <div>
+                        <h3 className="font-playfair text-xl text-pantanal-green-900 mb-4">Lodge</h3>
+                        <ul className="space-y-3">
+                          <li>
+                            <Link 
+                              href="/acomodacoes" 
+                              className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                              onClick={() => setActiveDropdown(null)}
+                            >
+                              Acomodações
+                            </Link>
+                          </li>
+                          <li>
+                            <Link 
+                              href="/gastronomia" 
+                              className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                              onClick={() => setActiveDropdown(null)}
+                            >
+                              Gastronomia
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
+
+                      {/* Coluna 2: Experiências */}
+                      <div>
+                        <h3 className="font-playfair text-xl text-pantanal-green-900 mb-6">Experiências</h3>
+                        <ul className="space-y-3">
+                          <li>
+                            <Link 
+                              href="/experiencias/pesca" 
+                              className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                              onClick={() => setActiveDropdown(null)}
+                            >
+                              Pesca Esportiva
+                            </Link>
+                          </li>
+                          <li>
+                            <Link 
+                              href="/experiencias/safari" 
+                              className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                              onClick={() => setActiveDropdown(null)}
+                            >
+                              Safáris & Birdwatching
+                            </Link>
+                          </li>
+                          <li>
+                            <Link 
+                              href="/experiencias/pacotes" 
+                              className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                              onClick={() => setActiveDropdown(null)}
+                            >
+                              Pacotes & Tarifas
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
+
+                      {/* Coluna 3: Planejamento + Card */}
+                      <div className="flex flex-col gap-8">
+                        <div>
+                          <h3 className="font-playfair text-xl text-pantanal-green-900 mb-6">Planejamento</h3>
+                          <ul className="space-y-3">
+                            <li className="flex items-center gap-2">
+                              <MapPin className="h-4 w-4 text-pantanal-green-900" />
+                              <Link 
+                                href="/como-chegar" 
+                                className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                                onClick={() => setActiveDropdown(null)}
+                              >
+                                Como chegar
+                              </Link>
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <CalendarDays className="h-4 w-4 text-pantanal-green-900" />
+                              <Link 
+                                href="/melhor-epoca" 
+                                className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                                onClick={() => setActiveDropdown(null)}
+                              >
+                                Melhor época
+                              </Link>
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <HelpCircle className="h-4 w-4 text-pantanal-green-900" />
+                              <Link 
+                                href="/faq" 
+                                className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                                onClick={() => setActiveDropdown(null)}
+                              >
+                                FAQ
+                              </Link>
+                            </li>
+                          </ul>
+                        </div>
+
+                        {/* Card Destaque */}
+                        <Link
+                          href="/experiencias/safari"
+                          className="relative overflow-hidden rounded-md shadow-md group block"
+                          onClick={() => setActiveDropdown(null)}
+                        >
+                          <div className="h-36 w-full bg-gradient-to-br from-pantanal-green-900 to-pantanal-green-800 p-4 flex flex-col justify-end">
+                            <h4 className="text-white text-lg font-semibold mb-2">
+                              Ver onças de perto
+                            </h4>
+                            <span className="inline-flex items-center text-white/90 text-sm font-medium group-hover:underline">
+                              Saiba mais →
+                            </span>
+                          </div>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </nav>
-
-          {/* Mega Menu Panel - Fixed inside header */}
-          {activeDropdown && (
-            <nav 
-              className="absolute left-0 right-0 top-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.08)] z-50"
-              onMouseLeave={() => setActiveDropdown(null)}
-            >
-              <div className="max-w-[1440px] mx-auto px-8 py-12 grid grid-cols-1 md:grid-cols-3 gap-y-10 gap-x-16">
-                {/* Coluna 1: Lodge */}
-                <div>
-                  <h3 className="font-playfair text-xl text-pantanal-green-900 mb-6">Lodge</h3>
-                  <ul className="space-y-3">
-                    <li>
-                      <Link 
-                        href="/acomodacoes" 
-                        className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
-                        onClick={() => setActiveDropdown(null)}
-                      >
-                        Acomodações
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        href="/gastronomia" 
-                        className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
-                        onClick={() => setActiveDropdown(null)}
-                      >
-                        Gastronomia
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-
-                {/* Coluna 2: Experiências */}
-                <div>
-                  <h3 className="font-playfair text-xl text-pantanal-green-900 mb-6">Experiências</h3>
-                  <ul className="space-y-3">
-                    <li>
-                      <Link 
-                        href="/experiencias/pesca" 
-                        className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
-                        onClick={() => setActiveDropdown(null)}
-                      >
-                        Pesca Esportiva
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        href="/experiencias/safari" 
-                        className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
-                        onClick={() => setActiveDropdown(null)}
-                      >
-                        Safáris & Birdwatching
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        href="/experiencias/pacotes" 
-                        className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
-                        onClick={() => setActiveDropdown(null)}
-                      >
-                        Pacotes & Tarifas
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-
-                {/* Coluna 3: Planejamento + Card */}
-                <div className="flex flex-col gap-8">
-                  <div>
-                    <h3 className="font-playfair text-xl text-pantanal-green-900 mb-6">Planejamento</h3>
-                    <ul className="space-y-3">
-                      <li className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-pantanal-green-900" />
-                        <Link 
-                          href="/como-chegar" 
-                          className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
-                          onClick={() => setActiveDropdown(null)}
-                        >
-                          Como chegar
-                        </Link>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CalendarDays className="h-4 w-4 text-pantanal-green-900" />
-                        <Link 
-                          href="/melhor-epoca" 
-                          className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
-                          onClick={() => setActiveDropdown(null)}
-                        >
-                          Melhor época
-                        </Link>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <HelpCircle className="h-4 w-4 text-pantanal-green-900" />
-                        <Link 
-                          href="/faq" 
-                          className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
-                          onClick={() => setActiveDropdown(null)}
-                        >
-                          FAQ
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-
-                  {/* Card Destaque */}
-                  <Link
-                    href="/experiencias/safari"
-                    className="relative overflow-hidden rounded-md shadow-md group block"
-                    onClick={() => setActiveDropdown(null)}
-                  >
-                    <div className="h-36 w-full bg-gradient-to-br from-pantanal-green-900 to-pantanal-green-800 p-4 flex flex-col justify-end">
-                      <h4 className="text-white text-lg font-semibold mb-2">
-                        Ver onças de perto
-                      </h4>
-                      <span className="inline-flex items-center text-white/90 text-sm font-medium group-hover:underline">
-                        Saiba mais →
-                      </span>
-                    </div>
-                  </Link>
-                </div>
-              </div>
-            </nav>
-          )}
 
           {/* Right side: Language Switcher + CTA Button */}
           <div className="hidden lg:flex items-center gap-4">
