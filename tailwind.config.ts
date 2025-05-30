@@ -21,6 +21,7 @@ export default {
         },
         'sand-beige': {
           200: '#E8DCC7',
+          300: '#E1D5C0',
           400: '#D9CEB3',
         },
         'cloud-white': {

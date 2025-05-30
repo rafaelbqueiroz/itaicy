@@ -80,7 +80,7 @@ export function DatePickerWithRange({
                 formatDate(date.from)
               )
             ) : (
-              <span className="text-river-slate-600">{t('booking.selectPeriod')}</span>
+              <span className="text-river-slate-800">{t('booking.selectPeriod')}</span>
             )}
           </Button>
         </PopoverTrigger>
@@ -96,11 +96,11 @@ export function DatePickerWithRange({
             disabled={(date) => date < new Date()}
             className="border-0"
             classNames={{
-              day_selected: "bg-sunset-amber-600 text-cloud-white-0",
-              day_range_middle: "bg-sunset-amber-300 text-cloud-white-0",
-              day_range_start: "rounded-l-md",
-              day_range_end: "rounded-r-md",
-              day: "hover:bg-sunset-amber-300 border-0",
+              day_selected: "bg-sunset-amber-600 text-cloud-white-0 rounded-md",
+              day_range_start: "bg-sunset-amber-600 text-cloud-white-0 rounded-l-md rounded-r-none",
+              day_range_end: "bg-sunset-amber-600 text-cloud-white-0 rounded-r-md rounded-l-none", 
+              day_range_middle: "bg-sand-beige-400 text-river-slate-800 rounded-none",
+              day: "hover:bg-sand-beige-300 transition-colors",
             }}
           />
         </PopoverContent>
