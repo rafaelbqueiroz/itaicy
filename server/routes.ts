@@ -77,6 +77,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // CMS Suites endpoints
+  app.get("/api/cms/suites", async (req, res) => {
+    try {
+      const suites = await storage.getCmsSuites();
+      res.json(suites);
+    } catch (error) {
+      res.status(500).json({ 
+        message: "Internal server error" 
+      });
+    }
+  });
+
+  app.get("/api/cms/suites/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const suite = await storage.getCmsSuiteById(id);
+      if (!suite) {
+        res.status(404).json({ message: "Suite not found" });
+        return;
+      }
+      res.json(suite);
+    } catch (error) {
+      res.status(500).json({ 
+        message: "Internal server error" 
+      });
+    }
+  });
+
   // Get gallery items endpoint
   app.get("/api/gallery", async (req, res) => {
     try {

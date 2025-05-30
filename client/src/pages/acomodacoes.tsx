@@ -3,10 +3,16 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MobileBookingBar } from '@/components/sections/mobile-booking-bar';
 import { useLanguage } from '@/hooks/use-language';
+import { useQuery } from '@tanstack/react-query';
 import { Leaf, Waves, Snowflake, Coffee, Wifi, Shield, TreePine, Bath, Wine, Users, Star } from 'lucide-react';
 
 export default function Acomodacoes() {
   const { t } = useLanguage();
+
+  // Fetch dynamic suites data from CMS API
+  const { data: suites = [], isLoading } = useQuery({
+    queryKey: ['/api/cms/suites'],
+  });
 
   const benefits = [
     {
@@ -31,55 +37,16 @@ export default function Acomodacoes() {
     }
   ];
 
-  const suites = [
-    {
-      id: 1,
-      name: 'Suíte Compacta',
-      size: '28 m²',
-      capacity: 2,
-      description: 'Conforto essencial com vista para o rio e varanda privativa.',
-      price: 800,
-      amenities: [
-        { icon: TreePine, name: 'Varanda com rede' },
-        { icon: Snowflake, name: 'Ar-condicionado' },
-        { icon: Wifi, name: 'Wi-Fi satelital' },
-        { icon: Shield, name: 'Cofre digital' }
-      ],
-      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600'
-    },
-    {
-      id: 2,
-      name: 'Suíte Ampla',
-      size: '35 m²',
-      capacity: 3,
-      description: 'Espaço generoso com varanda ampliada e vista privilegiada.',
-      price: 1200,
-      amenities: [
-        { icon: TreePine, name: 'Varanda ampliada' },
-        { icon: Snowflake, name: 'Ar-condicionado' },
-        { icon: Wifi, name: 'Wi-Fi satelital' },
-        { icon: Shield, name: 'Cofre digital' }
-      ],
-      image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600'
-    },
-    {
-      id: 3,
-      name: 'Suíte Master',
-      size: '45 m²',
-      capacity: 4,
-      description: 'Nossa suíte mais exclusiva com varanda panorâmica e comodidades premium.',
-      price: 1800,
-      amenities: [
-        { icon: TreePine, name: 'Varanda panorâmica' },
-        { icon: Snowflake, name: 'Ar-condicionado' },
-        { icon: Wifi, name: 'Wi-Fi satelital' },
-        { icon: Shield, name: 'Cofre digital' },
-        { icon: Wine, name: 'Minibar' },
-        { icon: Bath, name: 'Banheira dupla' }
-      ],
-      image: 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600'
-    }
-  ];
+  // Icon mapping for amenities
+  const getAmenityIcon = (amenity: string) => {
+    if (amenity.toLowerCase().includes('varanda') || amenity.toLowerCase().includes('rede')) return TreePine;
+    if (amenity.toLowerCase().includes('ar-condicionado') || amenity.toLowerCase().includes('climatização')) return Snowflake;
+    if (amenity.toLowerCase().includes('wi-fi') || amenity.toLowerCase().includes('wifi')) return Wifi;
+    if (amenity.toLowerCase().includes('cofre')) return Shield;
+    if (amenity.toLowerCase().includes('minibar') || amenity.toLowerCase().includes('frigobar')) return Wine;
+    if (amenity.toLowerCase().includes('banheira')) return Bath;
+    return Shield; // default icon
+  };
 
   const inclusions = [
     'Transfer aeroporto ⇄ lodge',
@@ -140,53 +107,79 @@ export default function Acomodacoes() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-            {suites.map((suite) => (
-              <Card key={suite.id} className="overflow-hidden shadow-lg border-0 bg-white">
-                <div className="relative">
-                  <img 
-                    src={suite.image}
-                    alt={`Interior da ${suite.name} com varanda e vista para o rio`}
-                    className="w-full h-48 sm:h-56 object-cover"
-                  />
-                </div>
-                <CardContent className="p-4 sm:p-6">
-                  <h3 className="font-playfair text-lg sm:text-xl font-bold text-river-slate-800 mb-2">
-                    {suite.name}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-river-slate-600 mb-4">
-                    {suite.size} • Até {suite.capacity} hóspedes
-                  </p>
-                  <div className="border-t border-sand-beige-200 pt-4 mb-4">
-                    <div className="grid grid-cols-1 gap-2">
-                      {suite.amenities.slice(0, 4).map((amenity, index) => (
-                        <div key={index} className="flex items-center text-xs sm:text-sm text-river-slate-600">
-                          <amenity.icon className="h-3 w-3 sm:h-4 sm:w-4 mr-2 text-pantanal-green-600 flex-shrink-0" strokeWidth={1.5} />
-                          {amenity.name}
-                        </div>
+          {isLoading ? (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+              {[1, 2, 3].map((i) => (
+                <Card key={i} className="overflow-hidden shadow-lg border-0 bg-white animate-pulse">
+                  <div className="h-48 sm:h-56 bg-sand-beige-200"></div>
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="h-6 bg-sand-beige-200 rounded mb-2"></div>
+                    <div className="h-4 bg-sand-beige-200 rounded mb-4 w-2/3"></div>
+                    <div className="space-y-2 mb-4">
+                      {[1, 2, 3, 4].map((j) => (
+                        <div key={j} className="h-4 bg-sand-beige-200 rounded"></div>
                       ))}
-                      {suite.amenities.length > 4 && (
-                        <p className="text-xs text-river-slate-500 mt-1">
-                          +{suite.amenities.length - 4} comodidades
-                        </p>
-                      )}
                     </div>
-                  </div>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                    <div>
-                      <span className="text-xl sm:text-2xl font-bold text-river-slate-800">
-                        R$ {suite.price.toLocaleString()}
-                      </span>
-                      <span className="text-xs sm:text-sm text-river-slate-500 block">por noite</span>
+                    <div className="flex justify-between items-center">
+                      <div className="h-8 bg-sand-beige-200 rounded w-1/3"></div>
+                      <div className="h-10 bg-sand-beige-200 rounded w-1/3"></div>
                     </div>
-                    <Button className="w-full sm:w-auto font-lato font-medium text-xs sm:text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-2 px-4 rounded-md transition-colors duration-150">
-                      Ver Datas
-                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+              {suites.map((suite: any) => (
+                <Card key={suite.id} className="overflow-hidden shadow-lg border-0 bg-white">
+                  <div className="relative">
+                    <img 
+                      src={suite.images?.[0] || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600'}
+                      alt={`Interior da ${suite.name} com varanda e vista para o rio`}
+                      className="w-full h-48 sm:h-56 object-cover"
+                    />
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  <CardContent className="p-4 sm:p-6">
+                    <h3 className="font-playfair text-lg sm:text-xl font-bold text-river-slate-800 mb-2">
+                      {suite.name}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-river-slate-600 mb-4">
+                      {suite.size} • Até {suite.capacity} hóspedes
+                    </p>
+                    <div className="border-t border-sand-beige-200 pt-4 mb-4">
+                      <div className="grid grid-cols-1 gap-2">
+                        {suite.amenities?.slice(0, 4).map((amenity: string, index: number) => {
+                          const IconComponent = getAmenityIcon(amenity);
+                          return (
+                            <div key={index} className="flex items-center text-xs sm:text-sm text-river-slate-600">
+                              <IconComponent className="h-3 w-3 sm:h-4 sm:w-4 mr-2 text-pantanal-green-600 flex-shrink-0" strokeWidth={1.5} />
+                              {amenity}
+                            </div>
+                          );
+                        })}
+                        {suite.amenities?.length > 4 && (
+                          <p className="text-xs text-river-slate-500 mt-1">
+                            +{suite.amenities.length - 4} comodidades
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                      <div>
+                        <span className="text-xl sm:text-2xl font-bold text-river-slate-800">
+                          R$ {Math.floor((suite.price || 0) / 100).toLocaleString()}
+                        </span>
+                        <span className="text-xs sm:text-sm text-river-slate-500 block">por noite</span>
+                      </div>
+                      <Button className="w-full sm:w-auto font-lato font-medium text-xs sm:text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-2 px-4 rounded-md transition-colors duration-150">
+                        Ver Datas
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

@@ -2,12 +2,13 @@ import { eq, like, and } from 'drizzle-orm';
 import { db } from './db';
 import { 
   users, experiences, accommodations, blogPosts, gallery, bookings, 
-  contactSubmissions, newsletterSubscriptions,
+  contactSubmissions, newsletterSubscriptions, cmsSuites,
   type User, type InsertUser, type Experience, type InsertExperience,
   type Accommodation, type InsertAccommodation, type BlogPost, type InsertBlogPost,
   type GalleryItem, type InsertGalleryItem, type Booking, type InsertBooking,
   type ContactSubmission, type InsertContactSubmission,
-  type NewsletterSubscription, type InsertNewsletterSubscription
+  type NewsletterSubscription, type InsertNewsletterSubscription,
+  type CmsSuite, type InsertCmsSuite
 } from "@shared/schema";
 import { IStorage } from './storage';
 
@@ -140,5 +141,35 @@ export class DatabaseStorage implements IStorage {
 
   async getNewsletterSubscriptions(): Promise<NewsletterSubscription[]> {
     return await db.select().from(newsletterSubscriptions).where(eq(newsletterSubscriptions.active, true));
+  }
+
+  // CMS Suite methods
+  async getCmsSuites(): Promise<CmsSuite[]> {
+    return await db.select().from(cmsSuites)
+      .where(eq(cmsSuites.isActive, true))
+      .orderBy(cmsSuites.sortOrder);
+  }
+
+  async getCmsSuiteById(id: number): Promise<CmsSuite | undefined> {
+    const result = await db.select().from(cmsSuites).where(eq(cmsSuites.id, id)).limit(1);
+    return result[0];
+  }
+
+  async createCmsSuite(insertSuite: InsertCmsSuite): Promise<CmsSuite> {
+    const result = await db.insert(cmsSuites).values(insertSuite).returning();
+    return result[0];
+  }
+
+  async updateCmsSuite(id: number, updateData: Partial<InsertCmsSuite>): Promise<CmsSuite> {
+    const result = await db.update(cmsSuites)
+      .set({ ...updateData, updatedAt: new Date() })
+      .where(eq(cmsSuites.id, id))
+      .returning();
+    
+    if (!result[0]) {
+      throw new Error(`Suite with id ${id} not found`);
+    }
+    
+    return result[0];
   }
 }
