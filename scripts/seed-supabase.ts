@@ -38,27 +38,17 @@ class SupabaseSeeder {
   private supabase: any;
 
   constructor() {
-    // Extrair URL e chave do Supabase da DATABASE_URL
-    const databaseUrl = process.env.DATABASE_URL;
-    if (!databaseUrl) {
-      throw new Error('DATABASE_URL não encontrada');
-    }
-
-    // Parse da URL para extrair host
-    const urlParts = databaseUrl.match(/postgresql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
-    if (!urlParts) {
-      throw new Error('Formato de DATABASE_URL inválido');
-    }
-
-    // Construir URL do Supabase
-    const [, user, password, host, port, database] = urlParts;
-    const projectId = host.split('.')[0].replace('aws-0-sa-east-1.pooler.supabase', '');
+    // Configuração direta para o projeto Supabase
+    const supabaseUrl = 'https://hcmrlpevcpkclqubnmmf.supabase.co';
     
-    const supabaseUrl = `https://${projectId}.supabase.co`;
-    const supabaseKey = 'sua-anon-key-aqui'; // Placeholder - precisa da chave real
-
     console.log('🔗 Conectando ao Supabase...');
     console.log(`URL: ${supabaseUrl}`);
+    
+    // Vou precisar da SUPABASE_ANON_KEY para conectar
+    const supabaseKey = process.env.SUPABASE_ANON_KEY;
+    if (!supabaseKey) {
+      throw new Error('SUPABASE_ANON_KEY é necessária para conectar ao CMS');
+    }
     
     this.supabase = createClient(supabaseUrl, supabaseKey);
   }
@@ -244,7 +234,7 @@ class SupabaseSeeder {
 }
 
 // Executa se chamado diretamente
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const seeder = new SupabaseSeeder();
   seeder.runSeed().catch(console.error);
 }

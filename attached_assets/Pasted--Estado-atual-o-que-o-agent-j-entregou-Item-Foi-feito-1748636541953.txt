@@ -1,0 +1,121 @@
+### 📋 Estado atual (o que o agent já entregou)
+
+| Item                                | Foi feito?                                    | Observação rápida                                                                                 |
+| ----------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Pipeline de extração**            | ☑️ Parcial                                    | Capturou `Home` e `Acomodações`, mas ignorou Experiências, Galeria, Contato, Blog, Footer/Header. |
+| **Carga dentro do Supabase**        | ❌                                             | Conteúdo permanece num `export.json` no `public/seed/` & memória. Sem tabelas/população real.     |
+| **Interface CMS**                   | ☑️ MVP                                        | Sidebar → páginas, editor de campos; mas sem WYSIWYG, sem preview, sem upload de mídia.           |
+| **Reflexo em tempo-real**           | ❌                                             | Edição grava no estado React local, não faz `PATCH` no Supabase nem hot-reload no front público.  |
+| **Autenticação & segurança**        | ❌                                             | Rota `/cms` aberta, sem Supabase Auth, sem RLS.                                                   |
+| **Heurísticas de Nielsen**          | ⚠️                                            | Falta feedback de status, undo, confirmação de publish, consistência de rotulagem.                |
+| **Global blocks (header / footer)** | ❌                                             | Não aparecem; risco de serem removidos acidentalmente.                                            |
+| **Biblioteca de mídia**             | UI apenas; não envia arquivos para `storage`. |                                                                                                   |
+| **Rollback / versionamento**        | ❌                                             | Nenhum log ou “Histórico de publicações”.                                                         |
+
+---
+
+## 🔍 Crítica UX (foco em usuário leigo)
+
+1. **Visibilidade do estado**
+
+   * O botão “Publicar” não mostra se algo foi realmente salvo ou falhou.
+   * Falta indicador de *“draft versus publicado”*.
+
+2. **Reconhecimento > Memorização**
+
+   * Campos soltos em formulários. Não há pré-visualização ou miniatura do bloco, obrigando o Robson a lembrar layout.
+
+3. **Principal × acessório**
+
+   * Robson só precisa mexer em textos, imagens, vídeos e números; mas pode apagar blocos inteiros sem aviso.
+
+4. **Banco de mídia**
+
+   * Upload não existe → ele não consegue trocar hero-video nem thumbnails de suítes.
+
+5. **Segurança / irreversibilidade**
+
+   * Qualquer erro acidental já afeta produção (não há staging nem botão *Undo*).
+
+---
+
+## 🛠️ Mudanças necessárias (road-map rápido para o agent)
+
+### 1. **Completar ingestão & seed**
+
+| Ação                                                                                                           | Detalhe                           |
+| -------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| Rastrear **todas** as rotas (`/`, `/acomodacoes`, `/experiencias`, `/galeria`, `/contato`, footer, header).    | Conectar AST parse → JSON blocks. |
+| Criar tabelas `pages`, `blocks`, `media_library`, `global_settings`.                                           | SQL no Supabase.                  |
+| Rodar script `seed-supabase.ts` populando **todas** as entradas + upload de assets para bucket `public/media`. | Retornar `publicURL` seguro.      |
+
+### 2. **Autenticação & RLS**
+
+* Ativar Supabase Auth (email+magic-link).
+* Policies:
+
+  ```sql
+  create policy "Owner can mutate" on blocks
+    for all using (auth.uid() = owner) with check (auth.uid() = owner);
+  create policy "Everyone can read published" on blocks
+    for select using (published = true);
+  ```
+* Rota `/cms` protegida por `ProtectedRoute`.
+
+### 3. **Editor de blocos 2.0**
+
+| Elemento             | Requisito UX                                                                                                    |
+| -------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Árvore visual**    | Replica a ordem real (drag-and-drop). “Global” grupo fixo para Header/Footer.                                   |
+| **Modo preview**     | Pane à direita -> render do bloco enquanto edita; toggle “Desktop / Mobile”.                                    |
+| **Media picker**     | Integra `react-dropzone` + Supabase Storage; mostra thumb, lazy-mapa de uso (quais blocos consomem cada asset). |
+| **Undo / Histórico** | Tabela `revisions`; ação “Reverter para 10 h atrás”.                                                            |
+| **Publicar seguro**  | Workflow: Draft → Preview → Publish. Pode agendar.                                                              |
+| **Feedback**         | Toast “Salvo”, *spinner* na barra topo, erros visíveis.                                                         |
+
+### 4. **Hot-reload no front público**
+
+* Front consome de Supabase via SSR → `getServerSideProps` ou `react-query` + `realtime` channel.
+* Stale-While-Revalidate; a cada `blocks.updated_at` notificação, favicon pisca “novo conteúdo”.
+
+### 5. **Simplificação para suítes**
+
+* **Collection** `accommodations`: campos
+  `name` (default “Suíte Compacta / Ampla / Master”), `max_guests`, `size_m2`, `amenities[]`, `base_price`, `season_prices`.
+* UI: tabela editável estilo Notion; preview card idêntico ao site.
+
+### 6. **Biblioteca de mídia**
+
+* Tabs: *Uploads* • *Em uso* • *Não usado*.
+* Exibe peso e orientação; botão “Substituir no bloco X”.
+
+### 7. **SEO integrado por página**
+
+* Dentro do editor de página, sub-tab SEO (title, description, OG image).
+* Validação de comprimento, contador de pixels.
+
+### 8. **Help & guard-rails**
+
+* On-boarding tour (React Joyride).
+* Tooltips “⚠️ Remover bloco afeta a Home inteira”.
+* Campo link → auto-complete routes para evitar 404.
+
+---
+
+## ✅ Critério de “feito”
+
+1. Robson faz login, troca a hero-image → clica “Preview” → website paralelo mostra a nova arte.
+2. Clica “Publicar” → site público reflete sem refresh manual.
+3. Pode editar preço da suíte, salvar, ver card atualizado.
+4. Upload de vídeo de 5 MB concluído → CDN URL gerado.
+5. Se remover bloco por engano → “Undo” restaura.
+6. Todo acesso `/cms` protegido; público só vê `published=true`.
+7. Lighthouse passa Core Web Vitals + meta tags.
+
+---
+
+### ✍️ Mensagem curta para o agent
+
+> **Refaça** o CMS seguindo o plano acima. Comece pela *ingestão completa + seed*, **antes** de redesenhar UI. Foque em autenticação, real-time refletindo no site e usabilidade (pré-visualização, undo, media picker). Só marque tarefas concluídas quando cada critério acima estiver verificado em staging.
+
+Assim evitamos retrabalho, protegemos o conteúdo existente e entregamos ao Robson um painel realmente confiável e fácil de usar.

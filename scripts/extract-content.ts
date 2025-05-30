@@ -340,13 +340,294 @@ class ContentExtractor {
     return assets;
   }
 
+  // Extrai todas as páginas do site
+  extractAllPages(): PageData[] {
+    const pages: PageData[] = [];
+    
+    // Home
+    pages.push(this.extractHomePage());
+    
+    // Acomodações
+    pages.push(this.extractAcomodacoesPage());
+    
+    // Experiências
+    pages.push(this.extractExperienciasPage());
+    
+    // Galeria
+    pages.push(this.extractGaleriaPage());
+    
+    // Blog
+    pages.push(this.extractBlogPage());
+    
+    // Contato
+    pages.push(this.extractContatoPage());
+    
+    // Configurações globais (Header/Footer)
+    pages.push(this.extractGlobalSettings());
+    
+    return pages;
+  }
+
+  // Extrai página de Experiências
+  extractExperienciasPage(): PageData {
+    console.log('🎣 Extraindo página Experiências...');
+    
+    const blocks: BlockData[] = [
+      {
+        type: 'hero-simple',
+        position: 0,
+        payload: {
+          title: 'Experiências Únicas no Pantanal',
+          subtitle: 'Conecte-se com a natureza através de aventuras autênticas e inesquecíveis',
+          backgroundColor: '#F5F2E9'
+        }
+      },
+      {
+        type: 'experiences-grid',
+        position: 1,
+        payload: {
+          experiences: [
+            {
+              title: 'Pesca Esportiva All-Inclusive',
+              description: 'Pescaria de dourados gigantes em águas cristalinas com guias especializados, equipamentos de primeira linha e refeições completas.',
+              price: 'R$ 2.000',
+              duration: '1 dia completo (6h às 18h)',
+              maxParticipants: 3,
+              category: 'Pesca',
+              image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600'
+            },
+            {
+              title: 'Safári Fotográfico & Birdwatching',
+              description: 'Observe onças-pintadas, ariranhas e mais de 166 espécies de aves em seu habitat natural com biólogos especializados.',
+              price: 'R$ 1.500',
+              duration: '1 dia completo',
+              maxParticipants: 6,
+              category: 'Ecoturismo',
+              image: 'https://images.unsplash.com/photo-1474511320723-9a56873867b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600'
+            }
+          ]
+        }
+      }
+    ];
+
+    return {
+      slug: 'experiencias',
+      name: 'Experiências',
+      template: 'simple',
+      blocks
+    };
+  }
+
+  // Extrai página de Galeria
+  extractGaleriaPage(): PageData {
+    console.log('📸 Extraindo página Galeria...');
+    
+    const blocks: BlockData[] = [
+      {
+        type: 'hero-simple',
+        position: 0,
+        payload: {
+          title: 'Galeria',
+          subtitle: 'Momentos únicos capturados no coração do Pantanal - desde pescarias emocionantes até encontros com a vida selvagem',
+          backgroundColor: '#F5F2E9'
+        }
+      },
+      {
+        type: 'gallery-grid',
+        position: 1,
+        payload: {
+          categories: ['Todos', 'Pesca', 'Natureza', 'Lodge', 'Aves'],
+          items: [
+            {
+              title: 'Dourado Trophy',
+              description: 'Pescador com dourado de 15kg capturado e solto',
+              image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+              category: 'Pesca',
+              featured: true
+            },
+            {
+              title: 'Onça-Pintada',
+              description: 'Majestosa onça observada durante safári fotográfico',
+              image: 'https://images.unsplash.com/photo-1474511320723-9a56873867b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+              category: 'Natureza',
+              featured: true
+            }
+          ]
+        }
+      }
+    ];
+
+    return {
+      slug: 'galeria',
+      name: 'Galeria',
+      template: 'simple',
+      blocks
+    };
+  }
+
+  // Extrai página de Blog
+  extractBlogPage(): PageData {
+    console.log('📝 Extraindo página Blog...');
+    
+    const blocks: BlockData[] = [
+      {
+        type: 'hero-simple',
+        position: 0,
+        payload: {
+          title: 'Blog do Pantanal',
+          subtitle: 'Histórias, dicas e novidades do coração da maior planície alagável do mundo',
+          backgroundColor: '#F5F2E9'
+        }
+      },
+      {
+        type: 'blog-grid',
+        position: 1,
+        payload: {
+          categories: ['Todos', 'Pesca', 'Conservação', 'Dicas', 'Novidades'],
+          posts: [
+            {
+              title: 'Temporada de Pesca 2025: O que esperar',
+              excerpt: 'As águas do Pantanal estão em condições excepcionais para a nova temporada. Confira nossas previsões e dicas.',
+              author: 'Equipe Itaicy',
+              publishedAt: '2025-01-15',
+              category: 'Pesca',
+              image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+              slug: 'temporada-pesca-2025'
+            },
+            {
+              title: '166 Espécies de Aves Catalogadas no Itaicy',
+              excerpt: 'Nossa reserva abriga uma diversidade impressionante de aves. Conheça as espécies mais emblemáticas.',
+              author: 'Dr. Carlos Natura',
+              publishedAt: '2025-01-10',
+              category: 'Conservação',
+              image: 'https://images.unsplash.com/photo-1594736797933-d0a4390d327e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+              slug: '166-especies-aves-catalogadas'
+            }
+          ]
+        }
+      }
+    ];
+
+    return {
+      slug: 'blog',
+      name: 'Blog',
+      template: 'simple',
+      blocks
+    };
+  }
+
+  // Extrai página de Contato
+  extractContatoPage(): PageData {
+    console.log('📞 Extraindo página Contato...');
+    
+    const blocks: BlockData[] = [
+      {
+        type: 'hero-simple',
+        position: 0,
+        payload: {
+          title: 'Fale Conosco',
+          subtitle: 'Estamos prontos para criar a experiência perfeita no Pantanal para você',
+          backgroundColor: '#F5F2E9'
+        }
+      },
+      {
+        type: 'contact-form',
+        position: 1,
+        payload: {
+          formFields: [
+            { name: 'name', label: 'Nome completo', type: 'text', required: true },
+            { name: 'email', label: 'E-mail', type: 'email', required: true },
+            { name: 'phone', label: 'Telefone', type: 'tel', required: false },
+            { name: 'interests', label: 'Interesses', type: 'checkbox', options: ['Pesca Esportiva', 'Ecoturismo', 'Birdwatching', 'Day Use'] },
+            { name: 'message', label: 'Mensagem', type: 'textarea', required: true }
+          ]
+        }
+      },
+      {
+        type: 'contact-info',
+        position: 2,
+        payload: {
+          address: 'Estrada Transpantaneira, Km 65, Poconé - MT',
+          phone: '+55 (65) 3345-1000',
+          email: 'reservas@itaicy.com.br',
+          whatsapp: '+55 (65) 99999-0000',
+          hours: 'Segunda a Domingo: 6h às 22h'
+        }
+      }
+    ];
+
+    return {
+      slug: 'contato',
+      name: 'Contato',
+      template: 'simple',
+      blocks
+    };
+  }
+
+  // Extrai configurações globais (Header/Footer)
+  extractGlobalSettings(): PageData {
+    console.log('🌐 Extraindo configurações globais...');
+    
+    const blocks: BlockData[] = [
+      {
+        type: 'header-settings',
+        position: 0,
+        payload: {
+          logo: {
+            primary: '/attached_assets/itaicy-wordmark-primary.png',
+            secondary: '/attached_assets/itaicy-wordmark-secondary.png'
+          },
+          navigation: [
+            { name: 'LODGE', href: '/lodge', megaMenu: true },
+            { name: 'EXPERIÊNCIAS', href: '/experiencias', megaMenu: true },
+            { name: 'GALERIA', href: '/galeria' },
+            { name: 'BLOG', href: '/blog' },
+            { name: 'CONTATO', href: '/contato' }
+          ],
+          ctaButton: {
+            label: 'RESERVAR',
+            href: '/contato'
+          }
+        }
+      },
+      {
+        type: 'footer-settings',
+        position: 1,
+        payload: {
+          contact: {
+            address: 'Estrada Transpantaneira, Km 65\nPoconé - MT, 78175-000',
+            phone: '+55 (65) 3345-1000',
+            email: 'reservas@itaicy.com.br',
+            whatsapp: '+55 (65) 99999-0000'
+          },
+          social: {
+            instagram: 'https://instagram.com/itaicypantanal',
+            facebook: 'https://facebook.com/itaicypantanal',
+            youtube: 'https://youtube.com/itaicypantanal'
+          },
+          legal: {
+            privacy: '/politica-privacidade',
+            terms: '/termos-uso',
+            cnpj: '12.345.678/0001-00'
+          }
+        }
+      }
+    ];
+
+    return {
+      slug: 'global-settings',
+      name: 'Configurações Globais',
+      template: 'global',
+      blocks
+    };
+  }
+
   // Executa extração completa
   async extractAll(): Promise<void> {
-    console.log('🚀 Iniciando extração completa...');
+    console.log('🚀 Iniciando extração completa de TODAS as páginas...');
     
-    // Extrai páginas
-    this.pages.push(this.extractHomePage());
-    this.pages.push(this.extractAcomodacoesPage());
+    // Extrai todas as páginas
+    this.pages = this.extractAllPages();
     
     // Extrai mídia
     this.media = this.extractMediaAssets();
