@@ -17,6 +17,7 @@ import SobreNos from "@/pages/sobre-nos";
 import Galeria from "@/pages/galeria";
 import Blog from "@/pages/blog";
 import Contato from "@/pages/contato";
+import Admin from "@/pages/admin";
 
 import NotFound from "@/pages/not-found";
 

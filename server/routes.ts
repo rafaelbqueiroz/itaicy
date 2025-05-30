@@ -181,7 +181,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Testimonials routes
+  app.get('/api/cms/testimonials', async (req, res) => {
+    try {
+      const testimonials = await storage.getTestimonials();
+      res.json(testimonials);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
 
+  app.post('/api/cms/testimonials', async (req, res) => {
+    try {
+      const testimonial = await storage.createTestimonial(req.body);
+      res.status(201).json(testimonial);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // FAQ routes
+  app.get('/api/cms/faqs', async (req, res) => {
+    try {
+      const category = req.query.category as string;
+      const faqs = await storage.getFaqs(category);
+      res.json(faqs);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post('/api/cms/faqs', async (req, res) => {
+    try {
+      const faq = await storage.createFaq(req.body);
+      res.status(201).json(faq);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Stats routes
+  app.get('/api/cms/stats', async (req, res) => {
+    try {
+      const stats = await storage.getStats();
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.put('/api/cms/stats/:code', async (req, res) => {
+    try {
+      const { value } = req.body;
+      const stat = await storage.updateStat(req.params.code, value);
+      res.json(stat);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Settings routes
+  app.get('/api/cms/settings', async (req, res) => {
+    try {
+      const settings = await storage.getSettings();
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.put('/api/cms/settings', async (req, res) => {
+    try {
+      const settings = await storage.updateSettings(req.body);
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

@@ -441,6 +441,53 @@ export class MemStorage implements IStorage {
     this.cmsSuites.set(id, updatedSuite);
     return updatedSuite;
   }
+
+  // Testimonials methods
+  async getTestimonials(): Promise<any[]> {
+    return Array.from(this.testimonials.values());
+  }
+
+  async createTestimonial(testimonial: any): Promise<any> {
+    const id = this.currentId++;
+    const newTestimonial = { id, ...testimonial, createdAt: new Date() };
+    this.testimonials.set(id, newTestimonial);
+    return newTestimonial;
+  }
+
+  // FAQ methods
+  async getFaqs(category?: string): Promise<any[]> {
+    const faqs = Array.from(this.faqs.values());
+    return category ? faqs.filter(faq => faq.category === category) : faqs;
+  }
+
+  async createFaq(faq: any): Promise<any> {
+    const id = this.currentId++;
+    const newFaq = { id, ...faq, createdAt: new Date() };
+    this.faqs.set(id, newFaq);
+    return newFaq;
+  }
+
+  // Stats methods
+  async getStats(): Promise<any[]> {
+    return Array.from(this.stats.values());
+  }
+
+  async updateStat(code: string, value: number): Promise<any> {
+    const existing = this.stats.get(code);
+    const updated = { ...existing, code, value, updatedAt: new Date() };
+    this.stats.set(code, updated);
+    return updated;
+  }
+
+  // Settings methods
+  async getSettings(): Promise<any> {
+    return this.settings;
+  }
+
+  async updateSettings(newSettings: any): Promise<any> {
+    this.settings = { ...this.settings, ...newSettings, updatedAt: new Date() };
+    return this.settings;
+  }
 }
 
 import { DatabaseStorage } from './database-storage';
