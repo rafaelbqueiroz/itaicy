@@ -3,7 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
   insertContactSubmissionSchema, 
-  insertNewsletterSubscriptionSchema
+  insertNewsletterSubscriptionSchema,
+  insertCmsSuiteSchema
 } from "@shared/schema";
 import { z } from "zod";
 

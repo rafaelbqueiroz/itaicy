@@ -45,6 +45,12 @@ export interface IStorage {
   // Newsletter methods
   createNewsletterSubscription(subscription: InsertNewsletterSubscription): Promise<NewsletterSubscription>;
   getNewsletterSubscriptions(): Promise<NewsletterSubscription[]>;
+
+  // CMS Suite methods
+  getCmsSuites(): Promise<CmsSuite[]>;
+  getCmsSuiteById(id: number): Promise<CmsSuite | undefined>;
+  createCmsSuite(suite: InsertCmsSuite): Promise<CmsSuite>;
+  updateCmsSuite(id: number, suite: Partial<InsertCmsSuite>): Promise<CmsSuite>;
 }
 
 export class MemStorage implements IStorage {
@@ -56,6 +62,7 @@ export class MemStorage implements IStorage {
   private bookings: Map<number, Booking>;
   private contactSubmissions: Map<number, ContactSubmission>;
   private newsletterSubscriptions: Map<number, NewsletterSubscription>;
+  private cmsSuites: Map<number, CmsSuite>;
   private currentId: number;
 
   constructor() {
@@ -67,6 +74,7 @@ export class MemStorage implements IStorage {
     this.bookings = new Map();
     this.contactSubmissions = new Map();
     this.newsletterSubscriptions = new Map();
+    this.cmsSuites = new Map();
     this.currentId = 1;
 
     // Initialize with sample data
@@ -123,6 +131,54 @@ export class MemStorage implements IStorage {
     ];
 
     sampleAccommodations.forEach(acc => this.createAccommodation(acc));
+
+    // Sample CMS Suites with realistic data
+    const sampleSuites: InsertCmsSuite[] = [
+      {
+        name: 'Suíte Compacta',
+        size: '28 m²',
+        capacity: 2,
+        description: 'Conforto essencial com vista para o rio e varanda privativa com rede para contemplação.',
+        price: 80000, // R$ 800.00 in cents
+        amenities: ['Varanda com rede', 'Ar-condicionado', 'Wi-Fi satelital', 'Cofre digital', 'Frigobar', 'Banheiro privativo'],
+        images: [
+          'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+          'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'
+        ],
+        sortOrder: 1,
+        isActive: true,
+      },
+      {
+        name: 'Suíte Ampla',
+        size: '35 m²',
+        capacity: 3,
+        description: 'Espaço generoso com varanda ampliada e vista privilegiada para o Rio Cuiabá e mata ciliar.',
+        price: 120000, // R$ 1.200.00 in cents
+        amenities: ['Varanda ampliada', 'Ar-condicionado', 'Wi-Fi satelital', 'Cofre digital', 'Frigobar', 'Vista para o rio', 'Cama extra', 'Mesa de trabalho'],
+        images: [
+          'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+          'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'
+        ],
+        sortOrder: 2,
+        isActive: true,
+      },
+      {
+        name: 'Suíte Master',
+        size: '45 m²',
+        capacity: 4,
+        description: 'Nossa suíte mais exclusiva com varanda panorâmica, sala de estar e comodidades premium para máximo conforto.',
+        price: 180000, // R$ 1.800.00 in cents
+        amenities: ['Varanda panorâmica', 'Ar-condicionado', 'Wi-Fi satelital', 'Cofre digital', 'Minibar premium', 'Banheira dupla', 'Sala de estar', 'Vista privilegiada', 'Roupões', 'Amenities premium'],
+        images: [
+          'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+          'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300'
+        ],
+        sortOrder: 3,
+        isActive: true,
+      },
+    ];
+
+    sampleSuites.forEach(suite => this.createCmsSuite(suite));
   }
 
   // User methods
@@ -320,6 +376,46 @@ export class MemStorage implements IStorage {
 
   async getNewsletterSubscriptions(): Promise<NewsletterSubscription[]> {
     return Array.from(this.newsletterSubscriptions.values()).filter(sub => sub.active);
+  }
+
+  // CMS Suite methods
+  async getCmsSuites(): Promise<CmsSuite[]> {
+    return Array.from(this.cmsSuites.values())
+      .filter(suite => suite.isActive)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+  }
+
+  async getCmsSuiteById(id: number): Promise<CmsSuite | undefined> {
+    return this.cmsSuites.get(id);
+  }
+
+  async createCmsSuite(insertSuite: InsertCmsSuite): Promise<CmsSuite> {
+    const id = this.currentId++;
+    const suite: CmsSuite = {
+      ...insertSuite,
+      id,
+      sortOrder: insertSuite.sortOrder ?? 0,
+      isActive: insertSuite.isActive ?? true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.cmsSuites.set(id, suite);
+    return suite;
+  }
+
+  async updateCmsSuite(id: number, updateData: Partial<InsertCmsSuite>): Promise<CmsSuite> {
+    const suite = this.cmsSuites.get(id);
+    if (!suite) {
+      throw new Error(`Suite with id ${id} not found`);
+    }
+    
+    const updatedSuite: CmsSuite = {
+      ...suite,
+      ...updateData,
+      updatedAt: new Date(),
+    };
+    this.cmsSuites.set(id, updatedSuite);
+    return updatedSuite;
   }
 }
 
