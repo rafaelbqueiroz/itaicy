@@ -32,15 +32,29 @@ if (!existsSync(extractedPath)) {
 const extractedData = JSON.parse(readFileSync(extractedPath, 'utf-8'));
 console.log(`📊 Dados carregados: ${extractedData.pages.length} páginas, ${extractedData.blocks.length} blocos`);
 
-// Função para fazer upsert seguro
-async function safeUpsert(table, data, conflictColumn = 'id') {
+// Função para inserir dados com verificação de duplicatas
+async function safeInsert(table, data) {
   try {
+    // Primeiro verificar se já existem dados
+    const { data: existing, error: checkError } = await supabase
+      .from(table)
+      .select('*')
+      .limit(1);
+
+    if (checkError) {
+      console.error(`❌ Erro ao verificar ${table}:`, checkError.message);
+      return false;
+    }
+
+    if (existing && existing.length > 0) {
+      console.log(`⚠️ ${table}: já contém dados, pulando inserção`);
+      return true;
+    }
+
+    // Inserir dados se tabela estiver vazia
     const { data: result, error } = await supabase
       .from(table)
-      .upsert(data, { 
-        onConflict: conflictColumn,
-        ignoreDuplicates: false 
-      })
+      .insert(data)
       .select();
 
     if (error) {
@@ -48,7 +62,7 @@ async function safeUpsert(table, data, conflictColumn = 'id') {
       return false;
     }
 
-    console.log(`✅ ${table}: ${result?.length || 0} registros processados`);
+    console.log(`✅ ${table}: ${result?.length || 0} registros inseridos`);
     return true;
   } catch (err) {
     console.error(`❌ Erro em ${table}:`, err.message);
@@ -64,13 +78,10 @@ async function seedPages() {
     slug: page.slug,
     name: page.name,
     template: page.template,
-    priority: page.priority,
-    published: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    priority: page.priority
   }));
 
-  return await safeUpsert('pages', pages, 'slug');
+  return await safeInsert('pages', pages);
 }
 
 // Seed blocos
@@ -97,9 +108,7 @@ async function seedBlocks() {
     type: block.type,
     position: block.position,
     payload: block.payload,
-    published: block.published,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    published: block.published
   })).filter(block => block.page_id); // Remove blocos sem página
 
   return await safeUpsert('blocks', blocks);
@@ -110,15 +119,11 @@ async function seedMedia() {
   console.log('🖼️ Inserindo mídia...');
   
   const media = extractedData.media.map(asset => ({
-    filename: asset.filename,
     path: asset.path,
-    type: asset.type,
-    alt_text: asset.alt,
-    file_size: 0, // Será atualizado quando o arquivo for enviado
-    uploaded_at: new Date().toISOString()
+    alt: asset.alt
   }));
 
-  return await safeUpsert('media_library', media, 'filename');
+  return await safeUpsert('media_library', media, 'path');
 }
 
 // Seed suites (dados base)
@@ -130,19 +135,17 @@ async function seedSuites() {
       name: 'Apartamento Duplo Standard',
       description: 'Apartamento confortável com vista para o rio, ideal para casais ou amigos.',
       capacity: 2,
-      amenities: ['Ar-condicionado', 'Ventilador', 'Banheiro privativo', 'Varanda', 'Frigobar', 'Cofre'],
-      images: ['/assets/suite-interior.jpg', '/assets/suite-varanda.jpg'],
-      base_price: 450.00,
-      available: true
+      area_m2: 25,
+      price: 450.00,
+      images: ['/assets/suite-interior.jpg', '/assets/suite-varanda.jpg']
     },
     {
       name: 'Apartamento Duplo Superior',
       description: 'Apartamento espaçoso com varanda ampla e vista privilegiada do rio.',
       capacity: 2,
-      amenities: ['Ar-condicionado', 'Ventilador', 'Banheiro privativo', 'Varanda ampla', 'Frigobar', 'Cofre', 'Roupão'],
-      images: ['/assets/suite-superior.jpg'],
-      base_price: 550.00,
-      available: true
+      area_m2: 30,
+      price: 550.00,
+      images: ['/assets/suite-superior.jpg']
     }
   ];
 
@@ -155,32 +158,29 @@ async function seedTestimonials() {
   
   const testimonials = [
     {
-      guest_name: 'Maria Silva',
-      location: 'São Paulo, SP',
+      author: 'Maria Silva',
+      city: 'São Paulo, SP',
       rating: 5,
-      comment: 'Uma experiência incrível! A pesca foi excepcional e a hospitalidade da equipe superou todas as expectativas.',
-      stay_date: '2024-03-15',
-      featured: true
+      quote: 'Uma experiência incrível! A pesca foi excepcional e a hospitalidade da equipe superou todas as expectativas.',
+      is_featured: true
     },
     {
-      guest_name: 'João Santos',
-      location: 'Rio de Janeiro, RJ',
+      author: 'João Santos',
+      city: 'Rio de Janeiro, RJ',
       rating: 5,
-      comment: 'O Pantanal é mágico e o Itaicy proporcionou momentos únicos. Voltaremos com certeza!',
-      stay_date: '2024-02-28',
-      featured: true
+      quote: 'O Pantanal é mágico e o Itaicy proporcionou momentos únicos. Voltaremos com certeza!',
+      is_featured: true
     },
     {
-      guest_name: 'Ana Costa',
-      location: 'Belo Horizonte, MG',
+      author: 'Ana Costa',
+      city: 'Belo Horizonte, MG',
       rating: 5,
-      comment: 'Acomodações confortáveis e experiências autênticas. Recomendo para quem busca contato com a natureza.',
-      stay_date: '2024-04-10',
-      featured: false
+      quote: 'Acomodações confortáveis e experiências autênticas. Recomendo para quem busca contato com a natureza.',
+      is_featured: false
     }
   ];
 
-  return await safeUpsert('testimonials', testimonials);
+  return await safeUpsert('testimonials', testimonials, 'author');
 }
 
 // Executar seed completo
