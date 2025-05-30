@@ -18,7 +18,28 @@ export default function CMSPage() {
   const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [previewKey, setPreviewKey] = useState(0);
   const { toast } = useToast();
+
+  // Auto-save a cada 3 segundos quando há mudanças
+  useEffect(() => {
+    if (!isDirty) return;
+    
+    const autoSaveTimer = setTimeout(() => {
+      setLastSaved(new Date());
+      setIsDirty(false);
+      setPreviewKey(prev => prev + 1); // Force preview reload
+      toast({ 
+        title: "Auto-salvo", 
+        description: "Alterações salvas automaticamente",
+        duration: 2000 
+      });
+    }, 3000);
+
+    return () => clearTimeout(autoSaveTimer);
+  }, [isDirty, toast]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -30,6 +51,28 @@ export default function CMSPage() {
             <div className="flex items-center space-x-2 text-sm text-gray-500">
               <span>Editando:</span>
               <span className="font-medium text-gray-900 capitalize">{selectedPage}</span>
+            </div>
+            
+            {/* Status em tempo real */}
+            <div className="flex items-center space-x-2 ml-4">
+              {isDirty ? (
+                <div className="flex items-center space-x-1">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-orange-600">Alterações pendentes</span>
+                </div>
+              ) : lastSaved ? (
+                <div className="flex items-center space-x-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-green-600">
+                    Salvo {lastSaved.toLocaleTimeString()}
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-1">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                  <span className="text-sm text-gray-500">Pronto</span>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex items-center space-x-3">

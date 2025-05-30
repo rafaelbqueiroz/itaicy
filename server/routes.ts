@@ -9,6 +9,35 @@ import {
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // CMS Content API - Serve dynamic content
+  app.get("/api/cms/content/:pageSlug", async (req, res) => {
+    try {
+      const { pageSlug } = req.params;
+      
+      // Get page data
+      const page = await storage.getPageBySlug(pageSlug);
+      if (!page) {
+        return res.status(404).json({ message: "Page not found" });
+      }
+
+      // Get page blocks
+      const blocks = await storage.getPageBlocks(page.id);
+      
+      // Get SEO data
+      const seo = await storage.getPageSEO(pageSlug);
+
+      res.json({
+        page,
+        blocks,
+        seo,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error fetching page content:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // Newsletter subscription endpoint
   app.post("/api/newsletter/subscribe", async (req, res) => {
     try {
