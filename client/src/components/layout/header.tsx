@@ -94,12 +94,12 @@ export function Header() {
                 {/* Mega Menu */}
                 {item.megaMenu && activeDropdown === item.name && (
                   <div className="fixed top-20 left-0 right-0 w-full shadow-lg z-50 bg-white border-t border-pantanal-green-900/10">
-                    <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-4 gap-x-12 gap-y-8 py-12">
+                    <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-4 gap-x-12 gap-y-8 py-12 items-stretch">
                       {/* Coluna 1: Lodge */}
-                      <div className="flex flex-col justify-between h-full">
-                        <div>
+                      <div className="flex flex-col h-full">
+                        <div className="flex-1">
                           <h3 className="font-playfair text-xl text-pantanal-green-900 mb-4">Lodge</h3>
-                          <ul className="space-y-3">
+                          <ul className="space-y-3 mb-8">
                             <li>
                               <Link 
                                 href="/acomodacoes" 
@@ -139,10 +139,10 @@ export function Header() {
                       </div>
 
                       {/* Coluna 2: Experiências */}
-                      <div className="flex flex-col justify-between h-full">
-                        <div>
+                      <div className="flex flex-col h-full">
+                        <div className="flex-1">
                           <h3 className="font-playfair text-xl text-pantanal-green-900 mb-4">Experiências</h3>
-                          <ul className="space-y-3">
+                          <ul className="space-y-3 mb-8">
                             <li>
                               <Link 
                                 href="/experiencias/pesca" 
@@ -191,10 +191,10 @@ export function Header() {
                       </div>
 
                       {/* Coluna 3: Blog */}
-                      <div className="flex flex-col justify-between h-full">
-                        <div>
+                      <div className="flex flex-col h-full">
+                        <div className="flex-1">
                           <h3 className="font-playfair text-xl text-pantanal-green-900 mb-4">Blog</h3>
-                          <ul className="space-y-3">
+                          <ul className="space-y-3 mb-8">
                             <li>
                               <Link 
                                 href="/blog/natureza" 
@@ -243,10 +243,10 @@ export function Header() {
                       </div>
 
                       {/* Coluna 4: Planejamento */}
-                      <div className="flex flex-col justify-between h-full">
-                        <div>
+                      <div className="flex flex-col h-full">
+                        <div className="flex-1">
                           <h3 className="font-playfair text-xl text-pantanal-green-900 mb-4">Planejamento</h3>
-                          <ul className="space-y-3">
+                          <ul className="space-y-3 mb-8">
                             <li className="flex items-center gap-2">
                               <MapPin className="h-4 w-4 text-pantanal-green-900" />
                               <Link 
