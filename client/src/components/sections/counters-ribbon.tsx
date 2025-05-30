@@ -17,17 +17,21 @@ export function CountersRibbon() {
   const speciesCount = useCountUp({ end: 650, duration: 2500, delay: 200 });
   const spottedCount = useCountUp({ end: 166, duration: 2000, delay: 400 });
 
-  const counters: CounterItem[] = [
+  const counters = [
     {
-      value: speciesCount.count,
+      count: speciesCount.count,
+      ref: speciesCount.ref,
       label: t('highlights.speciesLabel'),
       description: t('highlights.speciesDesc'),
+      suffix: '+',
     },
     {
-      value: spottedCount.count,
+      count: spottedCount.count,
+      ref: spottedCount.ref,
       label: t('highlights.spottedLabel'),
       description: t('highlights.spottedDesc'),
       tooltip: t('highlights.spottedTooltip'),
+      suffix: ' / 5 dias',
     },
   ];
 
@@ -39,13 +43,13 @@ export function CountersRibbon() {
       <div className="max-w-[1440px] mx-auto px-4 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-center">
           {counters.map((counter, index) => (
-            <div key={index} className="flex flex-col items-center">
+            <div key={index} ref={counter.ref} className="flex flex-col items-center">
               <div className="flex items-center gap-2 mb-2">
                 <span 
                   className="font-playfair font-bold text-5xl lg:text-6xl text-white leading-none"
-                  data-count={counter.value}
+                  data-count={counter.count}
                 >
-                  {index === 1 ? `${counter.value} / 5 dias` : `${counter.value}+`}
+                  {counter.count}{counter.suffix}
                 </span>
                 {counter.tooltip && (
                   <div className="relative">
