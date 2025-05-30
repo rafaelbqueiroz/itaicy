@@ -1,0 +1,121 @@
+Aqui vão as correções e melhorias que vamos aplicar ao widget de reservas, alinhadas ao nosso Design System:
+
+---
+
+## 1. Substituir inputs avulsos por um **Date Range Picker**
+
+* **Componente**: um único campo “Período” que abre um calendário inline de intervalo (check-in/check-out).
+* **Comportamento**:
+
+  1. Usuário clica no campo → abre o calendário.
+  2. Seleciona primeira data (check-in) → automaticamente ativa somente as datas **posteriores** como possíveis check-out.
+  3. O intervalo selecionado é refletido nos campos internos: começo e fim.
+* **Benefícios**: UX consolidada, evita datas de saída anteriores à de chegada e limpa o layout.
+
+```jsx
+<DateRangePicker
+  startDate={checkIn}
+  endDate={checkOut}
+  onDatesChange={({ startDate, endDate }) => {
+    setCheckIn(startDate);
+    setCheckOut(endDate);
+  }}
+  minimumNights={1}
+/>
+```
+
+> **Estilo**: white BG (`cloud-white/0`), border `river-slate/800 1px`, padding `12px`, border-radius `4px`, placeholder Lato 400 0.9375rem.
+
+---
+
+## 2. Campos de hóspedes
+
+### 2.1 Adultos
+
+* **Dropdown** “Adultos” (1–4), default = 2
+
+### 2.2 Crianças
+
+* **Dropdown** “Crianças” (0–3)
+* **Quando `> 0`**: renderizar **AgeInputs**:
+
+  ```jsx
+  {childrenCount > 0 && (
+    <div className="children-ages">
+      {Array.from({ length: childrenCount }).map((_, i) => (
+        <Select
+          key={i}
+          label={`Idade criança ${i+1}`}
+          options={[...Array(10).keys()].map(n => ({
+            value: n+1,
+            label: `${n+1} ano${n>0?'es':''}`,
+          }))}
+          onChange={age => setChildAges(prev => {
+            const next = [...prev];
+            next[i] = age;
+            return next;
+          })}
+        />
+      ))}
+    </div>
+  )}
+  ```
+* **Regras tarifárias**:
+
+  * 1–5 anos: tarifa gratuita
+  * 6–10 anos: tarifa proporcional
+
+> **Layout**: alinhar dropdowns em linha, gap `24px`, cada select usa o mesmo styling do datepicker.
+
+---
+
+## 3. Remover o dropdown “Experiência”
+
+* Simplifica o fluxo: focamos em datas + hóspedes + botões
+
+---
+
+## 4. Botão “Reservar” — unificação final
+
+* **Mesmas classes** que o header:
+
+  ```html
+  <button class="btn-primary">Reservar</button>
+  ```
+* Garante Lato 500 uppercase, font-size 0.875rem, padding 12 24, bg `sunset-amber/600`.
+
+---
+
+## 5. Exemplo de marcação final
+
+```jsx
+<div className="booking-widget bg-cloud-white/0 p-6 rounded-md shadow-lvl-1 flex flex-wrap items-end gap-6">
+  <div className="w-full md:w-auto">
+    <DateRangePicker … />
+  </div>
+  <div className="guest-select flex gap-6">
+    <Select label="Adultos" options={[1,2,3,4]} … />
+    <Select label="Crianças" options={[0,1,2,3]} … />
+  </div>
+  {childrenCount > 0 && (
+    <div className="children-ages flex gap-4">
+      {…}
+    </div>
+  )}
+  <button className="btn-primary">Reservar</button>
+</div>
+```
+
+> **Estilos utilitários Tailwind**:
+> `bg-cloud-white/0 p-6 rounded-md shadow-lvl-1 flex flex-wrap items-end gap-6`
+
+---
+
+Com isso:
+
+* **UX** de calendário fica correta e intuitiva.
+* **Campos de hóspedes** atendem à necessidade de faixa etária.
+* **Visual** e **tipografia** seguem 100% o Design System.
+* **Fluxo** fica mais enxuto, sem distrair o usuário com opções extras.
+
+Me avise se precisar de algum ajuste adicional!

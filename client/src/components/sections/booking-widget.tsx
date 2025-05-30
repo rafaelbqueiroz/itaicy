@@ -5,7 +5,6 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { useLanguage } from '@/hooks/use-language';
-import { BOOKING_EXPERIENCES, GUEST_OPTIONS } from '@/lib/constants';
 import { Calendar, Users, MapPin } from 'lucide-react';
 
 interface BookingWidgetProps {
@@ -18,8 +17,9 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
   const [formData, setFormData] = useState({
     checkIn: '',
     checkOut: '',
-    guests: '',
-    experience: '',
+    adults: '2',
+    children: '0',
+    childAges: [] as number[],
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,12 +34,31 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
     
     // Simulate API call
     setTimeout(() => {
-      const bookingUrl = `https://booking.itaicy.com/?ci=${formData.checkIn}&co=${formData.checkOut}&guests=${encodeURIComponent(formData.guests)}&exp=${encodeURIComponent(formData.experience)}`;
+      const bookingUrl = `https://booking.itaicy.com/?ci=${formData.checkIn}&co=${formData.checkOut}&adults=${formData.adults}&children=${formData.children}&ages=${formData.childAges.join(',')}`;
       console.log('Redirecting to:', bookingUrl);
       alert('Redirecionando para o sistema de reservas...');
       setIsLoading(false);
     }, 2000);
   };
+
+  const adultOptions = [
+    { value: '1', label: '1 Adulto' },
+    { value: '2', label: '2 Adultos' },
+    { value: '3', label: '3 Adultos' },
+    { value: '4', label: '4 Adultos' },
+  ];
+
+  const childrenOptions = [
+    { value: '0', label: '0 Crianças' },
+    { value: '1', label: '1 Criança' },
+    { value: '2', label: '2 Crianças' },
+    { value: '3', label: '3 Crianças' },
+  ];
+
+  const ageOptions = [...Array(10)].map((_, i) => ({
+    value: i + 1,
+    label: `${i + 1} ano${i > 0 ? 's' : ''}`
+  }));
 
   const containerClasses = variant === 'floating' 
     ? '-mt-22 md:-mt-16 relative z-30 max-w-4xl mx-auto px-4'
@@ -53,68 +72,113 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
     return (
       <div className={containerClasses}>
         <div className="bg-cloud-white-0 border border-river-slate-700/30 shadow-sm rounded-lg w-full max-w-[1016px] mx-auto py-6 px-8" aria-label="Formulário de reserva">
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
-            {/* Check-in */}
-            <div className="space-y-2">
-              <Label htmlFor="checkin-floating" className="font-lato text-xs text-river-slate-800 mb-1">
-                Check-in
-              </Label>
-              <Input
-                id="checkin-floating"
-                type="date"
-                value={formData.checkIn}
-                onChange={(e) => setFormData(prev => ({ ...prev, checkIn: e.target.value }))}
-                className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-4 py-3 text-sm font-lato placeholder:river-slate-500"
-              />
+          <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-6">
+            {/* Date Range */}
+            <div className="flex gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="checkin-floating" className="font-lato text-xs text-river-slate-800">
+                  Check-in
+                </Label>
+                <Input
+                  id="checkin-floating"
+                  type="date"
+                  value={formData.checkIn}
+                  onChange={(e) => setFormData(prev => ({ ...prev, checkIn: e.target.value }))}
+                  className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="checkout-floating" className="font-lato text-xs text-river-slate-800">
+                  Check-out
+                </Label>
+                <Input
+                  id="checkout-floating"
+                  type="date"
+                  value={formData.checkOut}
+                  min={formData.checkIn}
+                  onChange={(e) => setFormData(prev => ({ ...prev, checkOut: e.target.value }))}
+                  className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato"
+                />
+              </div>
             </div>
             
-            {/* Check-out */}
-            <div className="space-y-2">
-              <Label htmlFor="checkout-floating" className="font-lato text-xs text-river-slate-800 mb-1">
-                Check-out
-              </Label>
-              <Input
-                id="checkout-floating"
-                type="date"
-                value={formData.checkOut}
-                onChange={(e) => setFormData(prev => ({ ...prev, checkOut: e.target.value }))}
-                className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-4 py-3 text-sm font-lato placeholder:river-slate-500"
-              />
-            </div>
-            
-            {/* Adults */}
-            <div className="space-y-2">
-              <Label htmlFor="adults-floating" className="font-lato text-xs text-river-slate-800 mb-1">
-                Adultos
-              </Label>
-              <select
-                id="adults-floating"
-                value={formData.guests}
-                onChange={(e) => setFormData(prev => ({ ...prev, guests: e.target.value }))}
-                className="w-full bg-cloud-white-0 border border-river-slate-700/30 rounded px-4 py-3 text-sm font-lato"
-              >
-                {GUEST_OPTIONS.map(option => (
-                  <option key={option.value} value={option.value}>{option.label}</option>
-                ))}
-              </select>
+            {/* Guest Selection */}
+            <div className="guest-select flex gap-6">
+              <div className="space-y-1">
+                <Label className="font-lato text-xs text-river-slate-800">Adultos</Label>
+                <Select value={formData.adults} onValueChange={(value) => setFormData(prev => ({ ...prev, adults: value }))}>
+                  <SelectTrigger className="w-24 bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {adultOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-1">
+                <Label className="font-lato text-xs text-river-slate-800">Crianças</Label>
+                <Select 
+                  value={formData.children} 
+                  onValueChange={(value) => {
+                    setFormData(prev => ({ 
+                      ...prev, 
+                      children: value,
+                      childAges: value === '0' ? [] : new Array(parseInt(value)).fill(1)
+                    }));
+                  }}
+                >
+                  <SelectTrigger className="w-24 bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {childrenOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            {/* Experience */}
-            <div className="space-y-2">
-              <Label htmlFor="experience-floating" className="font-lato text-xs text-river-slate-800 mb-1">
-                Experiência
-              </Label>
-              <select
-                id="experience-floating"
-                value={formData.experience}
-                onChange={(e) => setFormData(prev => ({ ...prev, experience: e.target.value }))}
-                className="w-full bg-cloud-white-0 border border-river-slate-700/30 rounded px-4 py-3 text-sm font-lato"
-              >
-                {BOOKING_EXPERIENCES.map(exp => (
-                  <option key={exp.value} value={exp.label}>{exp.label}</option>
+            {/* Children Ages */}
+            {parseInt(formData.children) > 0 && (
+              <div className="children-ages flex gap-4">
+                {Array.from({ length: parseInt(formData.children) }).map((_, i) => (
+                  <div key={i} className="space-y-1">
+                    <Label className="font-lato text-xs text-river-slate-800">
+                      Idade criança {i + 1}
+                    </Label>
+                    <Select 
+                      value={formData.childAges[i]?.toString() || '1'}
+                      onValueChange={(value) => {
+                        setFormData(prev => {
+                          const newAges = [...prev.childAges];
+                          newAges[i] = parseInt(value);
+                          return { ...prev, childAges: newAges };
+                        });
+                      }}
+                    >
+                      <SelectTrigger className="w-20 bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ageOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value.toString()}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 ))}
-              </select>
-            </div>
+              </div>
+            )}
 
             {/* Submit Button */}
             <Button 
@@ -133,99 +197,124 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
   return (
     <section id="booking-widget" className={sectionClasses}>
       <div className={containerClasses}>
-        <Card className="shadow-2xl max-w-[840px] mx-auto">
-          <div className="bg-[#D4B896] p-6 text-center">
-            <h3 className="playfair text-2xl font-semibold text-[#064737]">
-              Reserve Sua Experiência
-            </h3>
-          </div>
-          <CardContent className="p-8">
+        <div className="bg-cloud-white-0 border border-river-slate-700/30 shadow-sm rounded-lg w-full max-w-[1016px] mx-auto py-6 px-8" aria-label="Formulário de reserva">
+          <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-6">
+            {/* Date Range */}
+            <div className="flex gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="checkin" className="font-lato text-xs text-river-slate-800">
+                  Check-in
+                </Label>
+                <Input
+                  id="checkin"
+                  type="date"
+                  value={formData.checkIn}
+                  onChange={(e) => setFormData(prev => ({ ...prev, checkIn: e.target.value }))}
+                  className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="checkout" className="font-lato text-xs text-river-slate-800">
+                  Check-out
+                </Label>
+                <Input
+                  id="checkout"
+                  type="date"
+                  value={formData.checkOut}
+                  min={formData.checkIn}
+                  onChange={(e) => setFormData(prev => ({ ...prev, checkOut: e.target.value }))}
+                  className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato"
+                />
+              </div>
+            </div>
             
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                {/* Check-in */}
-                <div className="space-y-2">
-                  <Label htmlFor="checkin" className="text-sm font-medium text-gray-700">
-                    {t('booking.checkIn')}
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      id="checkin"
-                      type="date"
-                      value={formData.checkIn}
-                      onChange={(e) => setFormData(prev => ({ ...prev, checkIn: e.target.value }))}
-                      className="w-full focus:ring-2 focus:ring-itaicy-primary focus:border-transparent"
-                    />
-                    <Calendar className="absolute right-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
-                  </div>
-                </div>
-                
-                {/* Check-out */}
-                <div className="space-y-2">
-                  <Label htmlFor="checkout" className="text-sm font-medium text-gray-700">
-                    {t('booking.checkOut')}
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      id="checkout"
-                      type="date"
-                      value={formData.checkOut}
-                      onChange={(e) => setFormData(prev => ({ ...prev, checkOut: e.target.value }))}
-                      className="w-full focus:ring-2 focus:ring-itaicy-primary focus:border-transparent"
-                    />
-                    <Calendar className="absolute right-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
-                  </div>
-                </div>
-                
-                {/* Guests */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">
-                    {t('booking.guests')}
-                  </Label>
-                  <Select value={formData.guests} onValueChange={(value) => setFormData(prev => ({ ...prev, guests: value }))}>
-                    <SelectTrigger className="w-full focus:ring-2 focus:ring-itaicy-primary focus:border-transparent">
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {GUEST_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                {/* Experience */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">
-                    {t('booking.experience')}
-                  </Label>
-                  <Select value={formData.experience} onValueChange={(value) => setFormData(prev => ({ ...prev, experience: value }))}>
-                    <SelectTrigger className="w-full focus:ring-2 focus:ring-itaicy-primary focus:border-transparent">
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {BOOKING_EXPERIENCES.map((experience) => (
-                        <SelectItem key={experience.value} value={experience.value}>
-                          {experience.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+            {/* Guest Selection */}
+            <div className="guest-select flex gap-6">
+              <div className="space-y-1">
+                <Label className="font-lato text-xs text-river-slate-800">Adultos</Label>
+                <Select value={formData.adults} onValueChange={(value) => setFormData(prev => ({ ...prev, adults: value }))}>
+                  <SelectTrigger className="w-24 bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {adultOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               
-              <Button 
-                type="submit"
-                disabled={isLoading}
-                className="w-full font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-6 rounded-md transition-colors duration-150"
-              >
-                {isLoading ? 'VERIFICANDO...' : 'RESERVAR'}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+              <div className="space-y-1">
+                <Label className="font-lato text-xs text-river-slate-800">Crianças</Label>
+                <Select 
+                  value={formData.children} 
+                  onValueChange={(value) => {
+                    setFormData(prev => ({ 
+                      ...prev, 
+                      children: value,
+                      childAges: value === '0' ? [] : new Array(parseInt(value)).fill(1)
+                    }));
+                  }}
+                >
+                  <SelectTrigger className="w-24 bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {childrenOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Children Ages */}
+            {parseInt(formData.children) > 0 && (
+              <div className="children-ages flex gap-4">
+                {Array.from({ length: parseInt(formData.children) }).map((_, i) => (
+                  <div key={i} className="space-y-1">
+                    <Label className="font-lato text-xs text-river-slate-800">
+                      Idade criança {i + 1}
+                    </Label>
+                    <Select 
+                      value={formData.childAges[i]?.toString() || '1'}
+                      onValueChange={(value) => {
+                        setFormData(prev => {
+                          const newAges = [...prev.childAges];
+                          newAges[i] = parseInt(value);
+                          return { ...prev, childAges: newAges };
+                        });
+                      }}
+                    >
+                      <SelectTrigger className="w-20 bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ageOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value.toString()}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <Button 
+              type="submit"
+              disabled={isLoading}
+              className="font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-6 rounded-md transition-colors duration-150"
+            >
+              {isLoading ? 'VERIFICANDO...' : 'RESERVAR'}
+            </Button>
+          </form>
+        </div>
       </div>
     </section>
   );
