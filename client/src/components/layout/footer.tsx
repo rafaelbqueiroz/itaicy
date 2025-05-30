@@ -25,7 +25,7 @@ export function Footer() {
               alt="Itaicy Pantanal Eco Lodge" 
               className="h-14 w-auto mb-6"
             />
-            <p className="text-gray-300 max-w-md leading-relaxed mb-6">
+            <p className="max-w-md leading-relaxed mb-6 text-[#1b5038]">
               {t('footer.description')}
             </p>
             
