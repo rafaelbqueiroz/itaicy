@@ -37,8 +37,9 @@ export function HeroVideo() {
         <source src={heroVideo} type="video/mp4" />
       </video>
       
-      {/* Overlay Gradient */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-pantanal-green-900/50 via-transparent to-pantanal-green-900/30" />
+      {/* Overlay - 10% darkening + gradient */}
+      <div className="absolute inset-0 z-10 bg-black/10" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-pantanal-green-900/30 via-transparent to-pantanal-green-900/20" />
       
       {/* Hero Content */}
       <div className="relative z-20 text-center text-white max-w-4xl mx-auto px-4">
