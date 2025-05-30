@@ -1,5 +1,6 @@
 import { HeroVideo } from '@/components/sections/hero-video';
 import { BookingWidget } from '@/components/sections/booking-widget';
+import { MobileBookingBar } from '@/components/sections/mobile-booking-bar';
 import { FeatureBlocks } from '@/components/sections/feature-blocks';
 import { CountersRibbon } from '@/components/sections/counters-ribbon';
 import { Testimonials } from '@/components/sections/testimonials';
@@ -16,6 +17,7 @@ export default function Home() {
       <Testimonials />
       <Newsletter />
       <FAQ />
+      <MobileBookingBar />
     </div>
   );
 }

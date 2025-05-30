@@ -64,8 +64,8 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
   }));
 
   const containerClasses = variant === 'floating' 
-    ? '-mt-22 md:-mt-16 relative z-30 max-w-screen-xl mx-auto px-6'
-    : 'max-w-screen-xl mx-auto px-6';
+    ? '-mt-22 md:-mt-16 relative z-30 max-w-screen-xl mx-auto px-6 hidden md:block'
+    : 'max-w-screen-xl mx-auto px-6 hidden md:block';
 
   const sectionClasses = variant === 'floating'
     ? ''
