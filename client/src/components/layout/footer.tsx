@@ -25,7 +25,7 @@ export function Footer() {
               alt="Itaicy Pantanal Eco Lodge" 
               className="h-14 w-auto mb-6"
             />
-            <p className="max-w-md leading-relaxed mb-6 text-[#1b5038]">
+            <p className="max-w-md leading-relaxed mb-6 text-river-slate-800">
               {t('footer.description')}
             </p>
             
@@ -57,8 +57,8 @@ export function Footer() {
           
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold text-lg mb-4 playfair">{t('footer.quickLinks')}</h4>
-            <ul className="space-y-2 text-gray-300">
+            <h4 className="font-semibold text-lg mb-4 playfair text-river-slate-800">{t('footer.quickLinks')}</h4>
+            <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.href}>
                   <Link 
@@ -74,8 +74,8 @@ export function Footer() {
           
           {/* Contact Info */}
           <div>
-            <h4 className="font-semibold text-lg mb-4 playfair">{t('footer.contact')}</h4>
-            <ul className="space-y-3 text-[#1b5038]">
+            <h4 className="font-semibold text-lg mb-4 playfair text-river-slate-800">{t('footer.contact')}</h4>
+            <ul className="space-y-3 text-river-slate-800">
               <li className="flex items-center">
                 <Phone className="w-4 h-4 mr-3 flex-shrink-0" />
                 <span>+55 (65) 3000-0000</span>
@@ -97,7 +97,7 @@ export function Footer() {
         
         {/* Bottom Footer */}
         <div className="border-t border-gray-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-[#1b5038]">
+          <p className="text-sm text-river-slate-800">
             {t('footer.rights')}
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
