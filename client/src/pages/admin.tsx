@@ -136,8 +136,12 @@ export default function AdminPage() {
       </div>
 
       <div className="max-w-7xl mx-auto p-6">
-        <Tabs defaultValue="suites" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue="pages" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="pages" className="flex items-center space-x-2">
+              <Edit className="h-4 w-4" />
+              <span>Páginas</span>
+            </TabsTrigger>
             <TabsTrigger value="suites" className="flex items-center space-x-2">
               <Home className="h-4 w-4" />
               <span>Suítes</span>
@@ -150,11 +154,33 @@ export default function AdminPage() {
               <MessageSquare className="h-4 w-4" />
               <span>Depoimentos</span>
             </TabsTrigger>
+            <TabsTrigger value="seo" className="flex items-center space-x-2">
+              <Settings className="h-4 w-4" />
+              <span>SEO</span>
+            </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center space-x-2">
               <Settings className="h-4 w-4" />
               <span>Configurações</span>
             </TabsTrigger>
           </TabsList>
+
+          {/* Editar Páginas */}
+          <TabsContent value="pages">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Edit className="h-5 w-5" />
+                  <span>Editor de Conteúdo das Páginas</span>
+                </CardTitle>
+                <p className="text-sm text-gray-600">
+                  Edite textos, títulos, descrições e conteúdo de todas as páginas do site
+                </p>
+              </CardHeader>
+              <CardContent>
+                <PageContentManager />
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* Gerenciar Suítes */}
           <TabsContent value="suites">

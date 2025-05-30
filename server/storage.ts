@@ -67,6 +67,18 @@ export interface IStorage {
   // Settings methods
   getSettings(): Promise<any>;
   updateSettings(settings: any): Promise<any>;
+  
+  // Page Content methods
+  getPageContent(slug: string): Promise<any>;
+  updatePageContent(slug: string, content: any): Promise<any>;
+  
+  // SEO methods
+  getPageSEO(slug: string): Promise<any>;
+  updatePageSEO(slug: string, seo: any): Promise<any>;
+  
+  // Media methods
+  getMediaFiles(): Promise<any[]>;
+  uploadMedia(file: any): Promise<any>;
 }
 
 export class MemStorage implements IStorage {
@@ -83,6 +95,9 @@ export class MemStorage implements IStorage {
   private faqs: Map<number, any>;
   private stats: Map<string, any>;
   private settings: any;
+  private pageContents: Map<string, any>;
+  private pageSEO: Map<string, any>;
+  private mediaFiles: Map<number, any>;
   private currentId: number;
 
   constructor() {
@@ -99,6 +114,9 @@ export class MemStorage implements IStorage {
     this.faqs = new Map();
     this.stats = new Map();
     this.settings = {};
+    this.pageContents = new Map();
+    this.pageSEO = new Map();
+    this.mediaFiles = new Map();
     this.currentId = 1;
 
     // Initialize with sample data
@@ -568,6 +586,104 @@ export class MemStorage implements IStorage {
   async updateSettings(newSettings: any): Promise<any> {
     this.settings = { ...this.settings, ...newSettings, updatedAt: new Date() };
     return this.settings;
+  }
+
+  // Page Content methods
+  async getPageContent(slug: string): Promise<any> {
+    return this.pageContents.get(slug) || this.getDefaultPageContent(slug);
+  }
+
+  async updatePageContent(slug: string, content: any): Promise<any> {
+    const updated = { ...content, slug, updatedAt: new Date() };
+    this.pageContents.set(slug, updated);
+    return updated;
+  }
+
+  // SEO methods
+  async getPageSEO(slug: string): Promise<any> {
+    return this.pageSEO.get(slug) || this.getDefaultSEO(slug);
+  }
+
+  async updatePageSEO(slug: string, seo: any): Promise<any> {
+    const updated = { ...seo, slug, updatedAt: new Date() };
+    this.pageSEO.set(slug, updated);
+    return updated;
+  }
+
+  // Media methods
+  async getMediaFiles(): Promise<any[]> {
+    return Array.from(this.mediaFiles.values());
+  }
+
+  async uploadMedia(file: any): Promise<any> {
+    const id = this.currentId++;
+    const media = { id, ...file, uploadedAt: new Date() };
+    this.mediaFiles.set(id, media);
+    return media;
+  }
+
+  private getDefaultPageContent(slug: string): any {
+    const defaultContents: Record<string, any> = {
+      'home': {
+        hero: {
+          title: 'Viva o Pantanal Autêntico',
+          subtitle: 'Pesque, observe, descanse e reconecte-se em um refúgio de biodiversidade única no mundo',
+          videoUrl: '/assets/itaicy-video-bg.mp4',
+          ctaButton: 'Descobrir Experiências'
+        },
+        sections: {
+          experiences: {
+            title: 'Experiências Únicas',
+            subtitle: 'Descubra o melhor do Pantanal',
+            cards: [
+              { title: 'Pesca Esportiva', description: 'Dourados gigantes em águas cristalinas' },
+              { title: 'Birdwatching', description: 'Mais de 4.700 espécies de aves' },
+              { title: 'Safári Fotográfico', description: 'Vida selvagem em habitat natural' }
+            ]
+          }
+        }
+      },
+      'acomodacoes': {
+        hero: {
+          title: 'Seu refúgio de madeira e vento de rio',
+          subtitle: 'Acomodações pensadas para o descanso e contemplação da natureza',
+          backgroundImage: 'https://images.unsplash.com/photo-1566073771259-6a8506099945'
+        }
+      },
+      'experiencias': {
+        hero: {
+          title: 'Experiências Autênticas',
+          subtitle: 'Conecte-se com o Pantanal através de atividades únicas'
+        }
+      }
+    };
+    return defaultContents[slug] || {};
+  }
+
+  private getDefaultSEO(slug: string): any {
+    const defaultSEO: Record<string, any> = {
+      'home': {
+        title: 'Itaicy Pantanal Eco Lodge - Pesca Esportiva e Turismo Ecológico',
+        description: 'Experimente o Pantanal autêntico no Itaicy Lodge. Pesca esportiva, birdwatching e ecoturismo desde 1897. Acomodações sustentáveis em meio à biodiversidade única.',
+        keywords: 'pantanal, pesca esportiva, ecoturismo, lodge, birdwatching, biodiversidade',
+        ogImage: 'https://images.unsplash.com/photo-1566073771259-6a8506099945'
+      },
+      'acomodacoes': {
+        title: 'Acomodações - Itaicy Pantanal Eco Lodge',
+        description: 'Suítes confortáveis com vista para o rio. Escolha entre Compacta, Ampla ou Master. Ar-condicionado, Wi-Fi e varanda privativa.',
+        keywords: 'acomodações pantanal, suítes rio, lodge hospedagem'
+      },
+      'experiencias': {
+        title: 'Experiências - Itaicy Pantanal Eco Lodge',
+        description: 'Pesca esportiva, birdwatching, safári fotográfico e muito mais. Descubra o Pantanal com guias especializados.',
+        keywords: 'experiências pantanal, pesca esportiva, birdwatching, safári'
+      }
+    };
+    return defaultSEO[slug] || {
+      title: `${slug.charAt(0).toUpperCase() + slug.slice(1)} - Itaicy Pantanal Eco Lodge`,
+      description: 'Descubra o Pantanal autêntico no Itaicy Lodge.',
+      keywords: 'pantanal, ecoturismo, lodge'
+    };
   }
 }
 

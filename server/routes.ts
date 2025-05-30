@@ -259,6 +259,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Page Content routes
+  app.get('/api/cms/pages/:slug/content', async (req, res) => {
+    try {
+      const content = await storage.getPageContent(req.params.slug);
+      res.json(content);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.put('/api/cms/pages/:slug/content', async (req, res) => {
+    try {
+      const content = await storage.updatePageContent(req.params.slug, req.body);
+      res.json(content);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // SEO routes
+  app.get('/api/cms/pages/:slug/seo', async (req, res) => {
+    try {
+      const seo = await storage.getPageSEO(req.params.slug);
+      res.json(seo);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.put('/api/cms/pages/:slug/seo', async (req, res) => {
+    try {
+      const seo = await storage.updatePageSEO(req.params.slug, req.body);
+      res.json(seo);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Media routes
+  app.get('/api/cms/media', async (req, res) => {
+    try {
+      const media = await storage.getMediaFiles();
+      res.json(media);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
