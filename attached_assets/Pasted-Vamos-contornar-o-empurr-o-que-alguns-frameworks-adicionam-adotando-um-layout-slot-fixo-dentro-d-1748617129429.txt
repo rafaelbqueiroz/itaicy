@@ -1,0 +1,99 @@
+Vamos contornar o “empurrão” que alguns frameworks adicionam adotando um *layout-slot* fixo dentro do próprio `<header>` — sem depender do Popper/JS para calcular posição.
+
+## 1 . Estrutura mínima
+
+```html
+<header id="site-header">
+  <div class="inner"> … links … </div>
+
+  <!-- ⚠️ mega-panel NÃO fica no body, fica DENTRO do header -->
+  <nav id="mega-panel" hidden>
+    <div class="mega-grid">
+      … três colunas …
+    </div>
+  </nav>
+</header>
+```
+
+* `hidden` é removido/colocado via JS para abrir/fechar.
+
+---
+
+## 2 . CSS (Tailwind-like em vanilla)
+
+```css
+/* 1) header é o “contexto” do absolute */
+#site-header {
+  position: relative;
+  z-index: 20;          /* fica acima do vídeo/hero */
+}
+
+/* 2) painel ocupa toda a largura do header, colado embaixo */
+#mega-panel {
+  position: absolute;
+  inset-inline: 0;      /* = left:0; right:0; */
+  top: 100%;            /* encosta na borda inferior do header */
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
+}
+
+/* 3) grade interna segue o mesmo container da 1ª dobra */
+#mega-panel .mega-grid {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 3rem 2rem;          /* 48 px × 32 px */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem 4rem;            /* 40 × 64 px   */
+}
+
+/* títulos / links (tokens) */
+#mega-panel h3 { color: var(--pantanal-green-900); font: 600 1.375rem/1.2 'Libre Baskerville'; }
+#mega-panel a  { color: var(--river-slate-700);    font: 400 1rem/1.6   'Inter'; }
+#mega-panel a:hover { color: var(--pantanal-green-700); }
+```
+
+> **Por que funciona?**
+>
+> * O painel agora “nasce” dentro do header, portanto `top: 100%` é sempre a borda inferior do header, independente da rolagem.
+> * `inset-inline: 0` garante alinhamento exato entre logo à esquerda e Reservar à direita, porque usa a mesma largura do header.
+> * Não há mais margem automática do Popper nem cálculo JS de altura do header.
+
+---
+
+## 3 . JavaScript ultraleve (se estiver usando Alpine/React, adapte)
+
+```js
+const links      = document.querySelectorAll('[data-mega="toggle"]');
+const megaPanel  = document.getElementById('mega-panel');
+
+links.forEach(link => {
+  link.addEventListener('mouseenter', () => megaPanel.hidden = false);
+  link.addEventListener('focus',      () => megaPanel.hidden = false);
+});
+
+document.getElementById('site-header')
+        .addEventListener('mouseleave', () => megaPanel.hidden = true);
+```
+
+*Não* usamos Popper, Radix nem `translateY` — livramos-nos do deslocamento que estava “jogando” o menu alguns px para baixo.
+
+---
+
+## 4 . Checklist rápido
+
+| Item                         | Deve estar…                                     |
+| ---------------------------- | ----------------------------------------------- |
+| `<header>`                   | `position: relative`                            |
+| Painel                       | *filho* direto do `header`, **não** do `body`   |
+| `top: 100%`                  | Encosta na base do header                       |
+| Largura                      | `inset-inline: 0` (100 % do header)             |
+| Container interno            | Mesmo `max-width` e `padding` da primeira dobra |
+| Fechamento ao sair do header | `mouseleave` no header                          |
+
+Se aplicar esses passos e ainda houver deslocamento, verifique no DevTools se:
+
+1. Alguma classe gerada (por exemplo `mt-2`, `translate-y-1`) não foi herdada de um componente anterior — remova-a.
+2. O header não tem `border-bottom` ou `padding-bottom` extra.
+
+Com isso o mega-menu passa a abrir exatamente alinhado, sem sobrepor vídeo/hero e sem saltar. Qualquer framework (Tailwind, ShadCN, Headless UI) pode seguir a mesma lógica — basta garantir que o *portal* ou *popover* seja renderizado dentro do header.
