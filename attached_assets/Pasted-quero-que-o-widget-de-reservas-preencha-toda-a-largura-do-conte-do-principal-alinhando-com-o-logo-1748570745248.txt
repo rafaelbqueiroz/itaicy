@@ -1,0 +1,136 @@
+quero que o widget de reservas “preencha” toda a largura do conteúdo principal (alinhando com o logo e o grid geral), em vez de ficar restrito e gerar scroll interno. Aqui vai o passo-a-passo:
+
+1. Envolva em um container com largura fixa
+Na estrutura do seu layout, você provavelmente já tem algo como:
+
+html
+Copiar
+Editar
+<header>…</header>
+<main>
+  <div class="mx-auto px-6">  <!-- container geral -->
+    <!-- aqui entra o widget -->
+  </div>
+</main>
+– Garanta que esse .mx-auto px-6 (ou .container) use exatamente a mesma max-width do header (onde o logo está).
+
+Exemplo com Tailwind:
+
+html
+Copiar
+Editar
+<div class="max-w-screen-xl mx-auto px-6">
+  <div class="reservation-widget …">
+    <!-- campos + botão -->
+  </div>
+</div>
+– max-w-screen-xl (ou a classe que você definiu para o grid) deve ser idêntica à usada no header.
+
+2. Remove o overflow e adicione flex-wrap
+No próprio .reservation-widget, faça:
+
+css
+Copiar
+Editar
+.reservation-widget {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end; /* alinha todos pela linha de base dos inputs */
+  gap: 1.5rem;           /* espaçamento consistente */
+  background: var(--cloud-white-0);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-lvl-1);
+  /* **remova** overflow-x: auto; */
+}
+Ou, em classes Tailwind:
+
+html
+Copiar
+Editar
+<div class="bg-cloud-white-0 rounded-lg shadow-lvl-1 p-6 flex flex-wrap items-end gap-6">
+  …campos e botão…
+</div>
+3. Faça o datepicker expandir flexivelmente
+Para que o período ocupe todo espaço sobrando:
+
+html
+Copiar
+Editar
+<div class="flex-1 min-w-[220px]">
+  <!-- seu DateRangePicker aqui -->
+</div>
+– flex-1 faz crescer até preencher o container.
+– min-w-[220px] evita que fique muito estreito.
+
+4. Defina larguras mínimas nos selects
+Para adultos, crianças e idades:
+
+html
+Copiar
+Editar
+<div class="min-w-[120px]">
+  <select class="form-select">…</select>
+</div>
+– Assim cada controle tem espaço ideal mas pode ceder se precisar quebrar linha.
+
+5. Posicione o botão no início ou no final sem scroll
+Se quiser o “Reservar” sempre na borda direita do container (e ainda em linha):
+
+html
+Copiar
+Editar
+<button class="order-last bg-sunset-amber-600 text-white font-medium text-btn uppercase px-6 py-3 rounded-md whitespace-nowrap">
+  Reservar
+</button>
+– order-last força o botão vir por último na ordem flex, mas ainda dentro do fluxo.
+– Com flex-wrap, se não couber tudo, campos quebram linha, mas o botão fica no canto.
+
+6. Comportamento responsivo
+Em telas menores, você pode querer:
+
+html
+Copiar
+Editar
+<div class="flex flex-col md:flex-row md:flex-wrap items-end gap-6">
+  …  
+</div>
+– Acima de md tudo em uma linha.
+– Abaixo, empilha verticalmente para não comprimir demais.
+
+Exemplo completo
+html
+Copiar
+Editar
+<div class="max-w-screen-xl mx-auto px-6">
+  <div class="bg-cloud-white-0 rounded-lg shadow-lvl-1 p-6 flex flex-wrap items-end gap-6">
+    <!-- botão -->
+    <button class="order-last bg-sunset-amber-600 text-white font-medium text-btn uppercase px-6 py-3 rounded-md whitespace-nowrap">
+      Reservar
+    </button>
+    <!-- período -->
+    <div class="flex-1 min-w-[220px]">
+      <DateRangePicker … />
+    </div>
+    <!-- adultos -->
+    <div class="min-w-[120px]">
+      <select class="form-select">…</select>
+    </div>
+    <!-- crianças -->
+    <div class="min-w-[120px]">
+      <select class="form-select">…</select>
+    </div>
+    <!-- idades (conforme número de crianças) -->
+    <div class="min-w-[100px]">
+      <select class="form-select">…</select>
+    </div>
+    <!-- etc… -->
+  </div>
+</div>
+Com isso:
+
+O widget expande até a largura do container (alinhado ao logo).
+
+Não há scroll interno: os campos quebram linha ou encolhem respeitando min-width.
+
+O botão “Reservar” permanece visível e alinhado à base dos inputs.
