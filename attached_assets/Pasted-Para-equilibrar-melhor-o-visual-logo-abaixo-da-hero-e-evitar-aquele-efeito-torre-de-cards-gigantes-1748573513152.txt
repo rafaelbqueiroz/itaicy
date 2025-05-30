@@ -1,0 +1,93 @@
+Para equilibrar melhor o visual logo abaixo da hero e evitar aquele “efeito torre” de cards gigantes, eu faria três ajustes principais:
+
+---
+
+## 1. Padronizar Aspect Ratio e Dimensões
+
+* **Aspect Ratio**: usar sempre um 4:3 para todas as imagens de card.
+* **Altura Máxima**: em vez de deixar a imagem na altura livre, fixe algo como `max-height: 280px; object-fit: cover;`
+* **Largura Responsiva**: deixe o container do card no `width: 100%` do grid, que em desktop vira 2-colunas e em tablet vira 1-coluna.
+
+```css
+.card-image {
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+```
+
+E no Tailwind:
+
+```html
+<img
+  class="w-full max-h-72 object-cover rounded-md"
+  src="…"
+/>
+```
+
+---
+
+## 2. Ajustar o Grid de Cards
+
+Atualmente você tem 1 card embaixo do outro e alguns virados (um imagem-texto, outro texto-imagem). Para tornar tudo mais leve:
+
+```html
+<section class="mt-16 grid gap-12 md:grid-cols-2">
+  <!-- Card 1 -->
+  <article class="flex flex-col md:flex-row items-center gap-8">
+    <!-- Imagem à esquerda -->
+    <img class="w-full md:w-1/2 max-h-72 object-cover rounded-md" …/>
+    <div class="w-full md:w-1/2 space-y-4">
+      <h3 class="text-h3">Pesca esportiva…</h3>
+      <p class="text-body-L">Barcos rápidos…</p>
+      <a class="btn-secondary">Saiba mais →</a>
+    </div>
+  </article>
+  <!-- Card 2 (invertido) -->
+  <article class="flex flex-col md:flex-row-reverse items-center gap-8">
+    …
+  </article>
+  <!-- E assim por diante -->
+</section>
+```
+
+* **Gap** de `gap-12` para espaçamentos uniformes.
+* Em desktop (`md:`) vira duas colunas; em mobile, um abaixo do outro.
+* Alterna o `flex-row` e `flex-row-reverse` para dar ritmo visual.
+
+---
+
+## 3. Harmonizar Tipografia e Espaçamentos
+
+Dentro de cada card:
+
+* **Título** (H3): `font-playfair text-2xl leading-tight`
+* **Parágrafo**: `font-lato text-lg leading-relaxed` com `space-y-2` entre linhas.
+* **Botão**: `px-6 py-2` e `text-button (0.875rem, Lato 500 caps)`.
+
+```html
+<div class="space-y-2">
+  <h3 class="font-playfair text-2xl leading-tight">Safari & Birdwatching</h3>
+  <p class="font-lato text-lg leading-relaxed">166 espécies registradas…</p>
+  <a class="btn-secondary">Saiba mais →</a>
+</div>
+```
+
+Isso reduz o “branco vazio” acima e abaixo dos textos e deixa tudo mais coeso.
+
+---
+
+### Resultado Esperado
+
+* Cards **mais baixos** (≈280px), com as imagens aparando pela “capa” (object-cover) sem distorcer.
+* Grid 2×1 responsivo, espaçamento uniforme (`gap-12`).
+* Texto e botão alinhados dentro de cada metade do card, respeitando nosso **Design System 1.0** (tipografia, cores e espaçamentos).
+
+Com esses três passos, você ganha:
+
+1. **Equilíbrio** – a área de fotos não “puxa” demais o usuário para baixo.
+2. **Ritmo Visual** – alternância de imagem/texto evita monotonia.
+3. **Consistência** – todos os cards obedecem ao mesmo padrão de altura, fonte e padding.
+
+Se precisar, posso compartilhar o snippet completo do componente em React/Next + Tailwind para vcs testarem direto no projeto.

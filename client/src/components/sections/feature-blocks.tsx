@@ -39,48 +39,42 @@ export function FeatureBlocks() {
   ];
 
   return (
-    <section className="w-full max-w-[1440px] mx-auto px-4 lg:px-8 py-24">
-      <div className="grid gap-y-16 lg:gap-y-20">
+    <section className="w-full max-w-[1440px] mx-auto px-4 lg:px-8 py-16">
+      <div className="grid gap-12 md:grid-cols-2">
         {features.map((feature, index) => (
           <article
             key={feature.id}
-            className="grid lg:grid-cols-12 gap-y-12 lg:gap-x-8 items-center"
+            className={`flex flex-col md:${
+              index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'
+            } items-center gap-8`}
           >
+            {/* Image */}
+            <figure className="w-full md:w-1/2">
+              <img
+                src={feature.image}
+                alt={feature.title}
+                className="w-full max-h-72 object-cover rounded-md"
+              />
+            </figure>
+
             {/* Content */}
-            <div className={`lg:col-span-5 flex flex-col justify-center space-y-6 ${
-              feature.imagePosition === 'right' 
-                ? 'order-2 lg:order-1' 
-                : 'order-2 lg:order-2'
-            }`}>
-              <h3 className="font-playfair text-[1.75rem] leading-[1.2] text-pantanal-green-900 mt-0 mb-4">
+            <div className="w-full md:w-1/2 space-y-2">
+              <h3 className="font-playfair text-2xl leading-tight text-pantanal-green-900">
                 {feature.title}
               </h3>
-              <p className="font-lato text-[1.125rem] leading-[1.5] text-river-slate-800 mb-6 max-w-[60ch]">
+              <p className="font-lato text-lg leading-relaxed text-river-slate-800">
                 {feature.description}
               </p>
               <Link href={feature.link}>
                 <Button 
                   variant="outline"
-                  className="inline-flex items-center border border-pantanal-green-900 text-pantanal-green-900 bg-transparent hover:bg-sand-beige-400 font-lato font-semibold uppercase text-xs tracking-wider py-3 px-6 rounded-md transition-all duration-300"
+                  className="inline-flex items-center border border-pantanal-green-900 text-pantanal-green-900 bg-transparent hover:bg-sand-beige-400 font-lato font-medium uppercase text-sm tracking-wider px-6 py-2 rounded-md transition-all duration-300"
                 >
                   Saiba mais
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
             </div>
-
-            {/* Image */}
-            <figure className={`lg:col-span-7 ${
-              feature.imagePosition === 'right' 
-                ? 'order-1 lg:order-2' 
-                : 'order-1 lg:order-1'
-            }`}>
-              <img
-                src={feature.image}
-                alt={feature.title}
-                className="w-full h-full object-cover rounded-lg shadow-sm"
-              />
-            </figure>
           </article>
         ))}
       </div>

@@ -1,0 +1,91 @@
+Vamos ao diagnóstico e às soluções:
+
+---
+
+## 1. Mega-menu: de “bloco solto” a painel harmônico
+
+### Problemas atuais
+
+1. Está **tudo num bloco só**, com muito espaço em branco e links flutuando.
+2. Cabeçalhos (“EXPERIÊNCIAS” / “LODGE”) usam cores e pesos distintos do menu principal.
+3. Ícones (peixinhos, emojis) destoam do tom sofisticado.
+
+### Proposta de melhorias
+
+1. **Estrutura em grid** full-width, mas com conteúdo centralizado
+
+   * Divida em **4 colunas** (cada uma de 1/4 do container):
+
+     * Coluna 1: Lugares principais (“Lodge”)
+     * Coluna 2: Experiências
+     * Coluna 3: Planejamento (Como chegar, FAQ…)
+     * Coluna 4: Destaque visual (imagem + CTA)
+   * Container do mega-menu deve ter `max-width: 1440px; margin: 0 auto; padding: 0 24px`.
+
+2. **Hierarquia tipográfica unificada**
+
+   * Título de coluna: **Lato 500 uppercase**, `font-size: 0.875rem`, `letter-spacing: 0.05em`, cor `pantanal-green/900`.
+   * Links: **Lato 400 titlecase**, `font-size: 1rem`, `line-height: 1.5`, cor `river-slate/800`.
+   * Espaçamento: `margin-bottom: 8px` após o título, `margin-bottom: 12px` entre cada link.
+
+3. **Visual de destaque**
+
+   * Última coluna reserve-se para um **card de destaque** (por exemplo “Ver onças de perto”), com thumbnail 16:9, overlay suave `rgba(0,0,0,0.3)`, título em branco e botão `sunset-amber/600`.
+   * Isso “puxa o olhar” e dá propósito gráfico.
+
+4. **Aproveitar micro-interações**
+
+   * Ao passar o mouse sobre o mega-menu, faça um **fade-in** suave do painel em 240 ms.
+   * Sobre cada link, altere suavemente a cor de `river-slate/800 → pantanal-green/700`.
+
+5. **Reduzir “arroz de festa”**
+
+   * Remova emojis ou ícones genéricos. Se quiser um ícone, use um **SVG sutil**, por exemplo um “pin” para “Como chegar” e “?” para FAQ, sempre em `pantanal-green/700` com `width: 16px; height: 16px; margin-right: 8px`.
+
+---
+
+## 2. Language switch: do bruto ao refinado
+
+### Problemas atuais
+
+* Botão escuro com milhares de elementos (globo, “BR”, “PT”, seta).
+* Contraste e espaçamento descombinam com o header.
+
+### Proposta de melhorias
+
+1. **Minimalismo e flags**
+
+   * Substitua o globo por um ícone de menu de idiomas **único** (por exemplo, um ícone “🌐”).
+   * Ao abrir, exiba apenas **bandeirinhas** (SVG) seguidas da sigla (“🇧🇷 PT”, “🇬🇧 EN”, “🇪🇸 ES”), sem caixa cinza atrás do “BR PT”.
+
+2. **Botão transparente**
+
+   * Deixe o switch com **fundo transparente** no header, apenas um `padding: 4px` ao redor do ícone, para não competir com o botão “Reservar”.
+   * No hover, uma leve **underline** em `sunset-amber/600`.
+
+3. **Dropdown simples**
+
+   * O painel de seleção de idioma deve flutuar (popover) com **fundo cloud-white/0**, `box-shadow: lvl-2`, borda `1px pantanal-green/200`, e `border-radius: 8px`.
+   * Lista vertical: `gap: 8px`, `padding: 8px 16px`.
+   * Item selecionado: marcador lateral `4px pantanal-green/600`, texto `pantanal-green/900`.
+
+4. **Tipografia consistente**
+
+   * Use **Lato 400** para o item selecionado, **Lato 500** para hover, sempre `font-size: 0.875rem`.
+
+---
+
+### Esboço visual do header final
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│ LOGO                   Lodge ▾   Experiências ▾   Galeria   Blog   Contato   🌐 ▾    [Reservar] │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+* O **switch de idioma** (“🌐 ▾”) fica *antes* do CTA “Reservar”, **sem** caixa colorida.
+* O botão **Reservar** continua no último lugar, com Lato 500 caps, `padding: 12px 24px`, e cor `sunset-amber/600`.
+
+---
+
+Com esses ajustes, seu mega-menu ganha foco e legibilidade, e o language switch conversa com o restante do header, mantendo o visual clean e elegante.
