@@ -1,0 +1,100 @@
+### 1 | Por que “mini-clipart” quebra a identidade
+
+A primeira dobra – hero + booking bar – já segue o **Design-System v1** (Playfair Display, pantanal-green/900, sunset-amber/600). Quando descemos para a faixa de números:
+
+* Ícones cheios / cartoon destoam do look “boutique-eco”.
+* Algarismos enormes ≥96 px não obedecem ao token **Numeric-Hero** (clamp 2.5–5 rem).
+* Legendas não usam a hierarquia caps/Body-S definida em 1.2 Typography.
+
+Resultado: parece “outro site”. A solução é **voltar aos tokens** e usar ícones de traço fino (ou nenhum).
+
+---
+
+## 2 | Guia rápido de correção
+
+| Elemento       | Hoje                    | Deve ficar                                                                                | Token / regra                           |
+| -------------- | ----------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------- |
+| Algarismo      | 96-120 px fixo          | `text-[clamp(2.5rem,6vw,4.5rem)]`                                                         | **--font-display Playfair 700 italic**  |
+| Cor do número  | sunset-amber (ok)       | sunset-amber/600                                                                          | `text-sunset-amber-600`                 |
+| Rótulo em caps | minúsculo / desalinhado | Lato 600 caps, 0.875 rem                                                                  | **Button/Label**                        |
+| Sub-legenda    | cinza escuro            | river-slate/800 Body-S                                                                    | `text-river-slate-800 text-[0.9375rem]` |
+| Ícone          | emoji/desenho cheio     | ① remover ② ou substituir por **lucide-react** `line 1.5px` 24 px, cor pantanal-green/900 | Consistência com navbar                 |
+
+**Visual preview**
+
+```
+650+      325+       166 / 5 dias°     1897
+ESPÉCIES  PEIXES     BIRDS CHECKLIST   DESDE
+Biodiversidade|Dourados etc|Maratona’24|Patrimônio
+```
+
+*(° tooltip on-hover: “Checklist oficial, expedição Itaicy jan 2024”)*
+
+---
+
+## 3 | Implementation snippet (Tailwind + React)
+
+```tsx
+// components/Counters.tsx
+const stats = [
+  { key:'fauna', num:'650+', label:'ESPÉCIES', sub:'Biodiversidade', icon:'mountain' },
+  { key:'fish',  num:'325+', label:'PEIXES',    sub:'Dourados etc', icon:'fish' },
+  { key:'birds', num:'166 / 5 dias', label:'BIRDS CHECKLIST', sub:'Maratona jan 24', icon:'feather' },
+  { key:'since', num:'1897', label:'DESDE', sub:'Patrimônio', icon:'history' },
+]
+
+export default function Counters() {
+  return (
+    <section className="bg-sand-beige-400">
+      <div className="mx-auto max-w-7xl grid grid-cols-2 md:grid-cols-4 gap-y-10 py-16 text-center">
+        {stats.map(({key,num,label,sub,icon})=>(
+          <div key={key} className="flex flex-col items-center">
+            {/* optional icon */}
+            {/* <Lucide name={icon} className="w-6 h-6 text-pantanal-green-900 mb-1" /> */}
+            <span className="font-display italic text-sunset-amber-600
+                             [font-size:clamp(2.5rem,6vw,4.5rem)] leading-none">
+              {num}
+            </span>
+            <span className="uppercase font-medium tracking-widest
+                             text-pantanal-green-900 text-[0.875rem]">
+              {label}
+            </span>
+            <span className="text-river-slate-800 text-[0.9375rem]">{sub}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+```
+
+*Retire o `<Lucide>` ou mantenha apenas traço-fino se realmente agregar sem “poluir”*.
+
+---
+
+## 4 | Copy refinada para equilíbrio pesca × bird
+
+**Header hero**
+
+> “Pesque dourados gigantes, fotografe **650 + espécies** e adormeça embalado pelo canto da mata.”
+
+**Bloco Safáris & Birdwatching**
+
+> “Mais de **650 espécies** no Pantanal — e **166** avistadas em apenas **5 dias** na última expedição Itaicy.”
+
+**Tooltip**
+
+> “Checklist oficial (PDF), expedição guiada jan 2024.”
+
+SEO não muda (“Eco Lodge & Pesca no Pantanal…”). Assim pesca segue “carro-chefe”, birding ganha prova-social forte, e o design volta a respirar o mesmo estilo da hero section.
+
+---
+
+### Resumo das ações
+
+1. **Refatore CounterRibbon** usando tokens DS.
+2. **Troque/remoção de ícones** – lucide line 1.5 px ou nenhum.
+3. **Atualize copy** hero + bloco Bird + tooltip.
+4. **QA** responsive clamp & contraste WCAG.
+
+Depois disso a home vai falar a mesma língua visual da primeira dobra – sem perder a surpresa dos “166 em 5 dias”.
