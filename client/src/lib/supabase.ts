@@ -1,13 +1,21 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://hcmrlpevcpkclqubnmmf.supabase.co';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://hcmrlpevcpkclqubnmmf.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseAnonKey) {
-  throw new Error('Supabase Anon Key is required');
+let supabaseClient: SupabaseClient | null = null;
+
+function getSupabaseClient(): SupabaseClient {
+  if (!supabaseClient) {
+    if (!supabaseAnonKey) {
+      throw new Error('VITE_SUPABASE_ANON_KEY is required');
+    }
+    supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+  }
+  return supabaseClient;
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = getSupabaseClient();
 
 // Tipos para o CMS
 export interface Page {

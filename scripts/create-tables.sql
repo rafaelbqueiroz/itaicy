@@ -2,11 +2,11 @@
 -- Executar no SQL Editor do Supabase
 
 -- Remover tabelas existentes se houver conflito
+DROP TABLE IF EXISTS block_revisions CASCADE;
 DROP TABLE IF EXISTS blocks CASCADE;
 DROP TABLE IF EXISTS pages CASCADE;
-DROP TABLE IF EXISTS media_library CASCADE;
-DROP TABLE IF EXISTS suites CASCADE;
-DROP TABLE IF EXISTS testimonials CASCADE;
+DROP TABLE IF EXISTS posts CASCADE;
+DROP TABLE IF EXISTS global_settings CASCADE;
 
 -- Páginas publicáveis
 CREATE TABLE pages (
@@ -14,7 +14,7 @@ CREATE TABLE pages (
   slug TEXT UNIQUE NOT NULL,
   name TEXT NOT NULL,
   template TEXT NOT NULL DEFAULT 'default',
-  priority INTEGER NOT NULL DEFAULT 0,
+  "order" INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -24,10 +24,37 @@ CREATE TABLE blocks (
   page_id UUID REFERENCES pages(id) ON DELETE CASCADE,
   type TEXT NOT NULL,
   position INTEGER NOT NULL,
-  payload JSONB NOT NULL,
-  published JSONB,
+  data JSONB NOT NULL,
+  draft JSONB,
+  published BOOLEAN DEFAULT FALSE,
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   CONSTRAINT blocks_unique UNIQUE(page_id, position)
+);
+
+-- Versionamento de blocos
+CREATE TABLE block_revisions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  block_id UUID REFERENCES blocks(id) ON DELETE CASCADE,
+  data JSONB NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Posts do blog
+CREATE TABLE posts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  cover_url TEXT,
+  content_md TEXT,
+  published BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Configurações globais
+CREATE TABLE global_settings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  key TEXT UNIQUE NOT NULL,
+  value JSONB NOT NULL
 );
 
 -- Mídia (metadados)
@@ -59,44 +86,80 @@ CREATE TABLE testimonials (
   is_featured BOOLEAN DEFAULT FALSE
 );
 
+-- Trigger para versionamento automático
+CREATE OR REPLACE FUNCTION create_block_revision()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF TG_OP = 'UPDATE' AND OLD.data IS DISTINCT FROM NEW.data THEN
+    INSERT INTO block_revisions (block_id, data)
+    VALUES (NEW.id, OLD.data);
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER block_revision_trigger
+  BEFORE UPDATE ON blocks
+  FOR EACH ROW
+  EXECUTE FUNCTION create_block_revision();
+
 -- RLS (Row Level Security) policies
-alter table pages enable row level security;
-alter table blocks enable row level security;
-alter table media_library enable row level security;
-alter table suites enable row level security;
-alter table testimonials enable row level security;
+ALTER TABLE pages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE blocks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE global_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE media_library ENABLE ROW LEVEL SECURITY;
+ALTER TABLE block_revisions ENABLE ROW LEVEL SECURITY;
 
--- Políticas para admin (assumindo que role = 'admin' ou authenticated)
-create policy "Admin can manage pages" on pages
-  for all using (auth.role() = 'authenticated');
+-- Políticas para admin (authenticated users)
+CREATE POLICY "Admin can manage pages" ON pages
+  FOR ALL USING (auth.role() = 'authenticated');
 
-create policy "Admin can manage blocks" on blocks
-  for all using (auth.role() = 'authenticated');
+CREATE POLICY "Admin can manage blocks" ON blocks
+  FOR ALL USING (auth.role() = 'authenticated');
 
-create policy "Admin can manage media" on media_library
-  for all using (auth.role() = 'authenticated');
+CREATE POLICY "Admin can manage posts" ON posts
+  FOR ALL USING (auth.role() = 'authenticated');
 
-create policy "Admin can manage suites" on suites
-  for all using (auth.role() = 'authenticated');
+CREATE POLICY "Admin can manage settings" ON global_settings
+  FOR ALL USING (auth.role() = 'authenticated');
 
-create policy "Admin can manage testimonials" on testimonials
-  for all using (auth.role() = 'authenticated');
+CREATE POLICY "Admin can manage media" ON media_library
+  FOR ALL USING (auth.role() = 'authenticated');
 
--- Políticas públicas para leitura (apenas published content)
-create policy "Public can read published pages" on pages
-  for select using (true);
+CREATE POLICY "Admin can view revisions" ON block_revisions
+  FOR SELECT USING (auth.role() = 'authenticated');
 
-create policy "Public can read published blocks" on blocks
-  for select using (published is not null);
+-- Políticas públicas para leitura
+CREATE POLICY "Public can read pages" ON pages
+  FOR SELECT USING (TRUE);
+
+CREATE POLICY "Public can read published blocks" ON blocks
+  FOR SELECT USING (published = TRUE);
+
+CREATE POLICY "Public can read published posts" ON posts
+  FOR SELECT USING (published = TRUE);
 
 -- Criar bucket para mídia (se não existir)
 insert into storage.buckets (id, name, public)
 values ('media', 'media', true)
 on conflict (id) do nothing;
 
--- Política para bucket de mídia
-create policy "Public can view media" on storage.objects
-  for select using (bucket_id = 'media');
+-- Políticas para bucket de mídia
+CREATE POLICY "Public can view media" ON storage.objects
+  FOR SELECT USING (bucket_id = 'media');
 
-create policy "Admin can manage media files" on storage.objects
-  for all using (auth.role() = 'authenticated' and bucket_id = 'media');
+CREATE POLICY "Authenticated can upload media" ON storage.objects
+  FOR INSERT WITH CHECK (bucket_id = 'media' AND auth.role() = 'authenticated');
+
+CREATE POLICY "Authenticated can delete own media" ON storage.objects
+  FOR DELETE USING (bucket_id = 'media' AND auth.role() = 'authenticated');
+
+-- Popular configurações globais iniciais
+INSERT INTO global_settings (key, value) VALUES
+  ('header_logo', '{"url": "/logos/itaicy-wordmark-primary.png", "alt": "Itaicy Pantanal Eco Lodge"}'),
+  ('footer_logo', '{"url": "/logos/itaicy-wordmark-secondary.png", "alt": "Itaicy Pantanal Eco Lodge"}'),
+  ('contact_phone', '{"number": "+55 65 99999-9999", "display": "(65) 99999-9999"}'),
+  ('contact_email', '{"address": "contato@itaicy.com.br", "display": "contato@itaicy.com.br"}'),
+  ('social_media', '{"instagram": "@itaicypantanal", "facebook": "itaicypantanal", "youtube": "itaicypantanal"}')
+ON CONFLICT (key) DO NOTHING;
