@@ -1,55 +1,62 @@
 -- Criação das tabelas do CMS no Supabase
 -- Executar no SQL Editor do Supabase
 
+-- Remover tabelas existentes se houver conflito
+DROP TABLE IF EXISTS blocks CASCADE;
+DROP TABLE IF EXISTS pages CASCADE;
+DROP TABLE IF EXISTS media_library CASCADE;
+DROP TABLE IF EXISTS suites CASCADE;
+DROP TABLE IF EXISTS testimonials CASCADE;
+
 -- Páginas publicáveis
-create table if not exists pages (
-  id uuid primary key default gen_random_uuid(),
-  slug text unique not null,
-  name text not null,
-  template text not null default 'default',
-  priority int not null default 0,
-  created_at timestamptz default now()
+CREATE TABLE pages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  template TEXT NOT NULL DEFAULT 'default',
+  priority INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Blocos flexíveis (draft / published)
-create table if not exists blocks (
-  id uuid primary key default gen_random_uuid(),
-  page_id uuid references pages(id) on delete cascade,
-  type text not null,
-  position int not null,
-  payload jsonb not null,
-  published jsonb,
-  updated_at timestamptz default now(),
-  constraint blocks_unique unique(page_id, position)
+CREATE TABLE blocks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  page_id UUID REFERENCES pages(id) ON DELETE CASCADE,
+  type TEXT NOT NULL,
+  position INTEGER NOT NULL,
+  payload JSONB NOT NULL,
+  published JSONB,
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  CONSTRAINT blocks_unique UNIQUE(page_id, position)
 );
 
 -- Mídia (metadados)
-create table if not exists media_library (
-  id uuid primary key default gen_random_uuid(),
-  path text not null,
-  alt text,
-  created_at timestamptz default now()
+CREATE TABLE media_library (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  path TEXT NOT NULL,
+  alt TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Suítes (inventário específico)
-create table if not exists suites (
-  id uuid primary key default gen_random_uuid(),
-  name text,
-  capacity int,
-  area_m2 int,
-  price numeric(10,2),
-  description text,
-  images uuid[]
+CREATE TABLE suites (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT,
+  capacity INTEGER,
+  area_m2 INTEGER,
+  price NUMERIC(10,2),
+  description TEXT,
+  images UUID[]
 );
 
 -- Testemunhos
-create table if not exists testimonials (
-  id uuid primary key default gen_random_uuid(),
-  author text,
-  city text,
-  rating int check (rating between 1 and 5),
-  quote text,
-  is_featured boolean default false
+CREATE TABLE testimonials (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  author TEXT,
+  city TEXT,
+  rating INTEGER CHECK (rating BETWEEN 1 AND 5),
+  quote TEXT,
+  is_featured BOOLEAN DEFAULT FALSE
 );
 
 -- RLS (Row Level Security) policies
