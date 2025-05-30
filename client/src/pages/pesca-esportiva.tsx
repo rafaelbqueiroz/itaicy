@@ -1,6 +1,7 @@
 import { HeroSection } from '@/components/sections/hero-section';
 import { StickyBar } from '@/components/sections/sticky-bar';
 import { SplitBlock } from '@/components/sections/split-block';
+import { MobileBookingBar } from '@/components/sections/mobile-booking-bar';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
@@ -76,18 +77,18 @@ export default function PescaEsportiva() {
       />
 
       {/* Tabela de Preços */}
-      <section className="py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="font-playfair text-3xl md:text-4xl text-center text-river-slate-800 mb-12">
+      <section className="py-12 sm:py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <h2 className="font-playfair text-2xl sm:text-3xl md:text-4xl text-center text-river-slate-800 mb-8 sm:mb-12">
             Pacotes de Pesca Esportiva
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {pricingData.map((plan, index) => (
               <div 
                 key={index}
-                className={`relative bg-white rounded-lg shadow-lg border-2 p-8 ${
-                  plan.popular ? 'border-sunset-amber-600 scale-105' : 'border-gray-200'
+                className={`relative bg-white rounded-lg shadow-lg border-2 p-6 sm:p-8 ${
+                  plan.popular ? 'border-sunset-amber-600 sm:scale-105' : 'border-gray-200'
                 }`}
               >
                 {plan.popular && (
@@ -127,19 +128,19 @@ export default function PescaEsportiva() {
       </section>
 
       {/* O que está incluso */}
-      <section className="py-16 bg-sand-beige-100">
-        <div className="max-w-4xl mx-auto px-6">
-          <h3 className="font-playfair text-3xl text-center text-pantanal-green-900 mb-12">
+      <section className="py-12 sm:py-16 bg-sand-beige-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <h3 className="font-playfair text-2xl sm:text-3xl text-center text-pantanal-green-900 mb-8 sm:mb-12">
             O que está incluso
           </h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             {includedServices.map((service, index) => (
-              <div key={index} className="flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm">
+              <div key={index} className="flex items-center gap-3 sm:gap-4 bg-white p-4 rounded-lg shadow-sm">
                 <div className="flex-shrink-0 w-10 h-10 bg-pantanal-green-100 rounded-full flex items-center justify-center">
                   <service.icon className="w-5 h-5 text-pantanal-green-700" />
                 </div>
-                <span className="font-lato text-river-slate-800">{service.text}</span>
+                <span className="font-lato text-sm sm:text-base text-river-slate-800">{service.text}</span>
               </div>
             ))}
           </div>
@@ -159,23 +160,23 @@ Com barcos equipados com motor 40hp, você alcança rapidamente os locais mais p
       />
 
       {/* FAQ Inline */}
-      <section className="py-16 bg-sand-beige-100">
-        <div className="max-w-4xl mx-auto px-6">
-          <h3 className="font-playfair text-3xl text-center text-pantanal-green-900 mb-12">
+      <section className="py-12 sm:py-16 bg-sand-beige-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <h3 className="font-playfair text-2xl sm:text-3xl text-center text-pantanal-green-900 mb-8 sm:mb-12">
             Perguntas Frequentes
           </h3>
           
-          <Accordion type="single" collapsible className="space-y-4">
+          <Accordion type="single" collapsible className="space-y-3 sm:space-y-4">
             {faqData.map((faq, index) => (
               <AccordionItem 
                 key={index} 
                 value={`item-${index}`}
                 className="bg-white rounded-lg shadow-sm border border-gray-200"
               >
-                <AccordionTrigger className="px-6 py-4 text-left font-lato font-medium text-river-slate-800 hover:text-pantanal-green-700">
+                <AccordionTrigger className="px-4 sm:px-6 py-4 text-left font-lato font-medium text-sm sm:text-base text-river-slate-800 hover:text-pantanal-green-700">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-4 font-lato text-river-slate-700 leading-relaxed">
+                <AccordionContent className="px-4 sm:px-6 pb-4 font-lato text-sm sm:text-base text-river-slate-700 leading-relaxed">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
@@ -196,6 +197,8 @@ Reserve com antecedência para garantir suas datas preferidas na alta temporada.
         backgroundColor="bg-white"
         reverse
       />
+
+      <MobileBookingBar />
     </>
   );
 }

@@ -74,13 +74,13 @@ export default function Lodge() {
       />
 
       {/* Galeria em Grid */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="font-playfair text-3xl md:text-4xl text-center text-river-slate-800 mb-12">
+      <section className="py-12 sm:py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <h2 className="font-playfair text-2xl sm:text-3xl md:text-4xl text-center text-river-slate-800 mb-8 sm:mb-12">
             Explore Nossas Instalações
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {galleryImages.map((image, index) => (
               <div 
                 key={index}
@@ -90,7 +90,7 @@ export default function Lodge() {
                 <img 
                   src={image.src}
                   alt={image.alt}
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-48 sm:h-56 md:h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
@@ -105,20 +105,20 @@ export default function Lodge() {
       </section>
 
       {/* O que está incluso */}
-      <section className="py-16 bg-sand-beige-100">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="bg-white rounded-lg p-8 shadow-lg">
-            <h3 className="font-playfair text-2xl text-center text-pantanal-green-900 mb-8">
+      <section className="py-12 sm:py-16 bg-sand-beige-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="bg-white rounded-lg p-6 sm:p-8 shadow-lg">
+            <h3 className="font-playfair text-xl sm:text-2xl text-center text-pantanal-green-900 mb-6 sm:mb-8">
               O que está incluso
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               {includedServices.map((service, index) => (
                 <div key={index} className="flex items-center gap-3">
                   <div className="flex-shrink-0 w-8 h-8 bg-pantanal-green-100 rounded-full flex items-center justify-center">
                     <service.icon className="w-4 h-4 text-pantanal-green-700" />
                   </div>
-                  <span className="font-lato text-river-slate-800">{service.text}</span>
+                  <span className="font-lato text-sm sm:text-base text-river-slate-800">{service.text}</span>
                 </div>
               ))}
             </div>
@@ -161,6 +161,8 @@ Cada detalhe do lodge foi pensado para minimizar o impacto ambiental sem comprom
           </div>
         </div>
       )}
+
+      <MobileBookingBar />
     </>
   );
 }
