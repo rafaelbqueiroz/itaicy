@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { format } from "date-fns"
+import { addDays, format } from "date-fns"
 import { ptBR } from "date-fns/locale/pt-BR"
 import { enUS } from "date-fns/locale/en-US" 
 import { es } from "date-fns/locale/es"
@@ -39,19 +39,18 @@ export function DatePickerWithRange({
   ...props
 }: DatePickerWithRangeProps) {
   const { language, t } = useLanguage()
-  const [range, setRange] = React.useState<DateRange | undefined>(value)
+  const [date, setDate] = React.useState<DateRange | undefined>(value)
   
   const locale = localeMap[language] || ptBR
-  const defaultPlaceholder = placeholder || t('booking.selectPeriod')
+  const defaultPlaceholder = placeholder || t('selectPeriod')
 
   React.useEffect(() => {
-    setRange(value)
+    setDate(value)
   }, [value])
 
-  const handleSelect = (newRange: DateRange | undefined) => {
-    console.log('Date range selected:', newRange) // Debug
-    setRange(newRange)
-    onChange?.(newRange)
+  const handleSelect = (newDate: DateRange | undefined) => {
+    setDate(newDate)
+    onChange?.(newDate)
   }
 
   const formatDate = (date: Date) => {
@@ -68,35 +67,35 @@ export function DatePickerWithRange({
             variant="outline"
             className={cn(
               "bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato min-w-[280px] justify-start text-left font-normal",
-              !range && "text-river-slate-800"
+              !date && "text-river-slate-800"
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {range?.from ? (
-              range.to ? (
+            {date?.from ? (
+              date.to ? (
                 <>
-                  {formatDate(range.from)} – {formatDate(range.to)}
+                  {formatDate(date.from)} – {formatDate(date.to)}
                 </>
               ) : (
-                formatDate(range.from)
+                formatDate(date.from)
               )
             ) : (
-              <span className="text-river-slate-800">{defaultPlaceholder}</span>
+              <span className="text-river-slate-800">{t('booking.selectPeriod')}</span>
             )}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <DayPicker
             mode="range"
-            selected={range}
+            selected={date}
             onSelect={handleSelect}
             locale={locale}
             numberOfMonths={2}
             fromDate={new Date()}
             disabled={{ before: new Date() }}
             modifiers={{
-              start: range?.from,
-              end: range?.to,
+              start: date?.from,
+              end: date?.to,
             }}
             modifiersClassNames={{
               start: "rdp-start",

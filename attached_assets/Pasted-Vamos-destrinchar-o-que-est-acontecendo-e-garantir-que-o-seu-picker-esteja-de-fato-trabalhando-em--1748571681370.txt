@@ -1,0 +1,141 @@
+Vamos destrinchar o que está acontecendo e garantir que o seu picker esteja de fato trabalhando em **modo range**, com todo o trecho entre `from` e `to` pintado corretamente:
+
+---
+
+## 1. Verifique a versão do React-Day-Picker e o import
+
+1. Abra o seu `package.json` e confirme que você está usando o **react-day-picker ≥ 8.0.0**.
+2. No seu componente de widget, *nunca* importe o Calendar do Shadcn ou de outra lib, mas sim:
+
+   ```ts
+   import { DayPicker, DateRange } from "react-day-picker"
+   import "react-day-picker/dist/style.css"
+   ```
+
+   Se você esquecer de importar o CSS padrão, os estilos de seleção não vão aparecer.
+
+---
+
+## 2. Estado e props corretos
+
+```ts
+// inicialização
+const [range, setRange] = React.useState<DateRange>({ from: undefined, to: undefined })
+```
+
+* **Não** use `defaultMonth` nem `defaultSelected` — isso cria um componente não controlado.
+* **Use** *sempre* `selected={range}` + `onSelect={setRange}` para controlar a seleção.
+
+---
+
+## 3. Modo range e opção de meses
+
+```tsx
+<DayPicker
+  mode="range"
+  selected={range}
+  onSelect={setRange}
+  locale={ptBR}               // idioma vindo do seu switch
+  numberOfMonths={2}
+  fromDate={new Date()}       // não deixa selecionar datas passadas
+  disabled={{ before: new Date() }}
+  modifiers={{
+    start: range.from,
+    end: range.to,
+  }}
+  modifiersClassNames={{
+    start: "rdp-start",
+    end:   "rdp-end",
+  }}
+  styles={{
+    day_range_middle: {
+      backgroundColor: "rgba(201,122,44,0.2)",  // sand-beige claro
+    },
+    day_selected: {
+      backgroundColor: "#C97A2C",               // sunset-amber/600
+      color: "#FAF9F6",
+    },
+    day_selected_start: {
+      borderTopLeftRadius: "8px",
+      borderBottomLeftRadius: "8px",
+    },
+    day_selected_end: {
+      borderTopRightRadius: "8px",
+      borderBottomRightRadius: "8px",
+    },
+  }}
+/>
+```
+
+* **`mode="range"`**: habilita seleção de intervalo.
+* **`modifiers`** + **`modifiersClassNames`**: marca explicitamente início e fim para a lib pintar as bordas arredondadas.
+* **`styles`**: override inline das cores **do nosso design-system**.
+
+---
+
+## 4. Debug passo-a-passo
+
+1. **Console**: dentro do seu `onSelect={setRange}`, faça um `console.log(range)` para confirmar se o objeto está assim:
+
+   ```js
+   { from: Tue Jun 17 2025…, to: Fri Jun 20 2025… }
+   ```
+2. **Verifique o CSS**: abra o inspector do browser e confirme que as células do calendário têm classes como `.rdp-day_selected`, `.rdp-day_range_middle`, etc. Se não tiver, o CSS padrão não foi importado.
+
+---
+
+## 5. Integração final no widget
+
+```tsx
+<div className="flex flex-wrap items-end gap-4 max-w-5xl mx-auto px-4">
+  {/* 1) Date range picker */}
+  <Popover>
+    <PopoverTrigger asChild>
+      <Button variant="outline" className="w-full md:w-64 justify-start text-left">
+        <CalendarIcon className="mr-2" />
+        {range.from
+          ? range.to
+            ? `${format(range.from,"dd/MM/yyyy")} – ${format(range.to,"dd/MM/yyyy")}`
+            : format(range.from,"dd/MM/yyyy")
+          : "Selecione período"}
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent className="p-0">
+      {/* Cole aqui o DayPicker configurado */}
+    </PopoverContent>
+  </Popover>
+
+  {/* 2) Adultos */}
+  <SelectAdults /* … */ />
+
+  {/* 3) Crianças + idade */}
+  <SelectChildren /* … */ />
+  {numChildren > 0 && childrenAges.map((_,i) => (
+    <SelectChildAge key={i} index={i} /* … */ />
+  ))}
+
+  {/* 4) Botão Reservar alinhado */}
+  <Button variant="primary" className="font-medium uppercase text-base px-6 py-3">
+    Reservar
+  </Button>
+</div>
+```
+
+* **`items-end`** alinha todo mundo pela base.
+* **`flex-wrap`** só quebra em telas muito finas.
+
+---
+
+Se, mesmo assim, o range não pintar corretamente:
+
+* **Garanta** que **não** haja nenhum outro `<Calendar>` ou `<DatePicker>` importado.
+* **Procure** por conflitos de versão (talvez você tenha dois react-day-picker instalados).
+* **Teste** isolar o `<DayPicker>` sozinho numa página em branco, confirmando que ali funciona.
+
+Feito isso, você terá de volta:
+
+1. **Intervalo inteiro** destacado em nossa paleta.
+2. **Idioma** e **política de datas passadas** respeitados.
+3. **Layout** sem scroll, com todos os campos e o botão perfeitamente alinhados.
+
+Depois me diz se agora o `range` aparece como deveria!
