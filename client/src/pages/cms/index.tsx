@@ -5,16 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Pencil, Eye, Save, RotateCcw } from 'lucide-react';
+import { Pencil, Eye, ExternalLink } from 'lucide-react';
+import BlockForm from '@/components/cms/BlockForm';
 
 export default function CMSPage() {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
   const [editingBlock, setEditingBlock] = useState<string | null>(null);
-  const [editedContent, setEditedContent] = useState<Record<string, any>>({});
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -70,16 +67,14 @@ export default function CMSPage() {
 
   const handleEditBlock = (block: Block) => {
     setEditingBlock(block.id);
-    setEditedContent(block.payload);
   };
 
-  const handleSaveBlock = (blockId: string) => {
-    updateBlockMutation.mutate({ blockId, payload: editedContent });
+  const handleSaveBlock = (blockId: string, payload: Record<string, any>) => {
+    updateBlockMutation.mutate({ blockId, payload });
   };
 
   const handleCancelEdit = () => {
     setEditingBlock(null);
-    setEditedContent({});
   };
 
   const renderBlockEditor = (block: Block) => {
