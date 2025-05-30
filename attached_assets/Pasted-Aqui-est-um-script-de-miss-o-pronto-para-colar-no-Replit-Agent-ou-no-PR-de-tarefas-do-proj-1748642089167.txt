@@ -1,0 +1,158 @@
+Aqui está um **“script de missão”** pronto-para-colar no *Replit Agent* (ou no PR de tarefas do projeto).
+Ele traduz a sua blueprint em ✅ ações atômicas, critérios de aceite e ordens de execução, para que:
+
+* o site volte a funcionar imediatamente;
+* todo o conteúdo **existente** seja migrado (sem inventar texto);
+* o CMS fique WYSIWYG, sem JSON cru;
+* header / footer continuem fixos fora do editor;
+* Robson consiga alterar o que importa — e só isso.
+
+---
+
+## 0. Preparação rápida (rollback + variáveis)
+
+```bash
+# 0.1 Restaurar HEAD estável antes do “JSON CMS”
+git checkout tags/last-good-build  -B cms-refactor-start
+
+# 0.2 Criar .env.local (replit secrets) p/ client e server
+SUPABASE_URL        = https://<project>.supabase.co
+SUPABASE_ANON_KEY   = ****
+SUPABASE_SERVICE_KEY= ****   # para scripts seed
+```
+
+> **Critério de aceite**: `npm run dev` volta a mostrar o site público em `/`.
+
+---
+
+## 1. Banco (Supabase) & RLS
+
+1. Abra **SQL Editor** ▸ cole e execute o schema abaixo **exatamente** nesta ordem:
+
+   ```sql
+   -- pages / blocks / media / suites / testimonials   (vide blueprint §1)
+   -- … (código copiado da blueprint)
+   ```
+
+2. Habilite *Row Level Security* em todas as tabelas e aplique:
+
+   ```sql
+   -- Leitura pública somente de published
+   create policy "public read published"
+     on blocks for select
+     using ( published is not null );
+
+   -- Write só para usuários autenticados com claim role = 'admin'
+   create policy "admin full"
+     on blocks
+     using   ( auth.role() = 'authenticated' )
+     with check ( auth.role() = 'authenticated' );
+   ```
+
+> **Critério de aceite**:  `supabase.auth.getUser()` logado consegue `insert`, anon só `select`.
+
+---
+
+## 2. Seed = espelho do site (uma vez)
+
+```bash
+npm i -D @supabase/supabase-js zx
+npx zx scripts/01_extract_from_components.mjs   # lê React props, devolve JSON
+npx zx scripts/02_seed_supabase.mjs             # faz upsert se row não existir
+```
+
+* Não gere conteúdo dummy.  Leia dos arquivos React atuais (`blocks/*.ts`, `copy/*.json`).
+* Copie imagens locais para `storage/media` (use `uploadToSupabase()` com stream).
+
+> **Critérios**
+
+* `select count(*) from pages` = 7
+* `select slug from pages order by priority` devolve **home → acomodacoes → experiencias …**
+* `select type from blocks where page_id = (select id from pages where slug='home')` lista `hero-video`, `split-block`, `stats-ribbon`, etc.
+
+---
+
+## 3. Roteamento
+
+```tsx
+// client/src/App.tsx
+<Route path="/cms/*" element={<CmsDashboard />} />
+<Route path="/*"   element={<PublicSiteRouter />} />   // NÃO inverter!
+```
+
+> **Teste**: `/` mostra o site; `/cms` pede login.
+
+---
+
+## 4. CMS Dashboard (React + Tailwind + Zustand)
+
+### 4.1 Estrutura
+
+```
+src/pages/cms/
+ ├─ auth/        (SignInMagic.tsx)
+ ├─ layout/      (Sidebar.tsx, Topbar.tsx)
+ ├─ editor/      (BlockCard.tsx, BlockForm.tsx)
+ ├─ media/       (Library.tsx, UploadDialog.tsx)
+ └─ seo/         (SeoPanel.tsx)
+```
+
+### 4.2 Funcionalidades do primeiro release
+
+| Tela / componente   | Deve permitir…                                                     |
+| ------------------- | ------------------------------------------------------------------ |
+| **Sidebar (Pages)** | Drag-&-drop para mudar a ordem, click para carregar blocos.        |
+| **BlockCard**       | Render WYSIWYG + botões `Editar`, `Preview`, `Publicar`.           |
+| **BlockForm**       | Campos amigáveis (sem JSON). Validação zod + highlight erro.       |
+| **Media Library**   | Upload drag-&-drop → gera URL; botão “Copiar URL”; busca por nome. |
+| **SEO Panel**       | Editar title, description, keywords. Snippet google live.          |
+| **Topbar**          | `⌘S` Salva, `⌘P` Preview (adiciona `?preview=token` ao iframe).    |
+
+> **Critério**: editar o título do Hero e clicar “Publicar” reflete no site após F5.
+
+---
+
+## 5. Preview em tempo-real
+
+1. No `BlockForm` → onChange → `updateBlockDraft()` (zustand)
+
+   * Debounce 300 ms → `supabase.from('blocks').update({payload:<json>})`.
+2. No *PublicSiteRouter* adicione:
+
+   ```tsx
+   if (previewToken) {
+      subscribeToChannel('blocks').on('postgres_changes', … setState)
+   }
+   ```
+
+> **Critério**: enquanto o CMS está aberto em preview, mudar uma imagem troca no iframe sem recarregar.
+
+---
+
+## 6. Remover header/footer do CMS
+
+* No `/cms` renderize `<MinimalShell>` (sem `<Header>` / `<Footer>` do site).
+* Header/footer mantêm dados de contato via tabela `global_settings` editável em “Configurações”.
+
+---
+
+## 7. Hard stop para MVP
+
+Checklist que bloqueia merge no *main*:
+
+* [ ] página pública carrega (`/` HTTP 200) com conteúdo original
+* [ ] `/cms` exige login e mostra bloco Hero com **texto real do site**
+* [ ] Alterar subtítulo + Publicar → refletido após reload
+* [ ] Upload de imagem > 5 MB funciona
+* [ ] Nenhum JSON visível na UI
+* [ ] Lighthouse (desktop) página Home ≥ 95
+* [ ] RLS impede update quando não logado
+
+---
+
+### Se algo falhar
+
+*Não* invente dados placeholder — isso quebrou antes.
+Use o script extractor; logue a quantidade de blocos inseridos; verifique se `published` não é `NULL`.
+
+Boa sorte — e pare somente quando **Robson puder trocar uma foto sem te ligar**.

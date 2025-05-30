@@ -26,12 +26,14 @@ function Router() {
   return (
     <div className="min-h-screen flex flex-col">
       <Switch>
-        <Route path="/cms/*">
+        {/* CMS protegido - SEMPRE antes das rotas públicas */}
+        <Route path="/cms">
           <AuthWrapper>
             <CMS />
           </AuthWrapper>
         </Route>
         
+        {/* Site público - SEMPRE depois do CMS */}
         <Route>
           <Header />
           <main className="flex-1">
