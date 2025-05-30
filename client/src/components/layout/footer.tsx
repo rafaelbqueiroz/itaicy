@@ -1,6 +1,7 @@
 import { Link } from 'wouter';
 import { useLanguage } from '@/hooks/use-language';
 import { Instagram, Facebook, Youtube, Phone, Mail, MapPin } from 'lucide-react';
+import logoPrimary from '@assets/itaicy-wordmark-primary.png';
 
 export function Footer() {
   const { t } = useLanguage();
@@ -20,9 +21,9 @@ export function Footer() {
           {/* Logo & Description */}
           <div className="lg:col-span-2">
             <img 
-              src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTgwIDQwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8dGV4dCB4PSIxMCIgeT0iMjgiIGZvbnQtZmFtaWx5PSJQbGF5ZmFpciUyMERpc3BsYXkiIGZvbnQtc2l6ZT0iMjQiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiNmNWYxZTgiPklUQUlDWTwvdGV4dD4KPHR1eHQgeD0iMTAiIHk9IjM3IiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtc2l6ZT0iMTAiIGZvbnQtd2VpZ2h0PSI0MDAiIGZpbGw9IiNiODk1NmIiPlBBTlRBTkFMIEVDTyBMT0RHRTI8L3RleHQ+Cjwvc3ZnPgo=" 
+              src={logoPrimary} 
               alt="Itaicy Pantanal Eco Lodge" 
-              className="h-10 mb-6"
+              className="h-14 w-auto mb-6"
             />
             <p className="text-gray-300 max-w-md leading-relaxed mb-6">
               {t('footer.description')}

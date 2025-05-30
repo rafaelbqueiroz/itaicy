@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/ui/language-switcher';
 import { useLanguage } from '@/hooks/use-language';
 import { Menu, X, MessageCircle, ChevronDown } from 'lucide-react';
-import logoPath from '@assets/itaicy-wordmark-secondary.png';
+import logoSecondary from '@assets/itaicy-wordmark-secondary.png';
+import logoPrimary from '@assets/itaicy-wordmark-primary.png';
 
 export function Header() {
   const { t } = useLanguage();
@@ -71,9 +72,9 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 mt-2 mr-10" aria-label="Itaicy Pantanal Eco Lodge">
             <img 
-              src={logoPath} 
+              src={isSticky ? logoPrimary : logoSecondary} 
               alt="Itaicy Pantanal Eco Lodge" 
-              className="max-h-12 w-auto"
+              className="h-14 w-auto"
             />
           </Link>
 

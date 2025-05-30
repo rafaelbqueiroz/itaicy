@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
+import { ArrowRight } from 'lucide-react';
 
 export function FeatureBlocks() {
   const features = [
@@ -38,45 +39,49 @@ export function FeatureBlocks() {
   ];
 
   return (
-    <section className="py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="w-full max-w-[1440px] mx-auto px-4 lg:px-8 py-24">
+      <div className="grid gap-y-16 lg:gap-y-20">
         {features.map((feature, index) => (
-          <div 
-            key={feature.id} 
-            className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20 last:mb-0 ${
-              feature.imagePosition === 'right' ? 'lg:grid-flow-col-dense' : ''
-            }`}
+          <article
+            key={feature.id}
+            className="grid lg:grid-cols-12 gap-y-12 lg:gap-x-8 items-center"
           >
             {/* Content */}
-            <div className={`space-y-6 ${feature.imagePosition === 'right' ? 'lg:col-start-1' : ''}`}>
-              <h2 className="playfair text-3xl md:text-4xl font-bold text-pantanal-green-900 leading-tight">
+            <div className={`lg:col-span-5 flex flex-col justify-center space-y-6 ${
+              feature.imagePosition === 'right' 
+                ? 'order-2 lg:order-1' 
+                : 'order-2 lg:order-2'
+            }`}>
+              <h3 className="font-playfair text-[1.75rem] leading-[1.2] text-pantanal-green-900 mt-0 mb-4">
                 {feature.title}
-              </h2>
-              <p className="text-lg text-river-slate-800 leading-relaxed max-w-md" style={{ fontFamily: 'Lato, sans-serif' }}>
+              </h3>
+              <p className="font-lato text-[1.125rem] leading-[1.5] text-river-slate-800 mb-6 max-w-[60ch]">
                 {feature.description}
               </p>
               <Link href={feature.link}>
                 <Button 
                   variant="outline"
-                  className="border border-pantanal-green-900 text-pantanal-green-900 bg-transparent hover:bg-sand-beige-400 uppercase font-medium text-xs py-2 px-4 rounded-md transition-all duration-300"
-                  style={{ fontFamily: 'Lato, sans-serif' }}
+                  className="inline-flex items-center border border-pantanal-green-900 text-pantanal-green-900 bg-transparent hover:bg-sand-beige-400 font-lato font-semibold uppercase text-xs tracking-wider py-3 px-6 rounded-md transition-all duration-300"
                 >
                   Saiba mais
+                  <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
             </div>
 
             {/* Image */}
-            <div className={`relative ${feature.imagePosition === 'right' ? 'lg:col-start-2' : ''}`}>
-              <div className="aspect-[4/3] rounded-lg overflow-hidden shadow-lg">
-                <img 
-                  src={feature.image}
-                  alt={feature.title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-            </div>
-          </div>
+            <figure className={`lg:col-span-7 ${
+              feature.imagePosition === 'right' 
+                ? 'order-1 lg:order-2' 
+                : 'order-1 lg:order-1'
+            }`}>
+              <img
+                src={feature.image}
+                alt={feature.title}
+                className="w-full h-full object-cover rounded-lg shadow-sm"
+              />
+            </figure>
+          </article>
         ))}
       </div>
     </section>

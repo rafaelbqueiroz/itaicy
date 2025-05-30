@@ -1,0 +1,91 @@
+Checklist de qualidade – seção “Experiências” & bloco “Conservação”
+Item	Problema no mock-up	Regra do Design System 1.0 infringida	Ajuste proposto
+1. Layout 50/50	Na transição de “Conservação & Sustentabilidade” o content-box invade a foto de cima; cards seguintes não alternam coluna (ficam todos texto-esquerda).	Pattern 3 – Section 50/50 deve alternar L/R; manter gutter space-8 desktop.	Use grid 12 col: lg:grid-cols-12 gap-x-8. Card ímpar → col-span-5 order-2 lg:order-1; par → inverso. Em mobile flex-col com order reset.
+2. Content-box vidro fosco	Opacidade muito alta; texto verde sobre BG claro perde contraste (≈ 3.4 : 1).	Tokens: mínimo AA 4.5 : 1.	bg-cloud-white/80 backdrop-blur-md text-pantanal-green/900.
+3. Heading H2 (“Conservação & Sustentabilidade”)	Tracking largo demais; parágrafo encosta no heading.	Typography tokens – H2 2.5 rem, lh 115 %, margin-bottom = space-4 (16 px).	mt-0 mb-4 no <h2>.
+4. Body-L	Texto 32 rem de largura máxima mas container só 22 rem → quebras estranhas.	DS: Body-L 1.125 rem, max-width 60 ch.	Alinhar grid: content col-span-5 (≈38 rem).
+5. CTA (“Descubra nossas experiências”)	Variant incorreto: borda verde mas fonte pantanal-green 700 + tracking 0, ícone desalinhado.	Button Secondary = border 1 px pantanal-green/900, font-lato 600 CAPS 0.875 rem (+0.05 em), ícone ml-2 alinhado baseline.	class="inline-flex items-center border-pantanal-green/900 text-pantanal-green/900 font-lato font-semibold uppercase text-xs tracking-wider py-3 px-6 rounded-md hover:bg-sand-beige/400"
+6. Espaçamento vertical entre cards “Safári & Birdwatching” e “Sabores de Origem”	Gap ~72 px; DS pede section-padding 96 px mas espaço interno entre pares deve ser space-12 (48 px).	Spacing 1.3	Aplicar gap-y-12 lg:gap-y-16 na grid wrapper.
+7. Imagens	Radius Irregular: 12 px; sombra interna apenas.	Card → radius 8 px, shadow-lvl1 (0 2 4 rgba(0,0,0,.05)).	class="rounded-lg shadow-sm"
+8. Botão “SAIBA MAIS”	Minúsculas, border‐radius 4 px, fonte regular.	Button Secondary caps, radius 8, Lato 600.	Ver ponto 5.
+9. Counters Ribbon antecedente	(Não aparece nos prints) garantir contraste se sobre fundo foto.	Counters Ribbon sobre sand-beige/400.	—
+10. Anchor navegação lateral (“N” círculo preto)	Círculo preto sem acessibilidade de contraste se sobre imagem escura.	bg-cloud-white/90 text-pantanal-green/900 + shadow-lvl1.	class="fixed left-6 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full shadow-lvl1"
+
+✨ Snippet Tailwind para o Card 50/50 (alternando)
+jsx
+Copiar
+Editar
+<section className="w-full max-w-[1440px] mx-auto px-4 lg:px-8 py-24 grid lg:grid-cols-12 gap-y-16 lg:gap-x-8">
+  {/* Card 1 */}  
+  <article className="lg:col-span-5 flex flex-col justify-center order-2 lg:order-1">
+    <h3 className="font-playfair text-[1.75rem] leading-[1.2] text-pantanal-green/900 mb-4">
+      Safári &amp; Birdwatching
+    </h3>
+    <p className="font-lato text-[1.125rem] leading-[1.5] text-river-slate/800 mb-6 max-w-[60ch]">
+      166 espécies registradas, trilhas ao amanhecer e pôr-do-sol sobre lagoas azul-celeste.
+    </p>
+    <a href="/experiencias/birdwatching"
+       className="inline-flex items-center border border-pantanal-green/900 text-pantanal-green/900
+                  font-lato font-semibold uppercase text-xs tracking-wider py-3 px-6 rounded-md
+                  hover:bg-sand-beige/400 transition">
+      Saiba mais <ArrowRight className="w-4 h-4 ml-2" />
+    </a>
+  </article>
+
+  <figure className="lg:col-span-7 order-1 lg:order-2">
+    <img src="/img/safari-sunset.jpg"
+         alt="Safari ao pôr-do-sol no Pantanal" 
+         className="w-full h-full object-cover rounded-lg shadow-sm" />
+  </figure>
+</section>
+Para o segundo card troque as ordens (order-1/2) ou use lg:flex-row-reverse para inverter.
+
+🌐 Language Switcher (versão refinada)
+tsx
+Copiar
+Editar
+<Menu as="div" className="relative">
+  <Menu.Button className="flex items-center gap-1 bg-cloud-white/20 backdrop-blur px-3 py-[6px] 
+                          rounded-md hover:bg-cloud-white/30 
+                          focus-visible:outline-2 focus-visible:outline-pantanal-green/700">
+    <Globe className="w-4 h-4 text-cloud-white/0" />
+    <CountryFlag iso="br" size={16} />
+    <span className="text-xs font-lato font-semibold tracking-widest text-cloud-white/0">PT</span>
+    <ChevronDown className="w-3 h-3 text-cloud-white/0" />
+  </Menu.Button>
+
+  <Menu.Items className="absolute right-0 mt-2 w-44 origin-top-right rounded-md bg-cloud-white/0
+                         shadow-lvl3 py-2 focus:outline-none">
+    {[
+      { iso:'br', label:'Português' },
+      { iso:'us', label:'English' },
+      { iso:'es', label:'Español' },
+    ].map(({iso,label}) => (
+      <Menu.Item key={iso}>
+        {({active})=>(
+          <a href="/" className={`flex items-center gap-2 px-4 py-2 text-sm
+                ${active ? 'bg-sand-beige/400' : ''}`}>
+            <CountryFlag iso={iso} size={14}/>
+            <span className="text-river-slate/800">{label}</span>
+          </a>
+        )}
+      </Menu.Item>
+    ))}
+  </Menu.Items>
+</Menu>
+CountryFlag é um componente inline-SVG (sprite) para não inflar bundle.
+
+Contrast test: texto #35534A sobre #FAF9F6 = 6.9 : 1 (AA ✓).
+
+🛠 Próximos passos
+Aplicar grid alternado em todos os “Experience Cards”.
+
+Consertar spacing: adicionar mb-4 nos headings e gap-y-16.
+
+Substituir todos os CTAs pelos variants corretos (Primary laranja, Secondary outline verde).
+
+Refatorar language-switcher e remover palette cinza.
+
+Revisar contraste do texto verde sobre vidro-fosco (opacity-70 no glass).
+
+Rodar Lighthouse + axe-core para garantir AA/AAA.
