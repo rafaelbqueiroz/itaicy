@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { LocalCMSService as CMSService, type Page, type Block } from '@/lib/cms-local';
+import { CMSService, type Page, type Block } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -33,8 +33,8 @@ export default function CMSPage() {
 
   // Mutação para atualizar bloco
   const updateBlockMutation = useMutation({
-    mutationFn: ({ blockId, payload }: { blockId: string; payload: Record<string, any> }) =>
-      CMSService.updateBlock(blockId, payload),
+    mutationFn: ({ blockId, data }: { blockId: string; data: Record<string, any> }) =>
+      CMSService.updateBlock(blockId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cms-page-blocks'] });
       setEditingBlock(null);
@@ -70,11 +70,11 @@ export default function CMSPage() {
 
   const handleEditBlock = (block: Block) => {
     setEditingBlock(block.id);
-    setEditedContent(block.payload);
+    setEditedContent(block.draft || block.data);
   };
 
   const handleSaveBlock = (blockId: string) => {
-    updateBlockMutation.mutate({ blockId, payload: editedContent });
+    updateBlockMutation.mutate({ blockId, data: editedContent });
   };
 
   const handleCancelEdit = () => {
@@ -84,7 +84,7 @@ export default function CMSPage() {
 
   const renderBlockEditor = (block: Block) => {
     const isEditing = editingBlock === block.id;
-    const content = isEditing ? editedContent : block.payload;
+    const content = isEditing ? editedContent : (block.draft || block.data);
 
     return (
       <Card key={block.id} className="mb-4">

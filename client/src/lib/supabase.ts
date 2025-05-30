@@ -23,7 +23,7 @@ export interface Page {
   slug: string;
   name: string;
   template: string;
-  priority: number;
+  order: number;
   created_at: string;
 }
 
@@ -32,9 +32,26 @@ export interface Block {
   page_id: string;
   type: string;
   position: number;
-  payload: Record<string, any>;
-  published: Record<string, any> | null;
+  data: Record<string, any>;
+  draft: Record<string, any> | null;
+  published: boolean;
   updated_at: string;
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  cover_url: string | null;
+  content_md: string | null;
+  published: boolean;
+  created_at: string;
+}
+
+export interface GlobalSetting {
+  id: string;
+  key: string;
+  value: Record<string, any>;
 }
 
 export interface MediaItem {
@@ -50,7 +67,7 @@ export class CMSService {
     const { data, error } = await supabase
       .from('pages')
       .select('*')
-      .order('priority', { ascending: true });
+      .order('order', { ascending: true });
 
     if (error) throw error;
     return data || [];
@@ -76,11 +93,11 @@ export class CMSService {
     return { page, blocks: blocks || [] };
   }
 
-  static async updateBlock(blockId: string, payload: Record<string, any>): Promise<Block> {
-    const { data, error } = await supabase
+  static async updateBlock(blockId: string, data: Record<string, any>): Promise<Block> {
+    const { data: updatedBlock, error } = await supabase
       .from('blocks')
       .update({ 
-        payload,
+        draft: data,
         updated_at: new Date().toISOString()
       })
       .eq('id', blockId)
@@ -88,11 +105,11 @@ export class CMSService {
       .single();
 
     if (error) throw error;
-    return data;
+    return updatedBlock;
   }
 
   static async publishBlock(blockId: string): Promise<Block> {
-    // Copia o payload para published
+    // Copia o draft para data e marca como publicado
     const { data: block, error: fetchError } = await supabase
       .from('blocks')
       .select('*')
@@ -101,10 +118,11 @@ export class CMSService {
 
     if (fetchError || !block) throw fetchError;
 
-    const { data, error } = await supabase
+    const { data: updatedBlock, error } = await supabase
       .from('blocks')
       .update({ 
-        published: block.payload,
+        data: block.draft || block.data,
+        published: true,
         updated_at: new Date().toISOString()
       })
       .eq('id', blockId)
@@ -112,7 +130,7 @@ export class CMSService {
       .single();
 
     if (error) throw error;
-    return data;
+    return updatedBlock;
   }
 
   static async publishPage(pageId: string): Promise<void> {
@@ -127,6 +145,26 @@ export class CMSService {
     for (const block of blocks || []) {
       await this.publishBlock(block.id);
     }
+  }
+
+  static async getGlobalSettings(): Promise<GlobalSetting[]> {
+    const { data, error } = await supabase
+      .from('global_settings')
+      .select('*');
+
+    if (error) throw error;
+    return data || [];
+  }
+
+  static async updateGlobalSetting(key: string, value: Record<string, any>): Promise<GlobalSetting> {
+    const { data, error } = await supabase
+      .from('global_settings')
+      .upsert({ key, value })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
   }
 
   static async getMediaLibrary(): Promise<MediaItem[]> {
