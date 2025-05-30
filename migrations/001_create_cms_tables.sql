@@ -124,9 +124,47 @@ INSERT INTO stats (code, value, unit) VALUES
 ('ACCOMMODATIONS', 11, 'suítes'),
 ('PROTECTED_AREA', 650, 'hectares');
 
+-- Testimonials table
+CREATE TABLE IF NOT EXISTS testimonials (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  city TEXT,
+  rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  quote TEXT NOT NULL,
+  avatar_id INTEGER REFERENCES files(id),
+  featured BOOLEAN DEFAULT false,
+  active BOOLEAN DEFAULT true,
+  stay_date DATE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- FAQ table
+CREATE TABLE IF NOT EXISTS faq (
+  id SERIAL PRIMARY KEY,
+  category TEXT NOT NULL,
+  question TEXT NOT NULL,
+  answer_md TEXT NOT NULL,
+  sort_order INTEGER DEFAULT 0,
+  active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
 -- Insert global settings
 INSERT INTO settings (id, primary_color, accent_color, email) VALUES
 (1, '#C97A2C', '#064737', 'reservas@itaicy.com.br');
+
+-- Insert testimonials
+INSERT INTO testimonials (name, city, rating, quote, featured, stay_date) VALUES
+('Ana Carvalho', 'Rio de Janeiro', 5, 'Dormir ouvindo as araras e acordar com a vista do rio foi uma experiência transformadora.', true, '2024-08-15'),
+('Carlos Silva', 'São Paulo', 5, 'A pesca esportiva superou todas as expectativas. Guias experientes e peixes gigantes!', true, '2024-07-22'),
+('Maria Santos', 'Brasília', 5, 'Lugar mágico para desconectar e se reconectar com a natureza. Voltaremos em breve!', false, '2024-09-10');
+
+-- Insert FAQ
+INSERT INTO faq (category, question, answer_md, sort_order) VALUES
+('geral', 'Qual a melhor época para visitar?', 'A **temporada de pesca** vai de março a outubro, com águas mais claras. Para **birdwatching**, recomendamos maio a setembro quando as aves estão mais ativas.', 1),
+('hospedagem', 'As suítes têm ar-condicionado?', 'Sim, todas as suítes possuem ar-condicionado, Wi-Fi satelital e varanda privativa com rede para contemplação.', 2),
+('pesca', 'Preciso levar equipamentos de pesca?', 'Não é necessário. Fornecemos todos os equipamentos profissionais: varas, molinetes, iscas vivas e acessórios para pesca esportiva.', 3),
+('transporte', 'Como chegar ao lodge?', 'Oferecemos transfer gratuito do aeroporto de Cuiabá. O trajeto dura aproximadamente 2h30 por estrada asfaltada até nosso píer privativo.', 4);
 
 -- Enable Row Level Security
 ALTER TABLE files ENABLE ROW LEVEL SECURITY;

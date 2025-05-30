@@ -47,10 +47,26 @@ export interface IStorage {
   getNewsletterSubscriptions(): Promise<NewsletterSubscription[]>;
 
   // CMS Suite methods
-  getCmsSuites(): Promise<CmsSuite[]>;
-  getCmsSuiteById(id: number): Promise<CmsSuite | undefined>;
-  createCmsSuite(suite: InsertCmsSuite): Promise<CmsSuite>;
-  updateCmsSuite(id: number, suite: Partial<InsertCmsSuite>): Promise<CmsSuite>;
+  getCmsSuites(): Promise<any[]>;
+  getCmsSuiteById(id: number): Promise<any | undefined>;
+  createCmsSuite(suite: any): Promise<any>;
+  updateCmsSuite(id: number, suite: any): Promise<any>;
+  
+  // Testimonials methods
+  getTestimonials(): Promise<any[]>;
+  createTestimonial(testimonial: any): Promise<any>;
+  
+  // FAQ methods
+  getFaqs(category?: string): Promise<any[]>;
+  createFaq(faq: any): Promise<any>;
+  
+  // Stats methods
+  getStats(): Promise<any[]>;
+  updateStat(code: string, value: number): Promise<any>;
+  
+  // Settings methods
+  getSettings(): Promise<any>;
+  updateSettings(settings: any): Promise<any>;
 }
 
 export class MemStorage implements IStorage {
@@ -62,7 +78,11 @@ export class MemStorage implements IStorage {
   private bookings: Map<number, Booking>;
   private contactSubmissions: Map<number, ContactSubmission>;
   private newsletterSubscriptions: Map<number, NewsletterSubscription>;
-  private cmsSuites: Map<number, CmsSuite>;
+  private cmsSuites: Map<number, any>;
+  private testimonials: Map<number, any>;
+  private faqs: Map<number, any>;
+  private stats: Map<string, any>;
+  private settings: any;
   private currentId: number;
 
   constructor() {
@@ -75,6 +95,10 @@ export class MemStorage implements IStorage {
     this.contactSubmissions = new Map();
     this.newsletterSubscriptions = new Map();
     this.cmsSuites = new Map();
+    this.testimonials = new Map();
+    this.faqs = new Map();
+    this.stats = new Map();
+    this.settings = {};
     this.currentId = 1;
 
     // Initialize with sample data
