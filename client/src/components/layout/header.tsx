@@ -59,8 +59,8 @@ export function Header() {
   };
 
   return (
-    <header className={headerClasses} style={stickyStyles}>
-      <div className="max-w-7xl mx-auto px-6">
+    <header className={headerClasses} style={stickyStyles} id="site-header">
+      <div className="max-w-7xl mx-auto px-6 relative">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 mt-2 mr-10" aria-label="Itaicy Pantanal Eco Lodge">
@@ -93,7 +93,7 @@ export function Header() {
 
                 {/* Mega Menu */}
                 {item.megaMenu && activeDropdown === item.name && (
-                  <div className="absolute top-full left-0 w-screen shadow-lg z-50 bg-white border-t border-pantanal-green-900/10">
+                  <div className="absolute top-full inset-x-0 w-screen shadow-lg z-50 bg-white border-t border-pantanal-green-900/10">
                     <div className="mx-auto max-w-[1440px] px-8 grid md:grid-cols-3 gap-x-16 gap-y-8 py-12">
                       {/* Coluna 1: Lodge */}
                       <div>
