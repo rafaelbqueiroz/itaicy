@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/hooks/use-language';
 import { Play, Maximize2, Eye, MapPin, Bed, Users } from 'lucide-react';
+import type { CmsVirtualTour } from '@shared/schema';
 
 interface VirtualTourProps {
   id: string;
@@ -87,13 +89,23 @@ const categoryFilters = [
 export function VirtualTourGallery() {
   const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedTour, setSelectedTour] = useState<VirtualTourProps | null>(null);
 
-  const filteredTours = selectedCategory === 'all' 
-    ? tourData 
-    : tourData.filter(tour => tour.category === selectedCategory);
+  // Fetch virtual tours from CMS
+  const { data: tours = [], isLoading } = useQuery<CmsVirtualTour[]>({
+    queryKey: ['/api/cms/virtual-tours', selectedCategory],
+    queryFn: async () => {
+      const url = selectedCategory === 'all' 
+        ? '/api/cms/virtual-tours' 
+        : `/api/cms/virtual-tours?category=${selectedCategory}`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Failed to fetch tours');
+      return response.json();
+    }
+  });
 
-  const openTour = (tour: VirtualTourProps) => {
+  const filteredTours = tours;
+
+  const openTour = (tour: CmsVirtualTour) => {
     // Open 360° tour in new window/iframe
     window.open(tour.tourUrl, '_blank', 'width=1200,height=800');
   };
@@ -151,7 +163,7 @@ export function VirtualTourGallery() {
             <Card key={tour.id} className="overflow-hidden group hover:shadow-lg transition-shadow duration-300">
               <div className="relative">
                 <img
-                  src={tour.thumbnailUrl}
+                  src="/api/placeholder/800/600"
                   alt={tour.title}
                   className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
