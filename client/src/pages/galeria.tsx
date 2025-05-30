@@ -140,13 +140,13 @@ export default function Galeria() {
   return (
     <div className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="py-20 bg-itaicy-cream">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-16 md:py-20 bg-sand-beige-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center">
-            <h1 className="playfair text-5xl md:text-6xl font-bold text-itaicy-charcoal mb-6">
+            <h1 className="font-playfair text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-river-slate-800 mb-4 sm:mb-6 leading-tight">
               Galeria
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-river-slate-600 max-w-3xl mx-auto leading-relaxed">
               Momentos únicos capturados no coração do Pantanal - desde pescarias emocionantes até encontros com a vida selvagem
             </p>
           </div>
@@ -246,6 +246,8 @@ export default function Galeria() {
           </Button>
         </div>
       </section>
+
+      <MobileBookingBar />
     </div>
   );
 }
