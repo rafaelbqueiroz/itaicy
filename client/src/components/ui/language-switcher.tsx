@@ -64,38 +64,18 @@ export function LanguageSwitcher({ isSticky = false }: LanguageSwitcherProps) {
       <button
         onClick={() => setIsOpen(!isOpen)}
         onKeyDown={(e) => handleKeyDown(e)}
-        className={`flex items-center gap-2 backdrop-blur px-3 py-1.5 rounded-md focus-visible:outline-2 focus-visible:outline-pantanal-green-700 transition-colors duration-150 ${
+        className={`flex items-center gap-1 p-1 transition-all duration-240 bg-transparent hover:underline focus-visible:outline-2 focus-visible:outline-pantanal-green-700 ${
           isSticky 
-            ? 'bg-sand-beige-400/20 hover:bg-sand-beige-400/30 text-pantanal-green-900 hover:text-pantanal-green-900 focus:text-pantanal-green-900'
-            : 'bg-cloud-white-0/20 hover:bg-cloud-white-0/30 text-cloud-white-0 hover:text-cloud-white-0 focus:text-cloud-white-0'
+            ? 'text-pantanal-green-900 hover:text-sunset-amber-600' 
+            : 'text-cloud-white-0 hover:text-sunset-amber-600'
         }`}
         aria-label="Seleção de idioma"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
-        <Globe className={`w-5 h-5 ${isSticky ? 'text-pantanal-green-900' : 'text-cloud-white-0'}`} />
-        <div className="flex items-center gap-1">
-          <span 
-            className={`w-4 h-4 rounded-full border flex items-center justify-center text-xs ${
-              isSticky 
-                ? 'border-pantanal-green-900/40 text-pantanal-green-900' 
-                : 'border-cloud-white-0/40 text-cloud-white-0'
-            }`}
-            aria-hidden="true"
-          >
-            {currentLang.flag}
-          </span>
-          <span 
-            className={`text-xs font-medium tracking-widest uppercase ${
-              isSticky ? 'text-pantanal-green-900' : 'text-cloud-white-0'
-            }`}
-            style={{ fontFamily: 'Lato, sans-serif' }}
-          >
-            {currentLang.code}
-          </span>
-        </div>
+        <Globe className={`w-4 h-4 ${isSticky ? 'text-pantanal-green-900' : 'text-cloud-white-0'}`} />
         <ChevronDown 
-          className={`w-4 h-4 transition-transform duration-150 ${
+          className={`w-3 h-3 transition-transform duration-240 ${
             isSticky ? 'text-pantanal-green-900' : 'text-cloud-white-0'
           } ${isOpen ? 'rotate-180' : ''}`} 
         />
@@ -104,7 +84,7 @@ export function LanguageSwitcher({ isSticky = false }: LanguageSwitcherProps) {
       {isOpen && (
         <ul 
           role="listbox"
-          className="absolute right-0 mt-2 w-44 bg-[#FAF9F6] rounded-lg shadow-xl py-1 z-50 border border-[#D9CEB3]/20 animate-fade-in"
+          className="absolute right-0 mt-2 w-36 bg-cloud-white-0 rounded-lg shadow-lg py-2 z-50 border border-pantanal-green-200 animate-fade-in"
           aria-label="Lista de idiomas"
         >
           {LANGUAGES.map((lang) => (
@@ -115,19 +95,19 @@ export function LanguageSwitcher({ isSticky = false }: LanguageSwitcherProps) {
               onClick={() => handleSelect(lang.code)}
               onKeyDown={(e) => handleKeyDown(e, lang.code)}
               tabIndex={0}
-              className="flex items-center gap-3 px-3 h-8 cursor-pointer hover:bg-[#D9CEB3]/20 focus:bg-[#D9CEB3]/20 focus:outline-none transition-colors duration-150"
+              className={`flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-sand-beige-400/20 focus:bg-sand-beige-400/20 focus:outline-none transition-colors duration-240 ${
+                lang.code === currentLang.code ? 'border-l-4 border-pantanal-green-600' : ''
+              }`}
               style={{ fontFamily: 'Lato, sans-serif' }}
             >
-              <span 
-                className="w-4 h-4 rounded-full border border-[#D9CEB3]/40 flex items-center justify-center text-xs"
-                aria-hidden="true"
-              >
+              <span className="text-sm" aria-hidden="true">
                 {lang.flag}
               </span>
-              <span className="text-sm text-[#064737]">{lang.name}</span>
-              {lang.code === currentLang.code && (
-                <span className="ml-auto text-[#C97A2C] text-xs">✓</span>
-              )}
+              <span className={`text-[0.875rem] ${
+                lang.code === currentLang.code ? 'text-pantanal-green-900 font-medium' : 'text-river-slate-800 font-normal'
+              }`}>
+                {lang.code.toUpperCase()}
+              </span>
             </li>
           ))}
         </ul>
