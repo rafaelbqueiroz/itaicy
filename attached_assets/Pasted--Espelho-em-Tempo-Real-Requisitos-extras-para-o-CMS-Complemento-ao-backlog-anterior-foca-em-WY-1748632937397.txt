@@ -1,0 +1,66 @@
+“Espelho em Tempo-Real” — Requisitos extras para o CMS
+(Complemento ao backlog anterior — foca em WYSIWYG real, preview e heurísticas de Nielsen).
+
+1. Espelhamento visual da página
+Necessidade	Solução Técnica	Heurística Nielsen
+Ver fielmente o layout e a ordem atual dos blocos	iFrame Live Preview carregando a rota pública com draftToken (query-string). O CMS injeta o HTML novo em shadow-DOM e recalcula CSS tokens — sem publicar.	“Visibilidade do status do sistema” & “Correspondência entre sistema e mundo real”
+Garantir que as miniaturas mostrem o bloco como ele aparece	Durante drag-over faz html2canvas do bloco na iFrame e gera thumb base64 (cache Supabase Storage).	“Reconhecimento mais que recordação”
+Mostrar se a ordem foi alterada	Barra lateral de blocos traz número de ordem dinâmico + highlight se diverge da versão publicada.	“Feedback imediato”
+
+2. Preview antes de salvar / publicar
+Feature	Detalhe
+Side-by-Side Diff	Toggle “Ver diferenças” abre split-screen: Publicado (esq.) × Draft (dir.) com diff-highlight (vermelho/verde) em texto, imgs e removed sections.
+Painel de Alertas	Valida responsividade (usa @thorin plugin) → se heading quebra, mostra alerta “Título excede largura em mobile”.
+Modo Dispositivo	Controles tablet/mobile (CSS @media + scalefactor).
+
+3. Biblioteca de mídia com screenshot automático
+Cada upload gera:
+
+original,
+
+web-optimized (85 % quality),
+
+Low-Quality Image Placeholder (LQIP) para thumbs.
+
+Quando editor escolhe vídeo, CMS captura frame 1 s ➜ gera JPG 1280 px (poster) para SEO/OG.
+
+4. Fluxo de publicação “Safe-Ship”
+Passo	Ação	Feedback
+1 – Rascunho	Auto-save a cada 3 s (debounce).	Toast “Salvo” + ícone nuvem ✅
+2 – Revisar	Botão “Pré-Visualizar” abre nova aba full-screen com draftToken.	Banner laranja: “Versão de teste – não indexado”.
+3 – Aprovar & Publicar	Revisor clica “Publicar”. Build hook revalida Rotas (Next.js revalidateTag).	Modal sucesso + link “Ver ao vivo”.
+
+5. Checklist de Heurísticas de Nielsen aplicado
+#	Heurística	Implementação no CMS
+1	Visibilidade do status	Snackbars, ícone de salvamento ao vivo, indicador de conexão Supabase.
+2	Match com mundo real	Canvas é a própria página (iFrame), nomenclatura de blocos idêntica (Hero, FAQ…).
+3	Controle & liberdade	Undo / Redo global (zustand history) e botão “Reverter para publicado”.
+4	Consistência & padrões	Botões, cores = tokens UI do site. Mesmos ícones lucide.
+5	Prevenção de erros	Validadores (tamanho img, vídeo > 10 MB, campo SEO vazio).
+6	Reconhecimento	Thumbs + previews = menos memória.
+7	Flexibilidade	Shortcuts: ⌘+P preview, ⌘+S save.
+8	Estética & minimalismo	Properties panel só mostra campos do bloco selecionado.
+9	Ajuda ao diagnosticar erros	Toast vermelho com logId + link “ver detalhes”.
+10	Ajuda & documentação	Tooltip “?” abre side-doc Markdown (FAQs rápidas).
+
+6. Tarefas incrementais (adicionar ao backlog)
+ID	Task	Owner	Pts
+PREV-01	Implementar iFrame live-preview com draftToken & hot-reload (Vite HMR)	FE	5
+PREV-02	html2canvas thumbnail generator + caching	FE	3
+DIFF-01	Build side-by-side diff viewer (text + image)	FE	5
+MEDIA-03	LQIP & poster frame generation (Edge Function)	BE	4
+UX-02	Undo/Redo with global state history	FE	3
+VAL-01	Real-time content validators & warning pane	FE	3
+
+Add these to previous 44 pts → ~63 pts (≈ 6 weeks total sprint).
+
+🎯 Resultado esperado após esta fase
+WYSIWYG autêntico – equipe edita “vendo” o site real.
+
+Zero deploy anxiety – visual diff & preview antes de publicar.
+
+Nielsen-compliant UX – reduz erros, aumenta adoção.
+
+Conteúdo rico (imagens, vídeos, blog) gerido sem dev.
+
+Assim o Itaicy terá um best-in-class CMS que reflete o hotel: transparente, sustentável e focado na experiência do usuário.

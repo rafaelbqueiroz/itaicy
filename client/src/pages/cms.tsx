@@ -15,6 +15,7 @@ import {
 export default function CMSPage() {
   const [selectedPage, setSelectedPage] = useState<string>('home');
   const [activeSection, setActiveSection] = useState<string>('content');
+  const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const { toast } = useToast();
 
   return (
@@ -30,9 +31,9 @@ export default function CMSPage() {
             </div>
           </div>
           <div className="flex items-center space-x-3">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => setActiveSection('preview')}>
               <Eye className="h-4 w-4 mr-2" />
-              Preview
+              Preview Ao Vivo
             </Button>
             <Button size="sm">
               <Save className="h-4 w-4 mr-2" />
@@ -53,10 +54,18 @@ export default function CMSPage() {
           </div>
         </aside>
 
-        {/* Center Panel - Content Canvas */}
+        {/* Center Panel - Content Canvas or Live Preview */}
         <main className="flex-1 overflow-y-auto bg-gray-50">
           <div className="p-6">
-            <ContentCanvas pageSlug={selectedPage} />
+            {activeSection === 'preview' ? (
+              <LivePreview 
+                pageSlug={selectedPage} 
+                previewMode={previewMode}
+                onModeChange={setPreviewMode}
+              />
+            ) : (
+              <ContentCanvas pageSlug={selectedPage} />
+            )}
           </div>
         </main>
 
@@ -132,6 +141,89 @@ function SiteMapPanel({ selectedPage, onPageSelect }: {
             <Settings className="h-4 w-4 mr-2" />
             Configurações
           </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Componente de preview em tempo real
+function LivePreview({ pageSlug, previewMode, onModeChange }: {
+  pageSlug: string;
+  previewMode: 'desktop' | 'tablet' | 'mobile';
+  onModeChange: (mode: 'desktop' | 'tablet' | 'mobile') => void;
+}) {
+  const previewUrl = `/${pageSlug === 'home' ? '' : pageSlug}?preview=true`;
+  
+  const deviceSizes = {
+    desktop: { width: '100%', height: '100%' },
+    tablet: { width: '768px', height: '1024px' },
+    mobile: { width: '375px', height: '667px' }
+  };
+
+  return (
+    <div className="h-full flex flex-col">
+      {/* Preview Controls */}
+      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Preview Ao Vivo</h3>
+            <p className="text-sm text-gray-600">Visualize como a página aparecerá para os visitantes</p>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <Button
+              variant={previewMode === 'desktop' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onModeChange('desktop')}
+            >
+              🖥️ Desktop
+            </Button>
+            <Button
+              variant={previewMode === 'tablet' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onModeChange('tablet')}
+            >
+              📱 Tablet
+            </Button>
+            <Button
+              variant={previewMode === 'mobile' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onModeChange('mobile')}
+            >
+              📱 Mobile
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Preview Frame */}
+      <div className="flex-1 bg-gray-100 rounded-lg p-4 flex items-center justify-center">
+        <div 
+          className="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300"
+          style={{
+            width: deviceSizes[previewMode].width,
+            height: deviceSizes[previewMode].height,
+            maxWidth: '100%',
+            maxHeight: '100%'
+          }}
+        >
+          <iframe
+            src={previewUrl}
+            className="w-full h-full border-0"
+            title={`Preview - ${pageSlug}`}
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+          />
+        </div>
+      </div>
+
+      {/* Status Bar */}
+      <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3">
+        <div className="flex items-center space-x-2">
+          <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+          <span className="text-sm font-medium text-amber-800">
+            Modo Preview - Alterações não publicadas
+          </span>
         </div>
       </div>
     </div>
@@ -276,8 +368,11 @@ function PropertiesPanel({ pageSlug }: { pageSlug: string }) {
   );
 }
 
-// Card visual para cada bloco
+// Card visual para cada bloco com validação
 function VisualBlockCard({ block, index, total }: { block: any; index: number; total: number }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const { toast } = useToast();
+
   const getBlockIcon = (type: string) => {
     const icons: Record<string, any> = {
       'hero_video': '🎬',
@@ -306,27 +401,125 @@ function VisualBlockCard({ block, index, total }: { block: any; index: number; t
     return titles[type] || type;
   };
 
+  const validateBlock = (block: any) => {
+    const warnings = [];
+    const { props } = block;
+
+    if (block.type === 'hero_video' || block.type === 'page_header') {
+      if (!props.title || props.title.length < 3) {
+        warnings.push('Título muito curto');
+      }
+      if (props.title && props.title.length > 60) {
+        warnings.push('Título pode ser muito longo para SEO');
+      }
+      if (!props.subtitle) {
+        warnings.push('Subtítulo em branco');
+      }
+    }
+
+    if (block.type === 'contact_info') {
+      if (!props.email || !props.email.includes('@')) {
+        warnings.push('Email inválido ou em branco');
+      }
+      if (!props.phone) {
+        warnings.push('Telefone em branco');
+      }
+    }
+
+    return warnings;
+  };
+
+  const warnings = validateBlock(block);
+  const hasWarnings = warnings.length > 0;
+
   return (
-    <div className="bg-white rounded-lg border border-gray-200 hover:border-gray-300 transition-all cursor-pointer group">
+    <div className={`bg-white rounded-lg border-2 transition-all cursor-pointer group relative ${
+      hasWarnings 
+        ? 'border-yellow-300 bg-yellow-50' 
+        : 'border-gray-200 hover:border-blue-300'
+    }`}>
+      {/* Status indicator */}
+      <div className="absolute top-3 right-3 flex items-center space-x-2">
+        {hasWarnings && (
+          <div className="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+            ⚠️ {warnings.length}
+          </div>
+        )}
+        <div className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+          ✓ Ativo
+        </div>
+      </div>
+
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-3">
-            <span className="text-2xl">{getBlockIcon(block.type)}</span>
+            <div className="relative">
+              <span className="text-2xl">{getBlockIcon(block.type)}</span>
+              <div className="absolute -top-1 -left-1 bg-blue-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                {index + 1}
+              </div>
+            </div>
             <div>
               <h4 className="font-medium text-gray-900">{getBlockTitle(block.type)}</h4>
-              <p className="text-sm text-gray-500">Posição {index + 1} de {total}</p>
+              <p className="text-sm text-gray-500">
+                Posição {index + 1} de {total}
+                {hasWarnings && (
+                  <span className="text-yellow-600 ml-2">• Precisa de atenção</span>
+                )}
+              </p>
             </div>
           </div>
-          <Button size="sm" variant="outline" className="opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button 
+            size="sm" 
+            variant={hasWarnings ? "default" : "outline"}
+            className="opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={() => setIsEditing(true)}
+          >
             <Edit className="h-4 w-4 mr-2" />
-            Editar
+            {hasWarnings ? 'Corrigir' : 'Editar'}
           </Button>
         </div>
         
         <div className="bg-gray-50 rounded p-3">
           <BlockContentPreview block={block} />
         </div>
+
+        {/* Warnings display */}
+        {hasWarnings && (
+          <div className="mt-3 p-3 bg-yellow-100 border border-yellow-300 rounded">
+            <h5 className="text-sm font-medium text-yellow-800 mb-2">Alertas de Qualidade:</h5>
+            <ul className="text-xs text-yellow-700 space-y-1">
+              {warnings.map((warning, i) => (
+                <li key={i} className="flex items-center space-x-2">
+                  <span>•</span>
+                  <span>{warning}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
+
+      {/* Quick Edit Modal */}
+      {isEditing && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Editar {getBlockTitle(block.type)}</h3>
+              <Button variant="outline" size="sm" onClick={() => setIsEditing(false)}>
+                ✕
+              </Button>
+            </div>
+            <QuickEditForm 
+              block={block} 
+              onSave={() => {
+                setIsEditing(false);
+                toast({ title: "Sucesso", description: "Bloco atualizado!" });
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
