@@ -111,7 +111,7 @@ async function seedBlocks() {
     published: block.published
   })).filter(block => block.page_id); // Remove blocos sem página
 
-  return await safeUpsert('blocks', blocks);
+  return await safeInsert('blocks', blocks);
 }
 
 // Seed mídia
@@ -123,7 +123,7 @@ async function seedMedia() {
     alt: asset.alt
   }));
 
-  return await safeUpsert('media_library', media, 'path');
+  return await safeInsert('media_library', media);
 }
 
 // Seed suites (dados base)
@@ -149,7 +149,7 @@ async function seedSuites() {
     }
   ];
 
-  return await safeUpsert('suites', suites, 'name');
+  return await safeInsert('suites', suites);
 }
 
 // Seed depoimentos
@@ -180,7 +180,7 @@ async function seedTestimonials() {
     }
   ];
 
-  return await safeUpsert('testimonials', testimonials, 'author');
+  return await safeInsert('testimonials', testimonials);
 }
 
 // Executar seed completo
