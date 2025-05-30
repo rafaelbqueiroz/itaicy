@@ -1,0 +1,116 @@
+vamos devolver ordem e harmonia à seção de cards logo abaixo da hero:
+
+Problemas identificados
+Imagens desproporcionais
+
+Alturas muito variáveis, causando desalinhamento vertical dos títulos e botões.
+
+Fluxo “varrido”
+
+Os cards parecem jogados sem ritmo: dois à esquerda, um à direita, outro perdido lá embaixo.
+
+Espaçamentos inconsistentes
+
+Padding interno dos cards varia, e o gap entre colunas não segue o grid do site.
+
+Proposta de layout revisado
+Grid de 2 colunas, com alternância controlada
+
+css
+Copiar
+Editar
+.experiences-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 48px; /* Espaço consistente seguindo o spacing 24*2 */
+  align-items: start;
+}
+Em telas ≥992 px, forçar grid-template-columns: 1fr 1fr;.
+
+Nos casos de 4 cards, alternar imagem/texto:
+
+Card 1: imagem à esquerda, texto à direita
+
+Card 2: imagem à direita, texto à esquerda
+
+Card 3: imagem à esquerda, texto à direita
+
+Card 4: imagem à direita, texto à esquerda
+
+Imagens com altura fixa e object-fit
+
+css
+Copiar
+Editar
+.card-image {
+  height: 240px;  /* reduzida para mais harmonia */
+  width: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+Assim todos os cards têm a mesma “linhagem” de altura, e o texto começa sempre na mesma linha.
+
+Conteúdo do card padronizado
+
+css
+Copiar
+Editar
+.card-content {
+  padding: 24px;              /* spacing 6 */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.card-title {               
+  font-family: “Playfair Display”;
+  font-size: 1.75rem;         /* H3 token */
+  line-height: 1.2;
+  margin-bottom: 12px;        /* spacing 3 */
+}
+.card-text {
+  font-family: “Lato” 400;
+  font-size: 1rem;            /* Body-L token */
+  line-height: 1.5;
+  margin-bottom: 16px;        /* spacing 4 */
+}
+.card-cta {
+  align-self: start;
+}
+Garante que todos os títulos, parágrafos e botões respeitem o design tokens.
+
+Espaçamento externo consistente
+
+A seção como um todo deve ter padding-top: 96px; padding-bottom: 96px;
+
+Entre a hero e a grid, usar margin-top: 64px; (spacing 16).
+
+Fluxo “alternado” em ação
+html
+Copiar
+Editar
+<section class="experiences-grid">
+  <article class="card">
+    <img src="pesca.jpg" class="card-image" alt="Pesca esportiva no Pantanal">
+    <div class="card-content">
+      <h3 class="card-title">Pesca esportiva 100% cota-zero</h3>
+      <p class="card-text">Barcos rápidos, guias premiados e águas pouco batidas para fisgar dourados troféu.</p>
+      <a href="/pesca" class="card-cta button-secondary">Saiba mais →</a>
+    </div>
+  </article>
+
+  <article class="card reverse">
+    <div class="card-content">
+      <h3 class="card-title">Safari & Birdwatching</h3>
+      <p class="card-text">166 espécies registradas, trilhas ao amanhecer e pôr-do-sol sobre lagoas azul-celeste.</p>
+      <a href="/birdwatching" class="card-cta button-secondary">Saiba mais →</a>
+    </div>
+    <img src="safari.jpg" class="card-image" alt="Safári no Pantanal">
+  </article>
+
+  <!-- repete para os outros 2 cards -->
+</section>
+A classe .reverse simplesmente inverte a ordem no grid (flex-direction: row-reverse em md+).
+
+No mobile tudo empilha (flex-direction: column).
+
+Dessa forma, as imagens mantêm proporção fixa, o texto alinha-se perfeitamente e o olhar “varre” de card em card de forma previsível e elegante. O espaçamento respira e cada bloco se destaca no ritmo visual que definimos no Design System.

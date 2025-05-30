@@ -39,33 +39,33 @@ export function FeatureBlocks() {
   ];
 
   return (
-    <section className="w-full max-w-[1440px] mx-auto px-4 lg:px-8 py-16">
-      <div className="grid gap-12 md:grid-cols-2">
+    <section className="w-full max-w-[1440px] mx-auto px-4 lg:px-8 py-24 mt-16">
+      <div className="grid gap-12 auto-rows-fr lg:grid-cols-2">
         {features.map((feature, index) => (
           <article
             key={feature.id}
-            className={`flex flex-col md:${
+            className={`flex flex-col lg:${
               index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'
-            } items-center gap-8`}
+            } items-start gap-6`}
           >
             {/* Image */}
-            <figure className="w-full md:w-1/2">
+            <figure className="w-full lg:w-1/2">
               <img
                 src={feature.image}
                 alt={feature.title}
-                className="w-full max-h-72 object-cover rounded-md"
+                className="w-full h-60 object-cover rounded-md"
               />
             </figure>
 
             {/* Content */}
-            <div className="w-full md:w-1/2 space-y-2">
-              <h3 className="font-playfair text-2xl leading-tight text-pantanal-green-900">
+            <div className="w-full lg:w-1/2 flex flex-col justify-between p-6 space-y-3">
+              <h3 className="font-playfair text-[1.75rem] leading-[1.2] text-pantanal-green-900 mb-3">
                 {feature.title}
               </h3>
-              <p className="font-lato text-lg leading-relaxed text-river-slate-800">
+              <p className="font-lato text-[1rem] leading-[1.5] text-river-slate-800 mb-4">
                 {feature.description}
               </p>
-              <Link href={feature.link}>
+              <Link href={feature.link} className="self-start">
                 <Button 
                   variant="outline"
                   className="inline-flex items-center border border-pantanal-green-900 text-pantanal-green-900 bg-transparent hover:bg-sand-beige-400 font-lato font-medium uppercase text-sm tracking-wider px-6 py-2 rounded-md transition-all duration-300"
