@@ -1,15 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { cmsStorage } from "./cms-storage";
 import { 
   insertContactSubmissionSchema, 
-  insertNewsletterSubscriptionSchema,
-  insertCmsPageSchema,
-  insertCmsVirtualTourSchema,
-  insertCmsTestimonialSchema,
-  insertCmsBlogPostSchema,
-  insertCmsSettingSchema 
+  insertNewsletterSubscriptionSchema
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -174,19 +168,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/cms/virtual-tours", async (req, res) => {
     try {
       const validatedData = insertCmsVirtualTourSchema.parse(req.body);
-      
-      // For now, return the submitted data with generated ID until Supabase connection is fully configured
-      const newTour = {
-        id: Date.now(), // temporary ID
-        ...validatedData,
-        isActive: validatedData.isActive ?? true,
-        sortOrder: validatedData.sortOrder ?? 0,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        thumbnailId: null
-      };
-      
-      res.json({ message: "Virtual tour created successfully", tour: newTour });
+      const tour = await cmsStorage.createVirtualTour(validatedData);
+      res.json({ message: "Virtual tour created successfully", tour });
     } catch (error) {
       if (error instanceof z.ZodError) {
         res.status(400).json({ message: "Invalid data", errors: error.errors });
