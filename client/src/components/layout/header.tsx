@@ -14,15 +14,23 @@ export function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [location] = useLocation();
 
+  // Pages that should start with sticky header (no full-width background image)
+  const pagesWithStickyStart = ['/experiencias', '/galeria', '/blog', '/contato', '/sobre-nos', '/acomodacoes', '/gastronomia', '/sustentabilidade'];
+  const shouldStartSticky = pagesWithStickyStart.some(path => location.startsWith(path));
+
   // Sticky header behavior
   useEffect(() => {
-    const handleScroll = () => {
-      setIsSticky(window.scrollY > 64);
-    };
+    if (shouldStartSticky) {
+      setIsSticky(true);
+    } else {
+      const handleScroll = () => {
+        setIsSticky(window.scrollY > 64);
+      };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
+  }, [location, shouldStartSticky]);
 
   const navigation = [
     { 
