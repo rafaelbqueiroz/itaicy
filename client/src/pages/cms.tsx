@@ -16,6 +16,8 @@ export default function CMSPage() {
   const [selectedPage, setSelectedPage] = useState<string>('home');
   const [activeSection, setActiveSection] = useState<string>('content');
   const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+  const [showMediaLibrary, setShowMediaLibrary] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const { toast } = useToast();
 
   return (
@@ -50,6 +52,10 @@ export default function CMSPage() {
             <SiteMapPanel 
               selectedPage={selectedPage}
               onPageSelect={setSelectedPage}
+              showMediaLibrary={showMediaLibrary}
+              setShowMediaLibrary={setShowMediaLibrary}
+              showSettings={showSettings}
+              setShowSettings={setShowSettings}
             />
           </div>
         </aside>
@@ -76,14 +82,47 @@ export default function CMSPage() {
           </div>
         </aside>
       </div>
+
+      {/* Modals */}
+      {showMediaLibrary && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-4xl mx-4 h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Biblioteca de Mídia</h2>
+              <Button variant="outline" onClick={() => setShowMediaLibrary(false)}>
+                ✕
+              </Button>
+            </div>
+            <MediaLibrary />
+          </div>
+        </div>
+      )}
+
+      {showSettings && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Configurações do Site</h2>
+              <Button variant="outline" onClick={() => setShowSettings(false)}>
+                ✕
+              </Button>
+            </div>
+            <SiteSettings />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 // Painel esquerdo - Mapa do site
-function SiteMapPanel({ selectedPage, onPageSelect }: {
+function SiteMapPanel({ selectedPage, onPageSelect, showMediaLibrary, setShowMediaLibrary, showSettings, setShowSettings }: {
   selectedPage: string;
   onPageSelect: (page: string) => void;
+  showMediaLibrary: boolean;
+  setShowMediaLibrary: (show: boolean) => void;
+  showSettings: boolean;
+  setShowSettings: (show: boolean) => void;
 }) {
   const sitePages = [
     { slug: 'home', name: 'Página Inicial', icon: Home, description: 'Hero, estatísticas, experiências' },
@@ -133,11 +172,21 @@ function SiteMapPanel({ selectedPage, onPageSelect }: {
       <div className="pt-6 border-t border-gray-200">
         <h4 className="text-sm font-medium text-gray-900 mb-3">Ferramentas</h4>
         <div className="space-y-2">
-          <Button variant="outline" size="sm" className="w-full justify-start">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full justify-start"
+            onClick={() => setShowMediaLibrary(true)}
+          >
             <Image className="h-4 w-4 mr-2" />
             Biblioteca de Mídia
           </Button>
-          <Button variant="outline" size="sm" className="w-full justify-start">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full justify-start"
+            onClick={() => setShowSettings(true)}
+          >
             <Settings className="h-4 w-4 mr-2" />
             Configurações
           </Button>
@@ -524,6 +573,143 @@ function VisualBlockCard({ block, index, total }: { block: any; index: number; t
   );
 }
 
+// Formulário de edição rápida
+function QuickEditForm({ block, onSave }: { block: any; onSave: () => void }) {
+  const [formData, setFormData] = useState(block.props);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const updateMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await fetch(`/api/cms/blocks/${block.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...block, props: data }),
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/cms/pages/${block.pageId}/blocks`] });
+      onSave();
+    },
+  });
+
+  const handleSave = () => {
+    updateMutation.mutate(formData);
+  };
+
+  const updateField = (key: string, value: string) => {
+    setFormData({ ...formData, [key]: value });
+  };
+
+  return (
+    <div className="space-y-4">
+      {(block.type === 'hero_video' || block.type === 'page_header') && (
+        <>
+          <div>
+            <Label className="text-sm font-medium">Título</Label>
+            <Input
+              value={formData.title || ''}
+              onChange={(e) => updateField('title', e.target.value)}
+              placeholder="Digite o título..."
+              className="mt-1"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              {(formData.title || '').length}/60 caracteres recomendados
+            </p>
+          </div>
+          <div>
+            <Label className="text-sm font-medium">Subtítulo</Label>
+            <Textarea
+              value={formData.subtitle || ''}
+              onChange={(e) => updateField('subtitle', e.target.value)}
+              placeholder="Digite o subtítulo..."
+              rows={3}
+              className="mt-1"
+            />
+          </div>
+          {block.type === 'page_header' && (
+            <div>
+              <Label className="text-sm font-medium">Descrição</Label>
+              <Textarea
+                value={formData.description || ''}
+                onChange={(e) => updateField('description', e.target.value)}
+                placeholder="Digite uma descrição detalhada..."
+                rows={4}
+                className="mt-1"
+              />
+            </div>
+          )}
+          {block.type === 'hero_video' && (
+            <div>
+              <Label className="text-sm font-medium">URL do Vídeo</Label>
+              <Input
+                value={formData.videoUrl || ''}
+                onChange={(e) => updateField('videoUrl', e.target.value)}
+                placeholder="/assets/video.mp4"
+                className="mt-1"
+              />
+            </div>
+          )}
+        </>
+      )}
+
+      {block.type === 'contact_info' && (
+        <div className="grid grid-cols-1 gap-4">
+          <div>
+            <Label className="text-sm font-medium">E-mail</Label>
+            <Input
+              type="email"
+              value={formData.email || ''}
+              onChange={(e) => updateField('email', e.target.value)}
+              placeholder="contato@itaicy.com.br"
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label className="text-sm font-medium">Telefone</Label>
+            <Input
+              value={formData.phone || ''}
+              onChange={(e) => updateField('phone', e.target.value)}
+              placeholder="+55 65 9999-9999"
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label className="text-sm font-medium">WhatsApp</Label>
+            <Input
+              value={formData.whatsapp || ''}
+              onChange={(e) => updateField('whatsapp', e.target.value)}
+              placeholder="+55 65 9999-9999"
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label className="text-sm font-medium">Endereço</Label>
+            <Input
+              value={formData.address || ''}
+              onChange={(e) => updateField('address', e.target.value)}
+              placeholder="Rio Cuiabá, Pantanal - MT"
+              className="mt-1"
+            />
+          </div>
+        </div>
+      )}
+
+      <div className="flex space-x-3 pt-4 border-t">
+        <Button 
+          onClick={handleSave} 
+          disabled={updateMutation.isPending}
+          className="flex-1"
+        >
+          <Save className="h-4 w-4 mr-2" />
+          {updateMutation.isPending ? 'Salvando...' : 'Salvar Alterações'}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 // Preview do conteúdo do bloco
 function BlockContentPreview({ block }: { block: any }) {
   const { props } = block;
@@ -557,9 +743,43 @@ function BlockContentPreview({ block }: { block: any }) {
 
 // Card de propriedades SEO
 function SEOPropertiesCard({ pageSlug }: { pageSlug: string }) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [seoData, setSeoData] = useState({ title: '', description: '', keywords: '' });
+
   const { data: seo } = useQuery({
     queryKey: [`/api/cms/pages/${pageSlug}/seo`],
   });
+
+  // Atualiza o estado quando os dados chegam
+  useEffect(() => {
+    if (seo) {
+      setSeoData({
+        title: seo.title || '',
+        description: seo.description || '',
+        keywords: seo.keywords || ''
+      });
+    }
+  }, [seo]);
+
+  const saveMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await fetch(`/api/cms/pages/${pageSlug}/seo`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/cms/pages/${pageSlug}/seo`] });
+      toast({ title: "Sucesso", description: "SEO atualizado!" });
+    },
+  });
+
+  const handleSave = () => {
+    saveMutation.mutate(seoData);
+  };
 
   return (
     <Card>
@@ -571,12 +791,13 @@ function SEOPropertiesCard({ pageSlug }: { pageSlug: string }) {
           <Label htmlFor="seo-title" className="text-xs font-medium">Título SEO</Label>
           <Input
             id="seo-title"
-            defaultValue={seo?.title || ''}
+            value={seoData.title}
+            onChange={(e) => setSeoData({ ...seoData, title: e.target.value })}
             placeholder="Título otimizado para busca"
             className="mt-1"
           />
           <p className="text-xs text-gray-500 mt-1">
-            {seo?.title?.length || 0}/60 caracteres
+            {seoData.title.length}/60 caracteres recomendados
           </p>
         </div>
         
@@ -584,19 +805,36 @@ function SEOPropertiesCard({ pageSlug }: { pageSlug: string }) {
           <Label htmlFor="seo-description" className="text-xs font-medium">Meta Description</Label>
           <Textarea
             id="seo-description"
-            defaultValue={seo?.description || ''}
+            value={seoData.description}
+            onChange={(e) => setSeoData({ ...seoData, description: e.target.value })}
             placeholder="Descrição para resultados de busca"
             rows={3}
             className="mt-1"
           />
           <p className="text-xs text-gray-500 mt-1">
-            {seo?.description?.length || 0}/160 caracteres
+            {seoData.description.length}/160 caracteres recomendados
           </p>
         </div>
 
-        <Button size="sm" className="w-full">
+        <div>
+          <Label htmlFor="seo-keywords" className="text-xs font-medium">Palavras-chave</Label>
+          <Input
+            id="seo-keywords"
+            value={seoData.keywords}
+            onChange={(e) => setSeoData({ ...seoData, keywords: e.target.value })}
+            placeholder="pantanal, ecoturismo, pesca"
+            className="mt-1"
+          />
+        </div>
+
+        <Button 
+          size="sm" 
+          className="w-full" 
+          onClick={handleSave}
+          disabled={saveMutation.isPending}
+        >
           <Save className="h-4 w-4 mr-2" />
-          Salvar SEO
+          {saveMutation.isPending ? 'Salvando...' : 'Salvar SEO'}
         </Button>
       </CardContent>
     </Card>
