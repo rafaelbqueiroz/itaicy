@@ -20,7 +20,7 @@ export interface Page {
   slug: string;
   name: string;
   template: string;
-  order: number;
+  priority: number;
   created_at: string;
 }
 
@@ -29,9 +29,8 @@ export interface Block {
   page_id: string;
   type: string;
   position: number;
-  data: Record<string, any>;
-  draft: Record<string, any> | null;
-  published: boolean;
+  payload: Record<string, any>;
+  published: Record<string, any> | null;
   updated_at: string;
 }
 
@@ -64,7 +63,7 @@ export class CMSService {
     const { data, error } = await supabase
       .from('pages')
       .select('*')
-      .order('order', { ascending: true });
+      .order('priority', { ascending: true });
 
     if (error) throw error;
     return data || [];
@@ -90,11 +89,11 @@ export class CMSService {
     return { page, blocks: blocks || [] };
   }
 
-  static async updateBlock(blockId: string, data: Record<string, any>): Promise<Block> {
+  static async updateBlock(blockId: string, payload: Record<string, any>): Promise<Block> {
     const { data: updatedBlock, error } = await supabase
       .from('blocks')
       .update({ 
-        draft: data,
+        payload,
         updated_at: new Date().toISOString()
       })
       .eq('id', blockId)
@@ -106,7 +105,7 @@ export class CMSService {
   }
 
   static async publishBlock(blockId: string): Promise<Block> {
-    // Copia o draft para data e marca como publicado
+    // Copia o payload para published
     const { data: block, error: fetchError } = await supabase
       .from('blocks')
       .select('*')
@@ -118,8 +117,7 @@ export class CMSService {
     const { data: updatedBlock, error } = await supabase
       .from('blocks')
       .update({ 
-        data: block.draft || block.data,
-        published: true,
+        published: block.payload,
         updated_at: new Date().toISOString()
       })
       .eq('id', blockId)

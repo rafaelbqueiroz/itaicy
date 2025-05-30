@@ -33,8 +33,8 @@ export default function CMSPage() {
 
   // Mutação para atualizar bloco
   const updateBlockMutation = useMutation({
-    mutationFn: ({ blockId, data }: { blockId: string; data: Record<string, any> }) =>
-      CMSService.updateBlock(blockId, data),
+    mutationFn: ({ blockId, payload }: { blockId: string; payload: Record<string, any> }) =>
+      CMSService.updateBlock(blockId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cms-page-blocks'] });
       setEditingBlock(null);
@@ -70,11 +70,11 @@ export default function CMSPage() {
 
   const handleEditBlock = (block: Block) => {
     setEditingBlock(block.id);
-    setEditedContent(block.draft || block.data);
+    setEditedContent(block.payload);
   };
 
   const handleSaveBlock = (blockId: string) => {
-    updateBlockMutation.mutate({ blockId, data: editedContent });
+    updateBlockMutation.mutate({ blockId, payload: editedContent });
   };
 
   const handleCancelEdit = () => {
@@ -84,7 +84,7 @@ export default function CMSPage() {
 
   const renderBlockEditor = (block: Block) => {
     const isEditing = editingBlock === block.id;
-    const content = isEditing ? editedContent : (block.draft || block.data);
+    const content = isEditing ? editedContent : block.payload;
 
     return (
       <Card key={block.id} className="mb-4">
