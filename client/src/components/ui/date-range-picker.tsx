@@ -2,6 +2,9 @@
 
 import * as React from "react"
 import { addDays, format } from "date-fns"
+import { ptBR } from "date-fns/locale/pt-BR"
+import { enUS } from "date-fns/locale/en-US" 
+import { es } from "date-fns/locale/es"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { DateRange } from "react-day-picker"
 
@@ -13,6 +16,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { useLanguage } from "@/hooks/use-language"
+
+const localeMap = {
+  "pt-BR": ptBR,
+  "en-US": enUS,
+  "es-ES": es
+}
 
 interface DatePickerWithRangeProps {
   className?: string;
@@ -25,10 +35,14 @@ export function DatePickerWithRange({
   className,
   value,
   onChange,
-  placeholder = "Selecione período",
+  placeholder,
   ...props
 }: DatePickerWithRangeProps) {
+  const { language, t } = useLanguage()
   const [date, setDate] = React.useState<DateRange | undefined>(value)
+  
+  const locale = localeMap[language] || ptBR
+  const defaultPlaceholder = placeholder || t('selectPeriod')
 
   React.useEffect(() => {
     setDate(value)
@@ -39,6 +53,11 @@ export function DatePickerWithRange({
     onChange?.(newDate)
   }
 
+  const formatDate = (date: Date) => {
+    const formatString = language === 'en-US' ? 'MMM dd, yyyy' : 'dd/MM/yyyy'
+    return format(date, formatString, { locale })
+  }
+
   return (
     <div className={cn("grid gap-2", className)} {...props}>
       <Popover>
@@ -47,7 +66,7 @@ export function DatePickerWithRange({
             id="date"
             variant="outline"
             className={cn(
-              "bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato min-w-[16rem] justify-start text-left font-normal",
+              "bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato min-w-[280px] justify-start text-left font-normal",
               !date && "text-river-slate-800"
             )}
           >
@@ -55,14 +74,13 @@ export function DatePickerWithRange({
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, "dd/MM/yyyy")} –{" "}
-                  {format(date.to, "dd/MM/yyyy")}
+                  {formatDate(date.from)} – {formatDate(date.to)}
                 </>
               ) : (
-                format(date.from, "dd/MM/yyyy")
+                formatDate(date.from)
               )
             ) : (
-              <span className="text-river-slate-600">{placeholder}</span>
+              <span className="text-river-slate-600">{defaultPlaceholder}</span>
             )}
           </Button>
         </PopoverTrigger>
@@ -74,17 +92,16 @@ export function DatePickerWithRange({
             selected={date}
             onSelect={handleSelect}
             numberOfMonths={2}
-            classNames={{
-              selected: "bg-sunset-amber-600 text-cloud-white-0",
-              range_middle: "bg-sunset-amber-300 text-cloud-white-0",
-              range_start: "rounded-l-md",
-              range_end: "rounded-r-md",
-              day_hover: "bg-sunset-amber-300",
-            }}
-            styles={{
-              day: { borderRadius: 0 },
-            }}
+            locale={locale}
             disabled={(date) => date < new Date()}
+            className="border-0"
+            classNames={{
+              day_selected: "bg-sunset-amber-600 text-cloud-white-0",
+              day_range_middle: "bg-sunset-amber-300 text-cloud-white-0",
+              day_range_start: "rounded-l-md",
+              day_range_end: "rounded-r-md",
+              day: "hover:bg-sunset-amber-300 border-0",
+            }}
           />
         </PopoverContent>
       </Popover>

@@ -90,19 +90,18 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
             <div className="flex items-center gap-4 order-1">
               {/* Date Range Picker */}
               <div className="space-y-1">
-                <Label className="font-lato text-xs text-river-slate-800">Período</Label>
+                <Label className="font-lato text-xs text-river-slate-800">{t('booking.period')}</Label>
                 <DatePickerWithRange 
                   value={formData.dateRange}
                   onChange={(range) => setFormData(prev => ({ ...prev, dateRange: range }))}
-                  placeholder="Selecione período"
                 />
               </div>
               
               {/* Adultos */}
               <div className="space-y-1">
-                <Label className="font-lato text-xs text-river-slate-800">Adultos</Label>
+                <Label className="font-lato text-xs text-river-slate-800">{t('booking.adults')}</Label>
                 <Select value={formData.adults} onValueChange={(value) => setFormData(prev => ({ ...prev, adults: value }))}>
-                  <SelectTrigger className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato w-32">
+                  <SelectTrigger className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato min-w-[120px]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -117,7 +116,7 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
               
               {/* Crianças */}
               <div className="space-y-1">
-                <Label className="font-lato text-xs text-river-slate-800">Crianças</Label>
+                <Label className="font-lato text-xs text-river-slate-800">{t('booking.children')}</Label>
                 <Select 
                   value={formData.children} 
                   onValueChange={(value) => {
@@ -128,7 +127,7 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
                     }));
                   }}
                 >
-                  <SelectTrigger className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato w-32">
+                  <SelectTrigger className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato min-w-[120px]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -145,7 +144,7 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
               {Array.from({ length: parseInt(formData.children) }).map((_, i) => (
                 <div key={i} className="space-y-1">
                   <Label className="font-lato text-xs text-river-slate-800">
-                    Idade {i + 1}
+                    {t('booking.age')} {i + 1}
                   </Label>
                   <Select 
                     value={formData.childAges[i]?.toString() || '1'}
@@ -157,7 +156,7 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
                       });
                     }}
                   >
-                    <SelectTrigger className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato w-24">
+                    <SelectTrigger className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato w-20">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

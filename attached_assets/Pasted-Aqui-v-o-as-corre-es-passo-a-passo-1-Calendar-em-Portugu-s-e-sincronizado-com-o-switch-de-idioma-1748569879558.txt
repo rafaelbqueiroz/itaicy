@@ -1,0 +1,170 @@
+Aqui vão as correções passo-a-passo:
+
+1. Calendar em Português e sincronizado com o switch de idioma
+Instale os locales do date-fns
+
+bash
+Copiar
+Editar
+npm install date-fns
+Importe e mapeie no seu componente de DatePicker:
+
+tsx
+Copiar
+Editar
+import { format } from "date-fns"
+import ptBR from "date-fns/locale/pt-BR"
+import enUS from "date-fns/locale/en-US"
+import es from "date-fns/locale/es"
+import { Calendar } from "@/components/ui/calendar"
+
+const localeMap = {
+  pt: ptBR,
+  en: enUS,
+  es: es
+}
+
+export function DatePickerWithRange({ lang, ...props }) {
+  // lang vem do seu contexto de i18n (eg. "pt"/"en"/"es")
+  const locale = localeMap[lang]  
+
+  return (
+    <Calendar
+      locale={locale}
+      // ...demais props
+    />
+  )
+}
+Integração com o switch
+No <Layout> ou provedor de contexto, exponha o lang atual e passe para o widget. Assim, ao trocar a língua, meses, dias da semana e placeholders (“Selecione período”) também mudam.
+
+2. Botão “Reservar” alinhado e tipografia unificada
+Vamos garantir que tanto o botão do header quanto o do widget usem exatamente:
+
+Fonte: Lato 500 (medium)
+
+Tamanho: 0.875 rem
+
+Letra maiúscula: uppercase
+
+Altura/line-height e padding idênticos
+
+css
+Copiar
+Editar
+/* tailwind.config.js */
+module.exports = {
+  theme: {
+    extend: {
+      fontSize: {
+        btn: ['0.875rem', { lineHeight: '1.4' }],
+      },
+      fontWeight: {
+        btn: 500,
+      }
+    }
+  }
+}
+tsx
+Copiar
+Editar
+// src/components/ui/button.tsx
+export function Button({ children, variant, className, ...rest }) {
+  return (
+    <button
+      {...rest}
+      className={cn(
+        'font-medium btn text-btn uppercase tracking-wide rounded-md transition',
+        variant === 'primary' && 'bg-sunset-amber/600 text-cloud-white/0 hover:bg-sunset-amber/700',
+        variant === 'widget' && 'bg-sunset-amber/600 text-cloud-white/0 hover:bg-sunset-amber/700',
+        className
+      )}
+    >
+      {children}
+    </button>
+  )
+}
+No header: <Button variant="primary" className="px-6 py-3">Reservar</Button>
+
+No widget: <Button variant="widget" className="ml-auto px-6 py-3">Reservar</Button>
+
+Assim o estilo, peso e tamanho ficam idênticos.
+
+3. Layout do widget sempre em uma linha
+Envolva todos os campos + botão num container flex, e force o botão a “empurrar” para a direita:
+
+tsx
+Copiar
+Editar
+<div className="reservation-widget flex items-center gap-4 p-6 bg-cloud-white/0 rounded-lg shadow-lvl-1 overflow-x-auto">
+  <DatePickerWithRange className="min-w-[280px]" lang={lang} />
+
+  <select className="form-select min-w-[120px]">
+    {/* 1–10 adultos */}
+  </select>
+
+  <select
+    className="form-select min-w-[120px]"
+    onChange={e => setChildCount(+e.target.value)}
+  >
+    {/* 0–5 */}
+  </select>
+
+  {childCount >= 1 && (
+    <select className="form-select w-[80px]">
+      {/* idades */}
+    </select>
+  )}
+  {childCount >= 2 && (
+    <select className="form-select w-[80px]">
+      {/* idades */}
+    </select>
+  )}
+  
+  {/* ...até o máximo previsto */}
+
+  <button className="ml-auto btn widget">
+    Reservar
+  </button>
+</div>
+Cada campo recebe um min-w para não encolher demais.
+
+overflow-x-auto mantém tudo numa linha e cria scroll se preciso.
+
+O botão com ml-auto garante que vá para o fim sem quebrar linha.
+
+4. Ícones do widget de idiomas em branco
+Substitua o ícone do globo e siglas por versões SVG “fill=white”:
+
+tsx
+Copiar
+Editar
+// src/components/LanguageSwitcher.tsx
+import GlobeIcon from '@/icons/globe-white.svg'
+import BRFlag from '@/icons/br-flag-white.svg'
+import PTFlag from '@/icons/pt-flag-white.svg'
+import USFlag from '@/icons/us-flag-white.svg'
+
+export function LanguageSwitcher({ lang, onChange }) {
+  return (
+    <Menu>
+      <MenuButton className="btn-ghost p-2">
+        <GlobeIcon className="w-5 h-5" />
+        {lang === 'pt' ? <PTFlag /> : lang === 'en' ? <USFlag /> : <ESFlag />}
+      </MenuButton>
+      {/* ... */}
+    </Menu>
+  )
+}
+Use arquivos .svg com fill="#FAF9F6" ou aplique className="fill-cloud-white/0".
+
+5. Resumo dos ajustes
+Calendar: localized + reacts to lang.
+
+Botões: mesma classe, mesmo token tipográfico.
+
+Widget: flex items-center gap-4 overflow-x-auto, ml-auto no botão.
+
+Ícones: trocados para versões brancas.
+
+Com isso, tudo ficará alinhado, responsivo e fiel ao nosso Design System. Se aparecerem casos extremos (5+ crianças), o container permitirá scroll horizontal em vez de quebrar o layout.
