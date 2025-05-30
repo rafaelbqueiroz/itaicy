@@ -75,7 +75,7 @@ export function Footer() {
           {/* Contact Info */}
           <div>
             <h4 className="font-semibold text-lg mb-4 playfair">{t('footer.contact')}</h4>
-            <ul className="space-y-3 text-gray-300">
+            <ul className="space-y-3 text-[#1b5038]">
               <li className="flex items-center">
                 <Phone className="w-4 h-4 mr-3 flex-shrink-0" />
                 <span>+55 (65) 3000-0000</span>
