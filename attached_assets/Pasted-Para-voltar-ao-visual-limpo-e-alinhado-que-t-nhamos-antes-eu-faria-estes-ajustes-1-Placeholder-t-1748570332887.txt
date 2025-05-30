@@ -1,0 +1,126 @@
+Para voltar ao visual limpo e alinhado que tínhamos antes, eu faria estes ajustes:
+
+1. Placeholder traduzido e amigável
+No seu <DatePickerWithRange> você está caçando a prop errada para o placeholder (por isso aparece selectPeriod). Ajuste para usar o texto de i18n:
+
+diff
+Copiar
+Editar
+<Button
+  variant="outline"
+- className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}
++ className={cn(
++    "w-full justify-start text-left font-normal",
++    !date && "text-muted-foreground"
++  )}
+>
+  <CalendarIcon />
+  {date?.from && date.to
+    ? `${format(date.from, "dd/MM/yyyy")} – ${format(date.to, "dd/MM/yyyy")}`
+    : <span>{t("reservation.selectPeriod") /* ex.: “Selecione período” */}</span>
+  }
+</Button>
+Use uma key no seu arquivo de tradução pt.json:
+
+json
+Copiar
+Editar
+{
+  "reservation": {
+    "selectPeriod": "Selecione período"
+  }
+}
+2. Alinhamento vertical perfeito
+Envolva tudo num container flex items-end (ou items-center se os campos tiverem alturas iguais) e garanta que o botão fique na “linha de base” com os inputs:
+
+tsx
+Copiar
+Editar
+<div className="flex flex-wrap items-end gap-4 p-6 bg-cloud-white/0 rounded-lg shadow-lvl-1">
+  {/* botão */}
+  <Button
+    variant="widget"
+    className="font-medium text-btn uppercase tracking-wide px-6 py-3"
+  >
+    {t("reservation.book")}
+  </Button>
+
+  {/* date picker */}
+  <DatePickerWithRange className="min-w-[240px]" lang={lang} />
+
+  {/* adultos */}
+  <select className="form-select min-w-[120px]">
+    {/* opções */}
+  </select>
+
+  {/* crianças */}
+  <select className="form-select min-w-[120px]" onChange={…}>
+    {/* opções */}
+  </select>
+
+  {/* …campos de idade aparecem aqui, se houver */}
+</div>
+css
+Copiar
+Editar
+/* tailwind */
+.form-select {
+  @apply border river-slate/30% rounded-md px-3 py-2 focus:border-pantanal-green/700 focus:ring-2 focus:ring-pantanal-green/200;
+}
+items-end alinha as linhas de base de todos os controles.
+
+Se você quiser todos centrados (caso tenham altura idêntica), use items-center.
+
+3. Scroll só quando realmente necessário
+Adicione overflow-x-auto e um max-width para não empurrar o botão para baixo:
+
+html
+Copiar
+Editar
+<div className="reservation-widget flex items-end gap-4 overflow-x-auto max-w-full">
+  <!-- campos + botão -->
+</div>
+Assim, em telas muito estreitas, você terá um scroll horizontal em vez de quebra de linha.
+
+4. Ajuste final no botão “Reservar”
+Garanta que o mesmo componente Button seja usado em todo lugar:
+
+tsx
+Copiar
+Editar
+// Header
+<Button variant="primary" className="px-6 py-3">
+  {t("reservation.bookNow")}
+</Button>
+
+// Widget
+<Button variant="widget" className="px-6 py-3">
+  {t("reservation.bookNow")}
+</Button>
+E no Tailwind config:
+
+js
+Copiar
+Editar
+// tailwind.config.js
+theme: {
+  extend: {
+    fontSize: {
+      btn: ['0.875rem', { lineHeight: '1.4' }]
+    },
+    fontWeight: {
+      medium: 500
+    }
+  }
+}
+Com esses ajustes:
+
+Placeholder fica “Selecione período” (ou a tradução que quiser).
+
+Alinhamento vertical com items-end (baseline).
+
+Widget nunca quebra linha indevidamente, age com scroll se faltar espaço.
+
+Botões idênticos em tipografia e padding, no header e no widget.
+
+Dessa forma, mesmo ao abrir vários campos de idade ou mudar idioma, o layout mantém-se limpo, coerente e fiel ao nosso Design System.

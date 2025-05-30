@@ -80,7 +80,7 @@ export function DatePickerWithRange({
                 formatDate(date.from)
               )
             ) : (
-              <span className="text-river-slate-600">{defaultPlaceholder}</span>
+              <span className="text-river-slate-600">{t('booking.selectPeriod')}</span>
             )}
           </Button>
         </PopoverTrigger>

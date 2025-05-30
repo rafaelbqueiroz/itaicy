@@ -75,7 +75,7 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
     return (
       <div className={containerClasses}>
         <div className="bg-cloud-white-0 border border-river-slate-700/30 shadow-sm rounded-lg w-full max-w-[1016px] mx-auto py-6 px-8" aria-label="Formulário de reserva">
-          <form onSubmit={handleSubmit} className="flex items-center gap-4 overflow-x-auto">
+          <form onSubmit={handleSubmit} className="flex items-end gap-4 overflow-x-auto max-w-full">
             
             {/* Botão sempre à direita */}
             <Button 
@@ -87,7 +87,7 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
             </Button>
 
             {/* Container dos campos com order menor */}
-            <div className="flex items-center gap-4 order-1">
+            <div className="flex items-end gap-4 order-1">
               {/* Date Range Picker */}
               <div className="space-y-1">
                 <Label className="font-lato text-xs text-river-slate-800">{t('booking.period')}</Label>
@@ -180,42 +180,34 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
     <section id="booking-widget" className={sectionClasses}>
       <div className={containerClasses}>
         <div className="bg-cloud-white-0 border border-river-slate-700/30 shadow-sm rounded-lg w-full max-w-[1016px] mx-auto py-6 px-8" aria-label="Formulário de reserva">
-          <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-6">
-            {/* Date Range */}
-            <div className="flex gap-4">
-              <div className="space-y-1">
-                <Label htmlFor="checkin" className="font-lato text-xs text-river-slate-800">
-                  Check-in
-                </Label>
-                <Input
-                  id="checkin"
-                  type="date"
-                  value={formData.checkIn}
-                  onChange={(e) => setFormData(prev => ({ ...prev, checkIn: e.target.value }))}
-                  className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato"
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="checkout" className="font-lato text-xs text-river-slate-800">
-                  Check-out
-                </Label>
-                <Input
-                  id="checkout"
-                  type="date"
-                  value={formData.checkOut}
-                  min={formData.checkIn}
-                  onChange={(e) => setFormData(prev => ({ ...prev, checkOut: e.target.value }))}
-                  className="bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato"
-                />
-              </div>
-            </div>
+          <form onSubmit={handleSubmit} className="flex items-end gap-4 overflow-x-auto max-w-full">
             
-            {/* Guest Selection */}
-            <div className="guest-select flex gap-6">
+            {/* Botão sempre à direita */}
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="ml-auto order-last font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-6 rounded-md transition-colors duration-150 whitespace-nowrap"
+            >
+              {isLoading ? 'VERIFICANDO...' : t('booking.reserve')}
+            </Button>
+
+            {/* Container dos campos com order menor */}
+            <div className="flex items-end gap-4 order-1">
+              {/* Date Range Picker */}
               <div className="space-y-1">
-                <Label className="font-lato text-xs text-river-slate-800">Adultos</Label>
+                <Label className="font-lato text-xs text-river-slate-800">{t('booking.period')}</Label>
+                <DatePickerWithRange 
+                  value={formData.dateRange}
+                  onChange={(range) => setFormData(prev => ({ ...prev, dateRange: range }))}
+                  className="min-w-[240px]"
+                />
+              </div>
+              
+              {/* Adultos */}
+              <div className="space-y-1">
+                <Label className="font-lato text-xs text-river-slate-800">{t('booking.adults')}</Label>
                 <Select value={formData.adults} onValueChange={(value) => setFormData(prev => ({ ...prev, adults: value }))}>
-                  <SelectTrigger className="w-24 bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato">
+                  <SelectTrigger className="form-select min-w-[120px] bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -228,8 +220,9 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
                 </Select>
               </div>
               
+              {/* Crianças */}
               <div className="space-y-1">
-                <Label className="font-lato text-xs text-river-slate-800">Crianças</Label>
+                <Label className="font-lato text-xs text-river-slate-800">{t('booking.children')}</Label>
                 <Select 
                   value={formData.children} 
                   onValueChange={(value) => {
@@ -240,7 +233,7 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
                     }));
                   }}
                 >
-                  <SelectTrigger className="w-24 bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato">
+                  <SelectTrigger className="form-select min-w-[120px] bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -252,49 +245,37 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Idades das crianças */}
+              {Array.from({ length: parseInt(formData.children) }).map((_, i) => (
+                <div key={i} className="space-y-1">
+                  <Label className="font-lato text-xs text-river-slate-800">
+                    {t('booking.age')} {i + 1}
+                  </Label>
+                  <Select 
+                    value={formData.childAges[i]?.toString() || '1'}
+                    onValueChange={(value) => {
+                      setFormData(prev => {
+                        const newAges = [...prev.childAges];
+                        newAges[i] = parseInt(value);
+                        return { ...prev, childAges: newAges };
+                      });
+                    }}
+                  >
+                    <SelectTrigger className="form-select w-20 bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ageOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value.toString()}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ))}
             </div>
-
-            {/* Children Ages */}
-            {parseInt(formData.children) > 0 && (
-              <div className="children-ages flex gap-4">
-                {Array.from({ length: parseInt(formData.children) }).map((_, i) => (
-                  <div key={i} className="space-y-1">
-                    <Label className="font-lato text-xs text-river-slate-800">
-                      Idade criança {i + 1}
-                    </Label>
-                    <Select 
-                      value={formData.childAges[i]?.toString() || '1'}
-                      onValueChange={(value) => {
-                        setFormData(prev => {
-                          const newAges = [...prev.childAges];
-                          newAges[i] = parseInt(value);
-                          return { ...prev, childAges: newAges };
-                        });
-                      }}
-                    >
-                      <SelectTrigger className="w-20 bg-cloud-white-0 border border-river-slate-700/30 rounded px-3 py-2 text-sm font-lato">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {ageOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value.toString()}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <Button 
-              type="submit"
-              disabled={isLoading}
-              className="font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-6 rounded-md transition-colors duration-150"
-            >
-              {isLoading ? 'VERIFICANDO...' : 'RESERVAR'}
-            </Button>
           </form>
         </div>
       </div>
