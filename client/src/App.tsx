@@ -38,6 +38,7 @@ function Router() {
           <Route path="/galeria" component={Galeria} />
           <Route path="/blog" component={Blog} />
           <Route path="/contato" component={Contato} />
+          <Route path="/admin" component={Admin} />
 
           <Route component={NotFound} />
         </Switch>
