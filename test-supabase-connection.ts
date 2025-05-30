@@ -12,7 +12,7 @@ async function testConnection() {
     const { data: pages, error } = await supabase
       .from('pages')
       .select('*')
-      .order('order', { ascending: true });
+      .order('priority', { ascending: true });
     
     if (error) {
       console.error('Erro ao buscar páginas:', error);
