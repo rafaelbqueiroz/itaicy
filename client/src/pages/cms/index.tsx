@@ -109,6 +109,31 @@ export default function CMSPage() {
     updateBlockMutation.mutate({ blockId, payload: validation.data });
   };
 
+  const handleReorderBlocks = (reorderedBlocks: Block[]) => {
+    reorderBlocksMutation.mutate(reorderedBlocks);
+  };
+
+  const handlePreview = () => {
+    if (isPreviewMode) {
+      disablePreview();
+      setActiveTab('editor');
+    } else {
+      enablePreview();
+      setActiveTab('preview');
+    }
+  };
+
+  const handleUndo = () => {
+    // Implementar funcionalidade de desfazer
+    toast({ title: 'Desfazer não implementado ainda' });
+  };
+
+  const handlePublishPage = () => {
+    if (selectedPage) {
+      publishPageMutation.mutate(selectedPage.id);
+    }
+  };
+
   const renderBlockCard = (block: Block) => {
     const isEditing = editingBlock === block.id;
 
@@ -185,126 +210,128 @@ export default function CMSPage() {
     return <div className="p-8">Carregando páginas...</div>;
   }
 
-  return (
-    <div className="container mx-auto p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">CMS - Itaicy Pantanal Eco Lodge</h1>
-        <p className="text-gray-600">Gerencie o conteúdo do website</p>
-      </div>
+  // Sidebar content
+  const sidebarContent = (
+    <SidebarTree
+      pages={pages.map(page => ({
+        id: page.id,
+        name: page.name,
+        slug: page.slug,
+        hasChanges: false // TODO: implement draft detection
+      }))}
+      selectedPageId={selectedPage?.id}
+      onPageSelect={(pageId) => {
+        const page = pages.find(p => p.id === pageId);
+        if (page) setSelectedPage(page);
+      }}
+    />
+  );
 
-      <Tabs defaultValue="pages" className="w-full">
-        <TabsList className="mb-6">
-          <TabsTrigger value="pages">Páginas</TabsTrigger>
-          <TabsTrigger value="media">Mídia</TabsTrigger>
-          <TabsTrigger value="settings">Configurações</TabsTrigger>
-        </TabsList>
+  // Main content based on active tab
+  const renderMainContent = () => {
+    switch (activeTab) {
+      case 'preview':
+        return selectedPage ? (
+          <div className="h-full p-6">
+            <LivePreview 
+              pageSlug={selectedPage.slug}
+              previewToken={previewToken}
+            />
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-gray-500">Selecione uma página para visualizar</p>
+          </div>
+        );
 
-        <TabsContent value="pages">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Lista de Páginas */}
-            <div className="lg:col-span-1">
+      case 'media':
+        return (
+          <div className="h-full p-6">
+            <MediaLibrary />
+          </div>
+        );
+
+      default: // 'editor'
+        return selectedPage ? (
+          <div className="p-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold mb-2">{selectedPage.name}</h2>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline">
+                  Template: {selectedPage.template}
+                </Badge>
+              </div>
+            </div>
+
+            {blocksLoading ? (
+              <div className="text-center py-8">
+                <p className="text-gray-500">Carregando blocos...</p>
+              </div>
+            ) : pageWithBlocks?.blocks.length ? (
+              <DraggableBlockList
+                blocks={pageWithBlocks.blocks}
+                onReorder={handleReorderBlocks}
+                renderBlock={renderBlockCard}
+              />
+            ) : (
               <Card>
-                <CardHeader>
-                  <CardTitle>Páginas</CardTitle>
-                  <CardDescription>Selecione uma página para editar</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  {pages.map((page) => (
-                    <Button
-                      key={page.id}
-                      variant={selectedPage?.id === page.id ? 'default' : 'outline'}
-                      className="w-full justify-start"
-                      onClick={() => setSelectedPage(page)}
-                    >
-                      {page.name}
-                    </Button>
-                  ))}
+                <CardContent className="pt-6">
+                  <p className="text-center text-gray-500">
+                    Nenhum bloco encontrado para esta página
+                  </p>
                 </CardContent>
               </Card>
-            </div>
-
-            {/* Editor de Blocos */}
-            <div className="lg:col-span-2">
-              {selectedPage ? (
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <div>
-                      <h2 className="text-2xl font-bold">{selectedPage.name}</h2>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Badge variant="outline">
-                          Template: {selectedPage.template}
-                        </Badge>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => window.open(`/${selectedPage.slug === 'home' ? '' : selectedPage.slug}`, '_blank')}
-                        >
-                          <ExternalLink className="w-4 h-4 mr-1" />
-                          Ver Página
-                        </Button>
-                      </div>
-                    </div>
-                    <Button
-                      onClick={() => publishPageMutation.mutate(selectedPage.id)}
-                      disabled={publishPageMutation.isPending}
-                    >
-                      Publicar Página Completa
-                    </Button>
-                  </div>
-
-                  {blocksLoading ? (
-                    <div>Carregando blocos...</div>
-                  ) : pageWithBlocks?.blocks.length ? (
-                    <div>
-                      {pageWithBlocks.blocks.map(renderBlockCard)}
-                    </div>
-                  ) : (
-                    <Card>
-                      <CardContent className="pt-6">
-                        <p className="text-center text-gray-500">
-                          Nenhum bloco encontrado para esta página
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
-              ) : (
-                <Card>
-                  <CardContent className="pt-6">
-                    <p className="text-center text-gray-500">
-                      Selecione uma página para começar a editar
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Bem-vindo ao CMS
+              </h3>
+              <p className="text-gray-500 mb-4">
+                Selecione uma página na barra lateral para começar a editar
+              </p>
+              <Button onClick={() => setActiveTab('media')} variant="outline">
+                Explorar Biblioteca de Mídia
+              </Button>
             </div>
           </div>
-        </TabsContent>
+        );
+    }
+  };
 
-        <TabsContent value="media">
-          <Card>
-            <CardHeader>
-              <CardTitle>Biblioteca de Mídia</CardTitle>
-              <CardDescription>Gerencie imagens e vídeos do site</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500">Biblioteca de mídia será implementada</p>
-            </CardContent>
-          </Card>
+  return (
+    <CMSLayout
+      sidebar={sidebarContent}
+      onPreview={handlePreview}
+      onUndo={handleUndo}
+      onPublish={handlePublishPage}
+      canUndo={false}
+      isPublishing={publishPageMutation.isPending}
+      selectedPageName={selectedPage?.name}
+    >
+      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="h-full">
+        <div className="border-b bg-white px-6 py-3">
+          <TabsList>
+            <TabsTrigger value="editor">Editor</TabsTrigger>
+            <TabsTrigger value="preview">Preview</TabsTrigger>
+            <TabsTrigger value="media">Mídia</TabsTrigger>
+          </TabsList>
+        </div>
+        
+        <TabsContent value="editor" className="h-full m-0">
+          {renderMainContent()}
         </TabsContent>
-
-        <TabsContent value="settings">
-          <Card>
-            <CardHeader>
-              <CardTitle>Configurações Globais</CardTitle>
-              <CardDescription>Configurações gerais do website</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500">Configurações globais serão implementadas</p>
-            </CardContent>
-          </Card>
+        
+        <TabsContent value="preview" className="h-full m-0">
+          {renderMainContent()}
+        </TabsContent>
+        
+        <TabsContent value="media" className="h-full m-0">
+          {renderMainContent()}
         </TabsContent>
       </Tabs>
-    </div>
+    </CMSLayout>
   );
 }

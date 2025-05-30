@@ -142,6 +142,15 @@ export class CMSService {
     }
   }
 
+  static async updateBlockPosition(blockId: string, position: number): Promise<void> {
+    const { error } = await supabase
+      .from('blocks')
+      .update({ position, updated_at: new Date().toISOString() })
+      .eq('id', blockId);
+
+    if (error) throw error;
+  }
+
   static async getGlobalSettings(): Promise<GlobalSetting[]> {
     const { data, error } = await supabase
       .from('global_settings')
