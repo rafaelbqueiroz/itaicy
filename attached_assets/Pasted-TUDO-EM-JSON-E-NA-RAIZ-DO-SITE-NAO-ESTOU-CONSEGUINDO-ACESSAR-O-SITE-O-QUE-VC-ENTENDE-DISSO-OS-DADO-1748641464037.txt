@@ -1,0 +1,113 @@
+TUDO EM JSON E NA RAIZ DO SITE NAO ESTOU CONSEGUINDO ACESSAR O SITE. O QUE VC ENTENDE DISSO? OS DADOS DO JSON NAO SAO OS MESMOS DO SITE. ESTA ME PARECENDO QUE NAO SAO DADOS EXTRAIDOS DO SITE, MAS INVENTADOS
+
+O ChatGPT disse:
+
+Pensou por 8 segundos
+O que (provavelmente) aconteceu — e por que tudo aparece como “JSON cru”
+Sintoma	Causa técnica mais comum	Evidência
+1. Raiz do site (/) redireciona p/ CMS	Ordem das rotas trocada. O agente colocou <Route path="/" element={<CMS …/>}/> antes da rota pública ou substituiu o componente Home pelo CMS para depurar.	Navegação some, apenas painel.
+2. Blocos carregam JSON inventado	Script de “extração” caiu no fallback dummy (os dados hard-coded no seed), porque
+• Não conseguiu ler os arquivos React/MDX na build
+• Ou falhou ao converter HTML → JSON (erro silencioso)	Campos image:"https://images.unsplash…", textos em inglês que nunca existiram no site.
+3. Biblioteca de Mídia / Configurações só dizem “em desenvolvimento”	Somente esqueleto de UI, sem binding a media_library nem global_settings.	
+4. Header/logo truncado no topo do CMS	CSS do CMS sobrepôs position:relative do header ou removeu <header> global para evitar duplicidade.	
+
+Check-list para reverter rápido 🍀
+Restaurar front público
+
+No client/src/App.tsx garanta:
+
+tsx
+Copiar
+Editar
+<Route path="/cms/*" element={<CmsDashboard/>} />
+<Route path="/*" element={<PublicSiteRouter/>} />   // SEMPRE depois da rota do CMS
+Se o componente Home foi sobrescrito, reinstale da última versão no Git / backup.
+
+Carregar de fato o conteúdo do site
+
+Simplificar o extractor: ler direto dos props que já estão no código (export const homeBlocks = [...]) em vez de tentar “raspar” HTML.
+
+Popular as tabelas pages / blocks apenas se estiverem vazias (on conflict do nothing), para não sobrescrever depois.
+
+Validar no log: Inserted 8 blocks for / deve listar exatamente “hero-video”, “split-block-1”… etc.
+
+Esconder JSON do usuário
+
+UI de bloco ➜ formulário guiado: Title, Subtitle, Image picker, CTA (text + href).
+
+JSON fica no banco, mas o editor mostra campos amigáveis (usando zod para parse / validate).
+
+Biblioteca de Mídia
+
+Bucket media no Supabase. Listagem files.list(), upload com createSignedUploadUrl.
+
+No editor de bloco, <MediaPicker onSelect={url => setFieldValue('image',url)} />.
+
+Autenticação / Segurança
+
+/cms protegido com Supabase Auth (magic link).
+
+Policies: role cms_admin pode insert/update; anônimos apenas select where published=true.
+
+Rollback fácil
+
+Mantenha script sql/backup_blocks.sql que exporta conteúdo em JSONB → download antes de cada seed.
+
+Instruções mínimas para o replit-agent (copie/cole)
+text
+Copiar
+Editar
+## 1. Restaurar site público
+- Reverter qualquer alteração em client/src/pages/Home.* ou componentes globais.
+- CMS deve viver em /cms (sub-route) sem afetar bundle público.
+
+## 2. Re-seed correto
+- Ler origem dos blocos em client/blocks/**/*.ts
+- Preencher tabelas pages(id uuid, slug, name) e blocks(id uuid, page_id, type, position, data jsonb, published bool).
+- Rodar seed somente se SELECT count(*) FROM blocks = 0.
+
+## 3. UI amigável
+- Dentro de /cms crie <BlockForm> que mapeia:
+  - hero-video: title, subtitle, videoUrl, ctaPrimary{text,url}, ctaSecondary...
+  - split-block: image, label, title, bullets (array), cta{text,url}
+- Salvar → update blocks set draft = data, published = false.
+- Botão “Publicar bloco” copia draft → data, published = true.
+
+## 4. Media library
+- Supabase bucket "media"; list, preview thumb 150 px.
+- Drag-&-drop upload → returns public URL.
+- Picker integrado ao campo image/video.
+
+## 5. Segurança
+- Supabase Auth mandatory; redirect to /login.
+- Row Level Security: allow select for anon where published=true; insert/update only for auth.role='authenticated'.
+
+## 6. Global Settings
+- Tabela global_settings(key text PK, value jsonb).
+- UI simples p/ editar logo, telefone, email, socials.
+
+## 7. Não renderizar header/footer como blocos
+- Remover esses blocos da seed; header/footer permanecem hard-coded no site ou carregados de global_settings, não editáveis como página.
+
+## 8. Preserve UX
+- Toast sucesso/erro
+- Botão Preview abre iframe /?draftSession=xxx
+- Confirm ao deletar
+
+Não inventar texto/unsplash; usar dados reais dos arquivos de blocos existentes.
+Uma vez que esses passos forem seguidos, o Robson vai:
+
+Entrar em /cms (com login).
+
+Ver exatamente as páginas na ordem do menu.
+
+Clicar em um bloco → formulário amigável, sem JSON.
+
+Fazer upload de nova foto via Media Library.
+
+Preview → ver mudança.
+
+Publicar → site público atualiza em tempo real.
+
+Sem depender de você para trocar headline ou imagem do hero.

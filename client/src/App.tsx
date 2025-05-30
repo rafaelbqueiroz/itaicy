@@ -24,30 +24,37 @@ import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
-    <AuthWrapper>
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1">
-          <Switch>
-            <Route path="/" component={Home} />
-            <Route path="/lodge" component={Lodge} />
-            <Route path="/experiencias" component={Experiencias} />
-            <Route path="/experiencias/pesca" component={PescaEsportiva} />
-            <Route path="/acomodacoes" component={Acomodacoes} />
-            <Route path="/gastronomia" component={Gastronomia} />
-            <Route path="/sustentabilidade" component={Sustentabilidade} />
-            <Route path="/sobre-nos" component={SobreNos} />
-            <Route path="/galeria" component={Galeria} />
-            <Route path="/blog" component={Blog} />
-            <Route path="/contato" component={Contato} />
-            <Route path="/cms" component={CMS} />
-
-            <Route component={NotFound} />
-          </Switch>
-        </main>
-        <Footer />
-      </div>
-    </AuthWrapper>
+    <div className="min-h-screen flex flex-col">
+      <Switch>
+        <Route path="/cms/*">
+          <AuthWrapper>
+            <CMS />
+          </AuthWrapper>
+        </Route>
+        
+        <Route>
+          <Header />
+          <main className="flex-1">
+            <Switch>
+              <Route path="/" component={Home} />
+              <Route path="/lodge" component={Lodge} />
+              <Route path="/experiencias" component={Experiencias} />
+              <Route path="/experiencias/pesca" component={PescaEsportiva} />
+              <Route path="/acomodacoes" component={Acomodacoes} />
+              <Route path="/gastronomia" component={Gastronomia} />
+              <Route path="/sustentabilidade" component={Sustentabilidade} />
+              <Route path="/sobre-nos" component={SobreNos} />
+              <Route path="/galeria" component={Galeria} />
+              <Route path="/blog" component={Blog} />
+              <Route path="/contato" component={Contato} />
+              
+              <Route component={NotFound} />
+            </Switch>
+          </main>
+          <Footer />
+        </Route>
+      </Switch>
+    </div>
   );
 }
 
