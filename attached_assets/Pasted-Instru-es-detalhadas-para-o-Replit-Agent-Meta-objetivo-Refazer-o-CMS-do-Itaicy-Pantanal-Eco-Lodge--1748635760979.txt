@@ -1,0 +1,300 @@
+Instruções detalhadas para o Replit Agent
+Meta-objetivo: Refazer o CMS do Itaicy Pantanal Eco Lodge para que ele seja um espelho em tempo-real do site, editável apenas nos pontos que importam ao Robson (conteúdo + mídia + SEO), extremamente intuitivo e em conformidade com as 10 heurísticas de Nielsen.
+
+0. Premissas técnicas
+Item	Stack
+Front-end	React + Vite + Tailwind (Design System já existente)
+Auth	Supabase Auth (e-mail + magic link)
+DB	Supabase (PostgreSQL)
+Storage	Supabase Storage (bucket media/)
+Realtime	Supabase Realtime via websockets
+Routing	React Router v6
+State mgmt.	Zustand (leve)
+CICD	Replit Deploy + Git PR checks
+
+1. Modelo de dados (Supabase)
+sql
+Copiar
+Editar
+-- Páginas publicáveis
+create table pages (
+  id uuid primary key default gen_random_uuid(),
+  slug text unique not null,         -- "home", "acomodacoes", etc.
+  name text not null,                -- Nome no CMS
+  template text not null default 'default', -- hero, blank, etc.
+  priority int not null default 0,   -- ordem no menu CMS
+  created_at timestamptz default now()
+);
+
+-- Blocos flexíveis (draft / published)
+create table blocks (
+  id uuid primary key default gen_random_uuid(),
+  page_id uuid references pages(id) on delete cascade,
+  type text not null,                -- 'hero', 'gallery', 'stats', etc.
+  position int not null,             -- ordem visual
+  payload jsonb not null,            -- conteúdo (draft)
+  published jsonb,                   -- versão ativa
+  updated_at timestamptz default now(),
+  constraint blocks_unique unique(page_id, position)
+);
+
+-- Mídia (metadados)
+create table media_library (
+  id uuid primary key default gen_random_uuid(),
+  path text not null,                -- bucket/path.ext
+  alt  text,
+  created_at timestamptz default now()
+);
+
+-- Suites (porque é o único CRUD “inventário” complexo)
+create table suites (
+  id uuid primary key default gen_random_uuid(),
+  name text,               -- “Compacta”, mas pode ficar NULL
+  capacity int,
+  area_m2 int,
+  price numeric(10,2),
+  description text,
+  images uuid[]            -- refs media_library
+);
+
+-- Testemunhos
+create table testimonials (
+  id uuid primary key default gen_random_uuid(),
+  author text,
+  city text,
+  rating int check (rating between 1 and 5),
+  quote text,
+  is_featured boolean default false
+);
+
+Vantagem
+Tudo que aparece na tela vira bloco (JSON). Não há “hard-coded sections”.
+Rollback = copiar published sobre payload.
+
+2. API back-end (serverless edge functions)
+Verbo	Rota	Auth	Descrição
+GET	/api/pages/:slug	Public	Retorna blocos published
+GET	/api/cms/pages	Admin	Lista páginas
+POST	/api/cms/blocks	Admin	Cria/edita bloco (draft)
+POST	/api/cms/publish/:page	Admin	Copia payload → published
+POST	/api/cms/media/upload	Admin	Presigned URL (>10 MB chunk)
+CRUD	/api/cms/suites	Admin	Inventário de suítes
+CRUD	/api/cms/testimonials	Admin	Depoimentos
+
+Use Supabase row-level security + RLS policies (role = 'admin').
+
+3. Painel CMS – UI/UX
+3.1 Layout
+less
+Copiar
+Editar
+┌──────── Sidebar (left) ───────┐      ┌──── Top-bar (Save / Preview) ────┐
+│  PÁGINAS DO SITE              │      │  [Eye] Modo Preview | Publicar   │
+│  • Home                       │      └──────────────────────────────────┘
+│  • Acomodações  ┐             │      ▼  Conteúdo dinâmico da página
+│  • Experiências │ (tree)      │   ┌───────────────────────────────────────┐
+│  • Blog         ┘             │   │  Drag & drop dos BLOCOs (cards)       │
+│                               │   └───────────────────────────────────────┘
+│  FERRAMENTAS                  │
+│  • Biblioteca de Mídia        │   *live-preview iframe à direita*
+│  • SEO                        │
+│  • Configurações Gerais       │
+└───────────────────────────────┘
+3.2 Interações (Nielsen heuristics)
+Heurística	Implementação
+1. Visibilidade do status	Toast “Salvo”, barra de progresso upload, badge “draft*” se não publicado.
+2. Coerência & padrões	Field sets idênticos aos componentes do site (usa DS).
+3. Controle do usuário	Botões Undo / Redo por bloco; Publish = confirmação modal.
+4. Prevenção de erro	Validação JSON Schema para cada tipo; highlight campo faltante.
+5. Reconhecimento > memória	Preenchimento sempre ao lado do bloco renderizado (WYSIWYG).
+6. Flexibilidade & eficiência	Atalhos: ⌘+S ⌘+P preview. Drag-drop reordena blocos.
+7. Estética & minimalismo	Mostrar somente campos úteis (ex.: vídeo hero precisa “Título, Sub, Fonte”).
+8. Ajudar usuários a reconhecer/recuperar erros	Diff visual vermelho/verde quando algo some no preview.
+9. Ajuda e documentação	Tooltip “?” em cada campo descrevendo pixel ratio, limite caracteres.
+10. Consistência com o mundo real	Use ícones padrão (mdi-image, mdi-text), nomenclatura PT-BR clara.
+
+4. Fluxo “Preview em tempo real”
+css
+Copiar
+Editar
+CMS (draft)   --ws→  Supabase Realtime  -->  Next.js  Preview Iframe
+Ao editar campo, blocks.payload é PATCH → broadcast.
+
+Iframe usa ?preview=1 e substitui fetch por canal Realtime.
+
+Botão “Publicar” copia coluna payload → published e remove flag preview.
+
+5. Biblioteca de Mídia
+Grid masonry com lazy-load.
+Filtros: Tipo (img / vídeo) | Páginas em uso.
+Uploader = drag-drop → Supabase Storage → row media_library.
+Return URL + autopreencher alt a partir do filename (editável).
+
+6. SEO integrado
+Na sidebar, item SEO abre painel contextual:
+
+Campo	Auto-preenchimento
+Título <60	${page.name} – Itaicy Pantanal Eco Lodge (editável)
+Meta-description <160	Se vazio, extrair 1ª frase do Hero.
+Canonical	slug default.
+OG image	Selecionar da Biblioteca de Mídia ou gerar snapshot.
+
+Live preview de snippet Google (mobile & desktop).
+
+7. Publicação segura
+Draft → Preview (token cookie, 60 min).
+
+Checklist antes de ativar botão Publish:
+
+Campos obrigatórios preenchidos (✔︎)
+
+Meta-description ok
+
+Zero broken media (HEAD 200)
+
+POST /publish executa
+
+sql
+Copiar
+Editar
+update blocks
+  set published = payload,
+      updated_at = now()
+where page_id = :id;
+Cloudflare purge URL /${slug}.
+
+8. Conteúdo “importante para Robson” (escopo editável)
+Seção	Editável	Campos visíveis no CMS
+Hero Home	✅	Título, Sub, BG (vídeo/imagem), CTA label/url
+4 Blocos 50/50	✅	Headline, texto, imagem, link CTA
+Ribbon Stats	✅	Número, label, sub-label (tooltip)
+Depoimentos	✅	Quote, autor, cidade, destaque bool
+Newsletter txt	✅	Headline, sub-headline
+Menus header	❌	(duros; mudam pouco)
+Legal/rodapé	✅	Redes, telefone, e-mail, endereço
+
+(Outras páginas seguem o mesmo padrão de blocos.)
+
+9. Implantação incremental
+Fase 1: CMS funcional → preview only.
+
+Fase 2: Ativar publish em páginas internas (Acomodações, Experiências).
+
+Fase 3: Ativar Home + automações (sitemap, RSS do blog).
+
+10. Checklist de entrega “perfeito”
+ UI espelha a hierarquia do site (sidebar ordenada).
+
+ Todos blocos base renderizam WYSIWYG + drag-drop.
+
+ Upload de mídia > 10 MB possível (chunked).
+
+ Preview em tempo real sem clicar “salvar”.
+
+ Botão Desfazer alterações (roll-back last published).
+
+ RLS garante que só role admin grava.
+
+ Lighthouse score da página publicada ≥ 95.
+
+Replit Agent → siga esta blueprint passo-a-passo
+Reverte o front e dados ao snapshot bom.
+
+Cria as tabelas SQL acima no Supabase.
+
+Constrói o painel CMS com a navegação e blocos descritos.
+
+Implementa preview-mode e publish seguro.
+
+Limita campos editáveis ao escopo aprovado.
+
+Testa live-changes sem quebrar o Design System.
+
+Entrega com vídeo (loom) demonstrando: editar hero, subir imagem, publicar.
+
+
+
+
+
+Você disse:
+Preciso me certificar de que as instruções acima pedirão a ele para que carregue todo o conteúdo (informações do site, fotos, vídeos) no supabase e replique no cms... nao pode criar o cms sem conteudo para que eu tenha que recriar e reconfigurar as paginas. o cms tem que estar com as informações que ja estao la para eu configurar em cima delas... editar e alterar em cima delas.
+
+
+O ChatGPT disse:
+Complemento essencial às instruções
+Mandato adicional (obrigatório):
+O primeiro passo do agente não é “criar o CMS do zero”, mas extrair 100 % do conteúdo já existente – textos, blocos, imagens, vídeos, ícones, depoimentos, números – e popular o Supabase antes mesmo de abrir a nova interface de edição.
+O Robson deve abrir o painel e encontrar tudo pronto, apenas esperando ajustes.
+
+A. Pipeline de “ingestão” automática
+Varredura do atual repositório
+
+client/public – imagens, vídeos, ícones.
+
+client/src/pages / componentes – strings e props hard-coded.
+
+Mapeamento para Tabela ↔ Bloco
+
+Fonte	Destino (blocks.type)	Campo
+<HeroHome …> props	hero	title / subtitle / bg / cta
+Array homeSections (pesca, aves, etc.)	split-50-50	image / heading / copy
+CountersRibbon números hard-coded	stats-ribbon	value / label / sub
+Footer contatos	footer-info	telefone / e-mail / redes
+
+Upload de mídia
+
+Script Node usa @supabase/storage-js → bucket media/
+
+Salva metadados em media_library e retorna IDs para payload.
+
+Seed
+
+Gera JSON do bloco já convertido → insere em blocks.payload e published (versão 1).
+
+Mantém ordem visual (position) fiel ao site atual.
+
+Verificação automática
+
+Lê cada rota (/, /acomodacoes, etc.) no modo preview e faz screenshot diff → 0 px de diferença é meta (use pixelmatch).
+
+Em caso de divergence, loga bloco faltante.
+
+B. Tarefas concretas para o Replit Agent
+Ordem	Tarefa	Resultado de aceite
+1	Snapshot do repo antes de mudanças	commits revertíveis
+2	Script scripts/extract-content.ts que: npm run extract	Arquivo seed/export.json com todos os blocos
+3	Script scripts/seed-supabase.ts que: npm run seed	Tabelas preenchidas; bucket media/ cheio
+4	Verificação diff visual (npm run diff)	Saída “✅ 100 % match”
+5	Somente depois disso, gera UI CMS	UI abre já populada
+
+Observação de segurança
+
+Políticas RLS no Supabase impedem sobrescrita da coluna published via payload acidental (só função “publish”).
+
+Storage bucket privado, assinaturas URL de 6 h.
+
+C. Experiência do Robson
+Login → Painel já mostra “Home” com 5 blocos existentes.
+
+Clica em “Hero” → edita subtítulo → Preview atualiza em tempo-real.
+
+Upload de nova imagem hero:
+
+Arrasta JPG → media_library salva → seleciona → preview.
+
+Clica Publicar → Site público atualizado, versões antigas acessíveis em “Histórico”.
+
+D. Check-list final antes de “done”
+ Script de ingestão executado sem erro em CI.
+
+ Todas páginas atuais (Home, Acomodações, Experiências, Galeria, Contato) renderizadas via blocos.
+
+ Assets antes locais agora servidos de Supabase (storage/v1/object/public/media/...).
+
+ Robson pode editar qualquer texto importante sem quebrar layout.
+
+ Documentação README_CMS.md explica “como extrair novamente” se adicionarmos nova página.
+
+Só assinale a tarefa como concluída quando Robson abrir o CMS e encontrar o site inteiro já lá, 1 : 1, em modo edição.
+
+Boa implementação!
