@@ -1,0 +1,95 @@
+Sim – esse componente funciona muito bem e já encaixa nos padrões de acessibilidade e usabilidade que precisamos. Basta só alinhar as cores do “range” ao nosso Design System, usando sunset-amber/600 para o preenchimento ativo e um tom mais claro (sunset-amber/300) para o hover. Por exemplo:
+
+tsx
+Copiar
+Editar
+"use client"
+
+import * as React from "react"
+import { addDays, format } from "date-fns"
+import { CalendarIcon } from "lucide-react"
+import { DateRange } from "react-day-picker"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+export function DatePickerWithRange({
+  className,
+}: React.HTMLAttributes<HTMLDivElement>) {
+  const [date, setDate] = React.useState<DateRange | undefined>({
+    from: new Date(),
+    to: addDays(new Date(), 3),
+  })
+
+  return (
+    <div className={cn("grid gap-2", className)}>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            id="date"
+            variant="outline"
+            className={cn(
+              "w-[300px] justify-start text-left font-normal",
+              !date && "text-river-slate/800"
+            )}
+          >
+            <CalendarIcon className="mr-2" />
+            {date?.from ? (
+              date.to ? (
+                <>
+                  {format(date.from, "LLL dd, y")} –{" "}
+                  {format(date.to, "LLL dd, y")}
+                </>
+              ) : (
+                format(date.from, "LLL dd, y")
+              )
+            ) : (
+              <span>Selecione datas</span>
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            initialFocus
+            mode="range"
+            defaultMonth={date?.from}
+            selected={date}
+            onSelect={setDate}
+            numberOfMonths={2}
+            classNames={{
+              // Dia selecionado (start, end e middle)
+              selected: "bg-sunset-amber/600 text-cloud-white/0",
+              range_middle: "bg-sunset-amber/300 text-cloud-white/0",
+              range_start: "rounded-l-md",
+              range_end: "rounded-r-md",
+              // Hover
+              day_hover: "bg-sunset-amber/300",
+            }}
+            styles={{
+              // Borda do dia ativo, caso queira mais destaque
+              day: { borderRadius: 0 },
+            }}
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
+  )
+}
+O que mudou
+classNames.selected usa bg-sunset-amber/600 + text-cloud-white/0
+
+range_middle (entre from e to) fica bg-sunset-amber/300
+
+Hover dos dias (day_hover) também usa sunset-amber/300
+
+Mantivemos bordas padrão (rounded-l-md, rounded-r-md) para os cantos do intervalo.
+
+O texto default do botão e placeholder agora usa river-slate/800 e font-normal do DS.
+
+Dessa forma o calendário herda toda a paleta e tokens tipográficos do Itaicy, sem usar tons de verde no preenchimento, e garante contraste suficiente contra o fundo branco.

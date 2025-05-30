@@ -1,0 +1,73 @@
+Para manter o **botão sempre “colado” à direita**, mesmo quando surgem novos campos no meio, o segredo é:
+
+1. **Envolver tudo num container `flex`**
+2. **Empurrar o botão para o final** usando `margin-left: auto` ou a utilidade `ml-auto` do Tailwind
+3. (Opcional) Dar a todos os campos um **order** menor que o botão, pra garantir que ele fique no final mesmo que o JSX mude de ordem.
+
+---
+
+### Exemplo em JSX + Tailwind
+
+```tsx
+<div className="reservation-widget flex items-center gap-4 p-6 bg-cloud-white/0 rounded-lg shadow-lvl-1">
+  {/* Botão sempre vem primeiro no JSX mas vai renderizar por último na UI */}
+  <button
+    className="ml-auto bg-sunset-amber/600 hover:bg-sunset-amber/700 text-cloud-white/0 font-medium uppercase text-base px-6 py-3 rounded-md transition"
+    // order mais alto garante que fique por último em navegadores sem gap/order
+    style={{ order: 99 }}
+  >
+    Reservar
+  </button>
+
+  {/* Fields */}
+  <div className="flex items-center gap-4" style={{ order: 1 }}>
+    {/* Check-in */}
+    <DatePickerWithRange className="w-48" />
+
+    {/* Check-out será controlado internamente pelo componente */}
+    {/* Adultos */}
+    <select className="form-select w-32">
+      {/* options */}
+    </select>
+
+    {/* Crianças */}
+    <select
+      className="form-select w-32"
+      onChange={handleChildrenCountChange}
+    >
+      {/* options */}
+    </select>
+
+    {/* Idade das crianças – só aparece se count > 0 */}
+    {childrenCount >= 1 && (
+      <select className="form-select w-24">
+        {/* 1 a 10 */}
+      </select>
+    )}
+    {childrenCount >= 2 && (
+      <select className="form-select w-24">
+        {/* 1 a 10 */}
+      </select>
+    )}
+    {/* ... */}
+  </div>
+</div>
+```
+
+#### Explicando:
+
+* O container principal usa `flex items-center gap-4` para alinhar todos em uma linha com espaçamento consistente (token `--space-4` = 16px).
+* O botão tem `ml-auto` **e** `style={{ order: 99 }}` para garantir que fique **sempre** ao final, independentemente da posição no JSX (o order só é necessário se você precisar do botão primeiro no DOM por questões de SEO/A11y).
+* Os selects/inputs ficam num sub-`<div>` com `order: 1` para manterem-se antes do botão.
+* Se quiser, pode trocar o `style={{ order: ... }}` por utilidades do Tailwind como `order-last` (v5.2+) e `order-1`.
+
+---
+
+### Ajustando no seu código
+
+1. **Encontre a div que envolve todo o seu widget** (após o `<PopoverContent>` ou equivalente).
+2. Adicione `className="flex items-center gap-4"` (ou `className="flex items-center space-x-4"`).
+3. No botão `Reservar` adicione `className="ml-auto order-last"` (ou inline style `order:99`).
+4. Certifique-se de que **todos** os campos tenham `order` inferior (p.ex. `order-1` no container dos selects).
+
+Dessa forma, mesmo que apareçam 5, 6 campos ou mais, o botão **sempre** ficará à direita, sem quebrar o layout.
