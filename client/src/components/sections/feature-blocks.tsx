@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
 import { ArrowRight } from 'lucide-react';
+import { useLanguage } from '@/hooks/use-language';
 
 export function FeatureBlocks() {
   const features = [

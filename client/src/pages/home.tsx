@@ -1,7 +1,7 @@
 import { HeroVideo } from '@/components/sections/hero-video';
 import { BookingWidget } from '@/components/sections/booking-widget';
 import { FeatureBlocks } from '@/components/sections/feature-blocks';
-import { Highlights } from '@/components/sections/highlights';
+import { CountersRibbon } from '@/components/sections/counters-ribbon';
 import { Testimonials } from '@/components/sections/testimonials';
 import { Newsletter } from '@/components/sections/newsletter';
 import { FAQ } from '@/components/sections/faq';
@@ -12,7 +12,7 @@ export default function Home() {
       <HeroVideo />
       <BookingWidget variant="floating" />
       <FeatureBlocks />
-      <Highlights />
+      <CountersRibbon />
       <Testimonials />
       <Newsletter />
       <FAQ />
