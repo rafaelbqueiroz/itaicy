@@ -109,8 +109,26 @@ export default function CMSPage() {
     updateBlockMutation.mutate({ blockId, payload: validation.data });
   };
 
-  const handleReorderBlocks = (reorderedBlocks: Block[]) => {
-    reorderBlocksMutation.mutate(reorderedBlocks);
+  const handleReorderBlocks = (reorderedBlocks: any[]) => {
+    // Converter back para formato do Supabase
+    const supabaseBlocks = reorderedBlocks.map((block, index) => ({
+      ...block,
+      position: index,
+      page_id: selectedPage?.id || '',
+      updated_at: new Date().toISOString()
+    }));
+    reorderBlocksMutation.mutate(supabaseBlocks);
+  };
+
+  // Converter blocos do Supabase para formato do DraggableBlockList
+  const convertBlocksForDragDrop = (blocks: Block[]) => {
+    return blocks.map(block => ({
+      id: block.id,
+      type: block.type,
+      position: block.position,
+      payload: block.payload || {},
+      published: Boolean(block.published)
+    }));
   };
 
   const handlePreview = () => {
@@ -136,6 +154,8 @@ export default function CMSPage() {
 
   const renderBlockCard = (block: Block) => {
     const isEditing = editingBlock === block.id;
+    // Corrigir tipo de published para boolean
+    const isPublished = Boolean(block.published);
 
     if (isEditing) {
       return (
@@ -159,8 +179,8 @@ export default function CMSPage() {
               <CardDescription>Posição: {block.position}</CardDescription>
             </div>
             <div className="flex gap-2">
-              <Badge variant={block.published ? 'default' : 'secondary'}>
-                {block.published ? 'Publicado' : 'Rascunho'}
+              <Badge variant={isPublished ? 'default' : 'secondary'}>
+                {isPublished ? 'Publicado' : 'Rascunho'}
               </Badge>
               <Button 
                 size="sm" 
@@ -193,6 +213,12 @@ export default function CMSPage() {
               <div>
                 <p><strong>Título:</strong> {block.payload?.title}</p>
                 <p><strong>Pontos:</strong> {block.payload?.bullets?.length || 0} itens</p>
+              </div>
+            )}
+            {block.type === 'hero-image' && (
+              <div>
+                <p><strong>Título:</strong> {block.payload?.title}</p>
+                <p><strong>Imagem:</strong> {block.payload?.backgroundImage ? 'Configurada' : 'Não configurada'}</p>
               </div>
             )}
             {block.type === 'stats-grid' && (
@@ -269,9 +295,9 @@ export default function CMSPage() {
               </div>
             ) : pageWithBlocks?.blocks.length ? (
               <DraggableBlockList
-                blocks={pageWithBlocks.blocks}
+                blocks={convertBlocksForDragDrop(pageWithBlocks.blocks)}
                 onReorder={handleReorderBlocks}
-                renderBlock={renderBlockCard}
+                renderBlock={(block) => renderBlockCard(pageWithBlocks.blocks.find(b => b.id === block.id)!)}
               />
             ) : (
               <Card>

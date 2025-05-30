@@ -21,13 +21,7 @@ import { GripVertical } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
-interface Block {
-  id: string;
-  type: string;
-  position: number;
-  payload: Record<string, any>;
-  published: boolean;
-}
+import { Block } from '@/lib/supabase';
 
 interface DraggableBlockListProps {
   blocks: Block[];

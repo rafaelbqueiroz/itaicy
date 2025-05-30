@@ -22,6 +22,27 @@ export function FormGenerator({ blockType, initialData, onSave, onCancel, isLoad
   const schema = getBlockSchema(blockType);
   const config = getBlockFormConfig(blockType);
   
+  // Verificar se o schema e config existem para este tipo de bloco
+  if (!schema || !config) {
+    return (
+      <Card className="mb-4">
+        <CardContent className="pt-6">
+          <div className="text-center">
+            <p className="text-red-600 mb-4">
+              Formulário não disponível para o tipo "{blockType}"
+            </p>
+            <p className="text-sm text-gray-600 mb-4">
+              Este tipo de bloco ainda não possui um formulário configurado.
+            </p>
+            <Button variant="outline" onClick={onCancel}>
+              Cancelar
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+  
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: initialData

@@ -1,16 +1,19 @@
 import { heroVideoSchema, heroVideoFormConfig, type HeroVideoData } from './hero-video';
 import { splitBlockSchema, splitBlockFormConfig, type SplitBlockData } from './split-block';
+import { heroImageSchema, heroImageFormConfig, type HeroImageData } from './hero-image';
 
 // Registry de todos os schemas por tipo de bloco
 export const blockSchemas = {
   'hero-video': heroVideoSchema,
   'split-block': splitBlockSchema,
+  'hero-image': heroImageSchema,
 } as const;
 
 // Registry de todas as configurações de formulário
 export const blockFormConfigs = {
   'hero-video': heroVideoFormConfig,
   'split-block': splitBlockFormConfig,
+  'hero-image': heroImageFormConfig,
 } as const;
 
 // Types
