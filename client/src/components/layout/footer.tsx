@@ -97,7 +97,7 @@ export function Footer() {
         
         {/* Bottom Footer */}
         <div className="border-t border-gray-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">
+          <p className="text-sm text-[#1b5038]">
             {t('footer.rights')}
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
