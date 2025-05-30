@@ -39,61 +39,60 @@ export function FeatureBlocks() {
   ];
 
   return (
-    <section className="w-full max-w-[1440px] mx-auto px-4 lg:px-8 py-24 mt-16">
-      <div className="grid gap-12 auto-rows-fr lg:grid-cols-2">
-        {features.map((feature, index) => (
-          <article
-            key={feature.id}
-            className={`flex flex-col lg:${
-              index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'
-            } items-start gap-6`}
-          >
-            {/* Image */}
-            <figure className="w-full lg:w-1/2">
-              <img
-                src={feature.image}
-                alt={feature.title}
-                className="w-full h-60 object-cover rounded-md"
-              />
-            </figure>
+    <section className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] py-24 flex flex-col gap-16">
+      {features.map((feature, index) => (
+        <article
+          key={feature.id}
+          className={`grid grid-cols-1 lg:grid-cols-2 items-center max-w-[1440px] mx-auto gap-12 px-4 lg:px-8 ${
+            index % 2 === 1 ? 'lg:direction-rtl' : ''
+          }`}
+          style={index % 2 === 1 ? { direction: 'rtl' } : {}}
+        >
+          {/* Image */}
+          <figure className="w-full" style={{ direction: 'ltr' }}>
+            <img
+              src={feature.image}
+              alt={feature.title}
+              className="w-full h-auto rounded-lg object-cover"
+            />
+          </figure>
 
-            {/* Content */}
-            <div className="w-full lg:w-1/2 flex flex-col justify-between p-6 space-y-3">
-              <h3 className="font-playfair text-[1.75rem] leading-[1.2] text-pantanal-green-900 mb-3">
-                {feature.title}
-              </h3>
-              <p className="font-lato text-[1rem] leading-[1.5] text-river-slate-800 mb-4">
-                {feature.description.split('. ').map((sentence, index, array) => (
-                  <span key={index}>
-                    {sentence.includes('166 espécies') ? (
-                      <>
-                        Mais de <strong className="text-pantanal-green-900">166 espécies</strong> já registradas em roteiros ao amanhecer e pôr-do-sol
-                      </>
-                    ) : sentence.includes('Viva a aventura') ? (
-                      <>
-                        {sentence.split('Viva a aventura')[0]}
-                        <strong className="text-pantanal-green-900">Viva a aventura, preserve o Pantanal</strong>
-                      </>
-                    ) : (
-                      sentence
-                    )}
-                    {index < array.length - 1 && '. '}
-                  </span>
-                ))}
-              </p>
-              <Link href={feature.link} className="self-start">
-                <Button 
-                  variant="outline"
-                  className="inline-flex items-center border border-pantanal-green-900 text-pantanal-green-900 bg-transparent hover:bg-sand-beige-400 font-lato font-medium uppercase text-sm tracking-wider px-6 py-2 rounded-md transition-all duration-300"
-                >
-                  Saiba mais
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
-            </div>
-          </article>
-        ))}
-      </div>
+          {/* Content */}
+          <div className="w-full flex flex-col gap-4" style={{ direction: 'ltr' }}>
+            <h3 className="font-playfair font-bold text-[2rem] leading-[1.15] tracking-tight text-pantanal-green-900">
+              {feature.title}
+            </h3>
+            <p className="font-lato text-[1.125rem] leading-[1.5] text-river-slate-800">
+              {feature.description.split('. ').map((sentence, sentenceIndex, array) => (
+                <span key={sentenceIndex}>
+                  {sentence.includes('166 espécies') ? (
+                    <>
+                      Mais de <strong className="text-pantanal-green-900">166 espécies</strong> já registradas em roteiros ao amanhecer e pôr-do-sol
+                    </>
+                  ) : sentence.includes('Viva a aventura') ? (
+                    <>
+                      {sentence.split('Viva a aventura')[0]}
+                      <strong className="text-pantanal-green-900">Viva a aventura, preserve o Pantanal</strong>
+                    </>
+                  ) : (
+                    sentence
+                  )}
+                  {sentenceIndex < array.length - 1 && '. '}
+                </span>
+              ))}
+            </p>
+            <Link href={feature.link} className="inline-block">
+              <Button 
+                variant="outline"
+                className="inline-flex items-center border border-pantanal-green-900 text-pantanal-green-900 bg-transparent hover:bg-sand-beige-400 font-lato font-semibold uppercase text-[0.875rem] tracking-wider px-6 py-3 rounded-lg transition-all duration-200"
+              >
+                Saiba mais
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+          </div>
+        </article>
+      ))}
     </section>
   );
 }

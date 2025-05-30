@@ -1,0 +1,131 @@
+Para ter exatamente o mesmo layout full-width, com cada card ocupando toda a largura da viewport e alternando imagem/texto de um lado para o outro, você pode seguir esse padrão (usando HTML/JSX + CSS):
+
+1. Estrutura HTML/JSX
+jsx
+Copiar
+Editar
+<section className="experiences-fullwidth">
+  <div className="experience-card">
+    <div className="card-image">
+      <img src="pesca.jpg" alt="Pesca catch-and-release" />
+    </div>
+    <div className="card-copy">
+      <h3>🎣 Pesca catch-and-release 100 % cota-zero</h3>
+      <p>Barcos ágeis em águas preservadas; guia local premiado garante emoção sem impacto. <strong>Viva a aventura, preserve o Pantanal.</strong></p>
+      <a href="/experiencias/pesca" className="btn-secondary">Saiba mais →</a>
+    </div>
+  </div>
+
+  <div className="experience-card">
+    <div className="card-image">
+      <img src="safari.jpg" alt="Safári fotográfico no Pantanal" />
+    </div>
+    <div className="card-copy">
+      <h3>🦜 Safáris, trilhas & birdwatching</h3>
+      <p>Mais de <strong>166 espécies</strong> já registradas em roteiros ao amanhecer e pôr-do-sol. Sinta o frio na barriga ao avistar tuiuiús e onças.</p>
+      <a href="/experiencias/birdwatching" className="btn-secondary">Saiba mais →</a>
+    </div>
+  </div>
+
+  <!-- repita para os outros dois cards -->
+</section>
+2. CSS (Tailwind-style ou puro)
+css
+Copiar
+Editar
+.experiences-fullwidth {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 96px 0;              /* Section padding v1.2 */
+  display: flex;
+  flex-direction: column;
+  gap: 64px;                    /* gutter grande */
+}
+
+.experience-card {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  max-width: 1440px;
+  margin: 0 auto;              /* centraliza o conteúdo */
+  gap: 48px;                    /* gutter interno */
+}
+
+/* alterna a ordem imagem/texto */
+.experience-card:nth-child(even) {
+  direction: rtl;
+}
+.experience-card:nth-child(even) .card-copy,
+.experience-card:nth-child(even) .card-image {
+  direction: ltr;
+}
+
+.card-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;           /* radius lvl-1 */
+  object-fit: cover;
+}
+
+.card-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;                    /* body-L leading */
+}
+
+.card-copy h3 {
+  font-family: "Playfair Display";
+  font-weight: 700;
+  font-size: 2rem;              /* H2 token */
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--color-pantanal-green-900);
+}
+
+.card-copy p {
+  font-family: Lato, sans-serif;
+  font-weight: 400;
+  font-size: 1.125rem;          /* Body-L */
+  line-height: 1.5;
+  color: var(--color-river-slate-800);
+}
+
+.btn-secondary {
+  display: inline-block;
+  font-family: Lato, sans-serif;
+  font-weight: 600;             /* Button token */
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border: 1px solid var(--color-pantanal-green-900);
+  border-radius: 8px;
+  color: var(--color-pantanal-green-900);
+  background: transparent;
+  transition: background 200ms ease;
+}
+.btn-secondary:hover {
+  background: var(--color-sand-beige-400);
+}
+3. O que mudamos
+Full-bleed: a section escapa dos containers e atinge as bordas da viewport.
+
+Grid 2-colunas: cada .experience-card é um grid 2×1.
+
+Alternância: uso de :nth-child(even) + direction: rtl para inverter a ordem dos elementos, mantendo o alinhamento interno.
+
+Tamanhos & espaços: totalmente alinhado ao nosso Design System (padding 96 px, gap 48 px, grid max-width 1440 px).
+
+Tipografia & cores: H2 em Playfair, texto Lato, tokens CSS de cor.
+
+Assim você terá exatamente:
+
+Full-width (imagem de borda a borda, texto centralizado)
+
+Alternância perfeita (imagem à esquerda no ímpar, à direita no par)
+
+Espaçamento e tipografia 100 % consistentes com o design system
