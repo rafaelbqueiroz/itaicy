@@ -101,37 +101,47 @@ export function Header() {
                 {/* Mega Menu */}
                 {item.megaMenu && activeDropdown === item.name && (
                   <div className="fixed left-0 right-0 top-20 w-screen bg-cloud-white-0 shadow-lg z-40 animate-fade-in transition-opacity duration-300">
-                    <div className="max-w-[1440px] mx-auto px-6 py-8">
-                      <div className="grid grid-cols-4 gap-8" role="navigation">
+                    <div className="max-w-[1440px] mx-auto px-8 py-6">
+                      <div className="grid grid-cols-3 gap-8 max-h-[300px]" role="navigation">
                         {/* Coluna 1: Lodge */}
-                        <div className="col-span-1" aria-label="Lodge">
-                          <h3 className="text-[0.875rem] font-medium text-pantanal-green-900 mb-2 uppercase tracking-wider" style={{ fontFamily: 'Lato, sans-serif' }}>
+                        <div className="py-6" aria-label="Lodge">
+                          <h3 className="font-playfair font-bold text-[1.75rem] text-pantanal-green-900 mb-4">
                             LODGE
                           </h3>
-                          <ul className="space-y-3">
+                          <ul className="space-y-2">
                             <li>
-                              <Link href="/acomodacoes" className="block text-[1rem] text-river-slate-800 hover:text-pantanal-green-700 transition-colors duration-240 font-normal leading-6" style={{ fontFamily: 'Lato, sans-serif' }} onClick={() => setActiveDropdown(null)}>
+                              <Link 
+                                href="/acomodacoes" 
+                                className="block text-[0.9375rem] text-river-slate-800 hover:text-pantanal-green-900 hover:underline hover:decoration-sunset-amber-600 hover:decoration-2 transition-all duration-200 font-normal" 
+                                style={{ fontFamily: 'Lato, sans-serif' }} 
+                                onClick={() => setActiveDropdown(null)}
+                              >
                                 Acomodações
                               </Link>
                             </li>
                             <li>
-                              <Link href="/gastronomia" className="block text-[1rem] text-river-slate-800 hover:text-pantanal-green-700 transition-colors duration-240 font-normal leading-6" style={{ fontFamily: 'Lato, sans-serif' }} onClick={() => setActiveDropdown(null)}>
+                              <Link 
+                                href="/gastronomia" 
+                                className="block text-[0.9375rem] text-river-slate-800 hover:text-pantanal-green-900 hover:underline hover:decoration-sunset-amber-600 hover:decoration-2 transition-all duration-200 font-normal" 
+                                style={{ fontFamily: 'Lato, sans-serif' }} 
+                                onClick={() => setActiveDropdown(null)}
+                              >
                                 Gastronomia
                               </Link>
                             </li>
                           </ul>
                         </div>
                         {/* Coluna 2: Experiências */}
-                        <div className="col-span-1" aria-label="Experiências">
-                          <h3 className="text-[0.875rem] font-medium text-pantanal-green-900 mb-2 uppercase tracking-wider" style={{ fontFamily: 'Lato, sans-serif' }}>
+                        <div className="py-6" aria-label="Experiências">
+                          <h3 className="font-playfair font-bold text-[1.75rem] text-pantanal-green-900 mb-4">
                             EXPERIÊNCIAS
                           </h3>
-                          <ul className="space-y-3">
+                          <ul className="space-y-2">
                             {item.megaMenu && item.megaMenu.map((subItem) => (
                               <li key={subItem.name}>
                                 <Link
                                   href={subItem.href}
-                                  className="block text-[1rem] text-river-slate-800 hover:text-pantanal-green-700 transition-colors duration-240 font-normal leading-6"
+                                  className="block text-[0.9375rem] text-river-slate-800 hover:text-pantanal-green-900 hover:underline hover:decoration-sunset-amber-600 hover:decoration-2 transition-all duration-200 font-normal"
                                   style={{ fontFamily: 'Lato, sans-serif' }}
                                   onClick={() => setActiveDropdown(null)}
                                 >
@@ -141,20 +151,20 @@ export function Header() {
                             ))}
                           </ul>
                         </div>
-                        {/* Coluna 3: Planejamento */}
-                        <div className="col-span-1" aria-label="Planejamento">
-                          <h3 className="text-[0.875rem] font-medium text-pantanal-green-900 mb-2 uppercase tracking-wider" style={{ fontFamily: 'Lato, sans-serif' }}>
+                        {/* Coluna 3: Planejamento + Card Destaque */}
+                        <div className="py-6 relative" aria-label="Planejamento">
+                          <h3 className="font-playfair font-bold text-[1.75rem] text-pantanal-green-900 mb-4">
                             PLANEJAMENTO
                           </h3>
-                          <ul className="space-y-3">
+                          <ul className="space-y-2 mb-6">
                             <li>
                               <Link
                                 href="/como-chegar"
-                                className="flex items-center text-[1rem] text-river-slate-800 hover:text-pantanal-green-700 transition-colors duration-240 font-normal leading-6"
+                                className="flex items-baseline text-[0.9375rem] text-river-slate-800 hover:text-pantanal-green-900 hover:underline hover:decoration-sunset-amber-600 hover:decoration-2 transition-all duration-200 font-normal focus:outline-2 focus:outline-pantanal-green-700"
                                 style={{ fontFamily: 'Lato, sans-serif' }}
                                 onClick={() => setActiveDropdown(null)}
                               >
-                                <svg className="w-4 h-4 mr-2 text-pantanal-green-700" fill="currentColor" viewBox="0 0 20 20">
+                                <svg className="w-4 h-4 mr-2 text-pantanal-green-700 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                                 </svg>
                                 Como Chegar
@@ -163,7 +173,7 @@ export function Header() {
                             <li>
                               <Link
                                 href="/melhor-epoca"
-                                className="block text-[1rem] text-river-slate-800 hover:text-pantanal-green-700 transition-colors duration-240 font-normal leading-6"
+                                className="block text-[0.9375rem] text-river-slate-800 hover:text-pantanal-green-900 hover:underline hover:decoration-sunset-amber-600 hover:decoration-2 transition-all duration-200 font-normal focus:outline-2 focus:outline-pantanal-green-700"
                                 style={{ fontFamily: 'Lato, sans-serif' }}
                                 onClick={() => setActiveDropdown(null)}
                               >
@@ -173,41 +183,33 @@ export function Header() {
                             <li>
                               <Link
                                 href="/faq"
-                                className="flex items-center text-[1rem] text-river-slate-800 hover:text-pantanal-green-700 transition-colors duration-240 font-normal leading-6"
+                                className="flex items-baseline text-[0.9375rem] text-river-slate-800 hover:text-pantanal-green-900 hover:underline hover:decoration-sunset-amber-600 hover:decoration-2 transition-all duration-200 font-normal focus:outline-2 focus:outline-pantanal-green-700"
                                 style={{ fontFamily: 'Lato, sans-serif' }}
                                 onClick={() => setActiveDropdown(null)}
                               >
-                                <svg className="w-4 h-4 mr-2 text-pantanal-green-700" fill="currentColor" viewBox="0 0 20 20">
+                                <svg className="w-4 h-4 mr-2 text-pantanal-green-700 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
                                 </svg>
                                 FAQ
                               </Link>
                             </li>
                           </ul>
-                        </div>
 
-                        {/* Coluna 4: Destaque Visual */}
-                        <div className="col-span-1" aria-label="Destaque">
-                          <div className="relative bg-black rounded-lg overflow-hidden h-48">
-                            <img 
-                              src="https://images.unsplash.com/photo-1551969014-7d2c4786d7a6?q=80&w=320&h=180&auto=format&fit=crop" 
-                              alt="Onças no Pantanal"
-                              className="absolute inset-0 w-full h-full object-cover"
-                            />
-                            <div className="absolute inset-0 bg-black bg-opacity-30"></div>
-                            <div className="relative z-10 p-4 h-full flex flex-col justify-end">
-                              <h4 className="text-white font-semibold text-lg mb-2" style={{ fontFamily: 'Playfair Display, serif' }}>
-                                Ver onças de perto
-                              </h4>
-                              <Link
-                                href="/experiencias/safari"
-                                className="inline-block bg-sunset-amber-600 hover:bg-sunset-amber-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-240 text-sm w-fit"
-                                style={{ fontFamily: 'Lato, sans-serif' }}
-                                onClick={() => setActiveDropdown(null)}
-                              >
-                                Saiba mais →
-                              </Link>
-                            </div>
+                          {/* Card Destaque Flutuante */}
+                          <div className="bg-cloud-white-0/90 rounded-lg p-4 shadow-sm border border-sand-beige-400/20">
+                            <h4 className="font-playfair font-semibold text-lg text-pantanal-green-900 mb-2">
+                              Ver onças de perto
+                            </h4>
+                            <p className="text-[0.875rem] text-river-slate-800 mb-3 font-lato">
+                              Experiência única no Pantanal
+                            </p>
+                            <Link
+                              href="/experiencias/safari"
+                              className="inline-block bg-sunset-amber-600 hover:bg-sunset-amber-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-[0.875rem] font-lato"
+                              onClick={() => setActiveDropdown(null)}
+                            >
+                              Saiba mais →
+                            </Link>
                           </div>
                         </div>
                       </div>
