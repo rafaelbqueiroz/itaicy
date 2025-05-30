@@ -1,0 +1,89 @@
+Aqui vão algumas propostas para tornar o mega-menu mais compacto e harmonioso, alinhado ao nosso Design System:
+
+---
+
+## 1. Reduzir espaçamentos verticais e horizontais
+
+* **Padding interno**: passar de algo como `32px` de padding para `16–20px` em cada coluna.
+* **Gutter entre colunas**: diminuir de `64px` para `32px`.
+* **Espaçamento entre itens**: usar `8px` de gap em vez de `16–24px`.
+
+```css
+.mega-menu {
+  padding: 16px 32px;
+  column-gap: 32px;
+}
+.mega-menu ul li {
+  margin-bottom: 8px;
+}
+```
+
+---
+
+## 2. Estabelecer grid mais enxuto
+
+Em vez de 4–5 colunas largas, experimente um layout de **3 colunas** + **destaque visual**:
+
+```
+┌──────────┬──────────┬──────────┐
+│ Lodge    │ Experiên-│ Galeria  │
+│ (2 itens)│ cias     │ (1 item) │
+│          │ (3 itens)│          │
+├─────────────────────────────────┤
+│ [Teaser com foto + link de destaque] │
+└──────────────────────────────────────┘
+```
+
+Assim você preenche o branco com um cartão de destaque (p.ex. “Ver onças de perto”) ou um micro-banner de promoção.
+
+---
+
+## 3. Agrupar conteúdos relacionados
+
+* **Planeje-se** (Como Chegar / Melhor Época / FAQ) em um rodapé de menu, separado por uma linha fina (`border-top: 1px solid river-slate/30%`) que o isola como “secundário”.
+* **Cabeçalhos** (`LOdge`, `EXPERIÊNCIAS`) em H3 Playfair 700, 1.25rem, para dar peso visual, e **itens** em Body-S Lato 400 0.9375rem.
+
+---
+
+## 4. Inserir ícones e micro-ilustrações
+
+Ao lado de cada item-chave (p.ex. “Pesca Esportiva”), adicione um micro-ícone SVG estilizado (32×32 px) – reforça o agrupamento e reduz a percepção de “vazios”.
+
+> Ex.: 🐟 para Pesca, 🦜 para Birdwatching, 🏨 para Lodge.
+
+---
+
+## 5. Limitar o número de links “soltos”
+
+Sempre que possível, transforme itens muito curtos (p.ex. “Galeria”) em **botões full-width** dentro do mega-menu, com `bg-sunset-amber/100` e texto branco. Isso ocupa o espaço e reforça o call-to-action.
+
+---
+
+## 6. Usar background levemente diferenciado
+
+Em vez de um fundo 100 % branco, aplique `background: rgba(217,206,179,0.1)` para “assentar” o menu sobre o hero sem tanto contraste. Isso reduz a sensação de “menu flutuando” no vazio.
+
+---
+
+## 7. Ajustar largura total
+
+Defina a largura do mega-menu para algo entre `max-width: 960px` e `1120px` (em vez de full-width), e centralize-o sob o cabeçalho. Vai ficar mais contido e alinhado à grid principal do site.
+
+```css
+.mega-menu {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+```
+
+---
+
+**Resumo visual**
+
+1. 🧱 **Grid 3 colunas + teaser**
+2. 🔧 Menos padding/gap (16–32px)
+3. 🎨 Fundo suave sand-beige 10%
+4. 🔗 Ícones + botões full-width
+5. 📝 Cabeçalhos H3 + itens Body-S
+
+Com esses ajustes, o mega-menu ganha foco — os links não “flutuarão” mais no branco, o usuário enxerga a hierarquia e há menos espaço desperdiçado.
