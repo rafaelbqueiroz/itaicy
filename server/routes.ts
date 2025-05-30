@@ -1,7 +1,16 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSubmissionSchema, insertNewsletterSubscriptionSchema } from "@shared/schema";
+import { cmsStorage } from "./cms-storage";
+import { 
+  insertContactSubmissionSchema, 
+  insertNewsletterSubscriptionSchema,
+  insertCmsPageSchema,
+  insertCmsVirtualTourSchema,
+  insertCmsTestimonialSchema,
+  insertCmsBlogPostSchema,
+  insertCmsSettingSchema 
+} from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -145,6 +154,132 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.status(500).json({ 
           message: "Internal server error" 
         });
+      }
+    }
+  });
+
+  // CMS API Routes
+  
+  // Virtual Tours
+  app.get("/api/cms/virtual-tours", async (req, res) => {
+    try {
+      const category = req.query.category as string;
+      const tours = await cmsStorage.getVirtualTours(category);
+      res.json(tours);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/cms/virtual-tours", async (req, res) => {
+    try {
+      const validatedData = insertCmsVirtualTourSchema.parse(req.body);
+      const tour = await cmsStorage.createVirtualTour(validatedData);
+      res.json({ message: "Virtual tour created successfully", tour });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Internal server error" });
+      }
+    }
+  });
+
+  // Testimonials
+  app.get("/api/cms/testimonials", async (req, res) => {
+    try {
+      const featured = req.query.featured === 'true' ? true : req.query.featured === 'false' ? false : undefined;
+      const testimonials = await cmsStorage.getTestimonials(featured);
+      res.json(testimonials);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/cms/testimonials", async (req, res) => {
+    try {
+      const validatedData = insertCmsTestimonialSchema.parse(req.body);
+      const testimonial = await cmsStorage.createTestimonial(validatedData);
+      res.json({ message: "Testimonial created successfully", testimonial });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Internal server error" });
+      }
+    }
+  });
+
+  // Blog Posts (CMS)
+  app.get("/api/cms/blog", async (req, res) => {
+    try {
+      const category = req.query.category as string;
+      const published = req.query.published === 'true' ? true : req.query.published === 'false' ? false : undefined;
+      const posts = await cmsStorage.getBlogPosts(category, published);
+      res.json(posts);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.get("/api/cms/blog/:slug", async (req, res) => {
+    try {
+      const post = await cmsStorage.getBlogPostBySlug(req.params.slug);
+      if (!post) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      res.json(post);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/cms/blog", async (req, res) => {
+    try {
+      const validatedData = insertCmsBlogPostSchema.parse(req.body);
+      const post = await cmsStorage.createBlogPost(validatedData);
+      res.json({ message: "Blog post created successfully", post });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Internal server error" });
+      }
+    }
+  });
+
+  // Settings
+  app.get("/api/cms/settings", async (req, res) => {
+    try {
+      const settings = await cmsStorage.getSettings();
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.get("/api/cms/settings/:key", async (req, res) => {
+    try {
+      const setting = await cmsStorage.getSettingByKey(req.params.key);
+      if (!setting) {
+        return res.status(404).json({ message: "Setting not found" });
+      }
+      res.json(setting);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/cms/settings", async (req, res) => {
+    try {
+      const validatedData = insertCmsSettingSchema.parse(req.body);
+      const setting = await cmsStorage.setSetting(validatedData);
+      res.json({ message: "Setting saved successfully", setting });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Internal server error" });
       }
     }
   });
