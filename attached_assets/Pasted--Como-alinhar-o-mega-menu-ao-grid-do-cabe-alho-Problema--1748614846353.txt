@@ -1,0 +1,106 @@
+### Como alinhar o mega-menu ao grid do cabeçalho
+
+| Problema                                                                          | Causa provável                                                                                                                                                           | Correção recomendada                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **O bloco branco “escapa” do limite esquerdo (logo) e direito (botão Reservar).** | O container do mega-menu (`<div class="mega">`) está com `width:100%` + `left:0`.<br>O header, porém, usa um **wrapper interno** (`max-width:1440 px` + `mx-auto px-8`). | 1. Faça o mega-menu **seguir o mesmo wrapper**.<br><br>`tsx\n<header className=\"relative\">\n  <div className=\"wrapper mx-auto max-w-[1440px] px-8\">\n    ...\n  </div>\n  {/* Mega */}\n  {isOpen && (\n    <div className=\"absolute inset-x-0 top-full z-40\">\n      <div className=\"wrapper mx-auto max-w-[1440px] px-8\">\n        ...conteúdo...\n      </div>\n    </div>\n  )}\n</header>`<br>2. Remova `left:0`/`right:0` do bloco interno; o espaçamento virá do `px-8` do wrapper. |
+| **Fundo branco corta a sombra “floating card”.**                                  | Falta radius / shadow no container visível.                                                                                                                              | Adote token `radius-md (8 px)` + `shadow lvl-1`:<br>`class="rounded-md shadow-[0_2px_4px_rgba(0,0,0,0.05)] bg-white"`                                                                                                                                                                                                                                                                                                                                                                              |
+| **Quebra de layout em telas < xl.**                                               | Grid fixa (3 col) sem clamp de coluna.                                                                                                                                   | Altere para **CSS Grid responsivo**:<br>`grid grid-cols-1 md:grid-cols-3 gap-x-16 gap-y-8`                                                                                                                                                                                                                                                                                                                                                                                                         |
+| **Ícone “Ver onças de perto” não alinha verticalmente.**                          | Card de destaque posicionado fora do flow.                                                                                                                               | Dê ao card `row-span-full md:col-start-3 md:row-start-1 flex flex-col justify-between`.                                                                                                                                                                                                                                                                                                                                                                                                            |
+
+---
+
+### Exemplo Tailwind completo
+
+```jsx
+<div className="absolute inset-x-0 top-full z-40">
+  <div className="mx-auto max-w-[1440px] px-8 py-12
+                  bg-white rounded-md shadow-[0_2px_4px_rgba(0,0,0,0.05)]
+                  grid grid-cols-1 md:grid-cols-3 gap-x-16 gap-y-8">
+    {/* Coluna 1 */}
+    <div>
+      <h3 className="font-display text-xl text-pantanal-green-900 mb-4">Lodge</h3>
+      <ul className="space-y-2">
+        <li><a className="link-footer" href="/acomodacoes">Acomodações</a></li>
+        <li><a className="link-footer" href="/gastronomia">Gastronomia</a></li>
+      </ul>
+    </div>
+
+    {/* Coluna 2 */}
+    <div>
+      <h3 className="font-display text-xl text-pantanal-green-900 mb-4">Experiências</h3>
+      <ul className="space-y-2">
+        <li><a className="link-footer" href="/estrutura">Estrutura&nbsp;&amp;&nbsp;Conforto</a></li>
+        <li><a className="link-footer" href="/historia">História&nbsp;&amp;&nbsp;Sustentabilidade</a></li>
+      </ul>
+    </div>
+
+    {/* Coluna 3 + Card destaque */}
+    <div className="md:col-start-3 md:row-start-1 row-span-full flex flex-col justify-between">
+      <h3 className="font-display text-xl text-pantanal-green-900 mb-4">Planejamento</h3>
+      <ul className="space-y-2 mb-8">
+        <li className="flex items-start gap-2">
+          <MapPin className="size-4 mt-1 text-pantanal-green-900" />
+          <a className="link-footer" href="/como-chegar">Como&nbsp;Chegar</a>
+        </li>
+        <li className="flex items-start gap-2">
+          <CalendarDays className="size-4 mt-1 text-pantanal-green-900" />
+          <a className="link-footer" href="/melhor-epoca">Melhor&nbsp;Época</a>
+        </li>
+        <li className="flex items-start gap-2">
+          <HelpCircle className="size-4 mt-1 text-pantanal-green-900" />
+          <a className="link-footer" href="/faq">FAQ</a>
+        </li>
+      </ul>
+
+      {/* Destaque */}
+      <a href="/oncas" className="block rounded-md overflow-hidden shadow lvl-1 group">
+        <img src="/img/onca-thumb.jpg" alt="" className="w-full h-32 object-cover group-hover:scale-105 transition" />
+        <div className="p-4">
+          <p className="font-display text-lg text-pantanal-green-900 mb-2">Ver onças de perto</p>
+          <p className="text-river-slate-800 text-sm mb-4">Experiência única no Pantanal</p>
+          <Button>Saiba mais →</Button>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+```
+
+#### Notas de design-system aplicadas
+
+| Token                        | Uso no código             |
+| ---------------------------- | ------------------------- |
+| `pantanal-green/900 #064737` | Títulos e ícones          |
+| `river-slate/800 #35534A`    | Links secundários         |
+| `radius-md 8 px`             | Borda do mega-menu e card |
+| `shadow lvl-1`               | Elevação suave            |
+| Espaçamento `gap-x-16`      | = 64 px (base-unit × 16)  |
+
+`link-footer` é apenas `text-river-slate-800 hover:text-pantanal-green-700 transition-colors`.
+
+---
+
+### Abertura / animação
+
+```css
+.mega-enter {
+  transform: translateY(-8px);
+  opacity: 0;
+}
+.mega-enter-active {
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 240ms cubic-bezier(.25,.8,.25,1),
+              opacity 240ms;
+}
+```
+
+Usa o mesmo princípio de “fade+slide” da hero (Motion Principles §4).
+
+---
+
+**Resultado esperado**
+
+* O mega-menu agora “encaixa” visualmente entre o logo e o botão **Reservar**, mantendo margens laterais idênticas à primeira dobra.
+* Scroll lock e backdrop continuam funcionando (caso já implementados).
+* Responsivo: em `md` vira 3 colunas; em `sm` passa a 1 coluna vertical com o card destaque depois da lista.
