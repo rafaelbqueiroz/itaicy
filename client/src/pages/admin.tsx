@@ -177,7 +177,11 @@ export default function AdminPage() {
                 </p>
               </CardHeader>
               <CardContent>
-                <PageContentManager />
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {['home', 'acomodacoes', 'experiencias', 'galeria', 'contato'].map((page) => (
+                    <PageEditor key={page} pageName={page} />
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -295,6 +299,28 @@ export default function AdminPage() {
                     ))}
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* SEO Manager */}
+          <TabsContent value="seo">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Settings className="h-5 w-5" />
+                  <span>Gerenciar SEO</span>
+                </CardTitle>
+                <p className="text-sm text-gray-600">
+                  Configure títulos, descrições, palavras-chave e meta tags para todas as páginas
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {['home', 'acomodacoes', 'experiencias', 'galeria', 'contato'].map((page) => (
+                    <SEOEditor key={page} pageName={page} />
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -428,6 +454,239 @@ function StatEditor({ stat, onUpdate, isLoading }: any) {
         </Button>
       </div>
     </div>
+  );
+}
+
+// Componente para editar páginas
+function PageEditor({ pageName }: { pageName: string }) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [editing, setEditing] = useState(false);
+
+  const { data: content = {}, isLoading } = useQuery({
+    queryKey: [`/api/cms/pages/${pageName}/content`],
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async (newContent: any) => {
+      const response = await fetch(`/api/cms/pages/${pageName}/content`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newContent),
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/cms/pages/${pageName}/content`] });
+      toast({ title: "Sucesso", description: "Conteúdo da página atualizado!" });
+      setEditing(false);
+    },
+  });
+
+  const getPageDisplayName = (slug: string) => {
+    const names: Record<string, string> = {
+      'home': 'Página Inicial',
+      'acomodacoes': 'Acomodações',
+      'experiencias': 'Experiências',
+      'galeria': 'Galeria',
+      'contato': 'Contato'
+    };
+    return names[slug] || slug;
+  };
+
+  if (isLoading) return <div className="p-4 border rounded">Carregando...</div>;
+
+  return (
+    <div className="border rounded-lg p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="font-semibold">{getPageDisplayName(pageName)}</h3>
+        <Button size="sm" onClick={() => setEditing(!editing)}>
+          <Edit className="h-4 w-4 mr-2" />
+          {editing ? 'Cancelar' : 'Editar'}
+        </Button>
+      </div>
+      
+      {editing ? (
+        <PageContentForm 
+          content={content} 
+          onSave={(newContent) => updateMutation.mutate(newContent)}
+          isLoading={updateMutation.isPending}
+        />
+      ) : (
+        <div className="space-y-2 text-sm">
+          {content.hero && (
+            <div>
+              <strong>Título Hero:</strong> {content.hero.title || 'Não definido'}
+            </div>
+          )}
+          {content.hero && (
+            <div>
+              <strong>Subtítulo:</strong> {content.hero.subtitle || 'Não definido'}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Componente para editar SEO
+function SEOEditor({ pageName }: { pageName: string }) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [editing, setEditing] = useState(false);
+
+  const { data: seo = {}, isLoading } = useQuery({
+    queryKey: [`/api/cms/pages/${pageName}/seo`],
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async (newSEO: any) => {
+      const response = await fetch(`/api/cms/pages/${pageName}/seo`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSEO),
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/cms/pages/${pageName}/seo`] });
+      toast({ title: "Sucesso", description: "SEO da página atualizado!" });
+      setEditing(false);
+    },
+  });
+
+  const getPageDisplayName = (slug: string) => {
+    const names: Record<string, string> = {
+      'home': 'Página Inicial',
+      'acomodacoes': 'Acomodações', 
+      'experiencias': 'Experiências',
+      'galeria': 'Galeria',
+      'contato': 'Contato'
+    };
+    return names[slug] || slug;
+  };
+
+  if (isLoading) return <div className="p-4 border rounded">Carregando...</div>;
+
+  return (
+    <div className="border rounded-lg p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="font-semibold">SEO - {getPageDisplayName(pageName)}</h3>
+        <Button size="sm" onClick={() => setEditing(!editing)}>
+          <Edit className="h-4 w-4 mr-2" />
+          {editing ? 'Cancelar' : 'Editar'}
+        </Button>
+      </div>
+      
+      {editing ? (
+        <SEOForm 
+          seo={seo} 
+          onSave={(newSEO) => updateMutation.mutate(newSEO)}
+          isLoading={updateMutation.isPending}
+        />
+      ) : (
+        <div className="space-y-2 text-sm">
+          <div><strong>Título:</strong> {seo.title || 'Não definido'}</div>
+          <div><strong>Descrição:</strong> {seo.description || 'Não definido'}</div>
+          <div><strong>Palavras-chave:</strong> {seo.keywords || 'Não definido'}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Formulário para editar conteúdo da página
+function PageContentForm({ content, onSave, isLoading }: any) {
+  const [formData, setFormData] = useState(content);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {formData.hero && (
+        <>
+          <div>
+            <Label htmlFor="heroTitle">Título Principal</Label>
+            <Input
+              id="heroTitle"
+              value={formData.hero.title || ''}
+              onChange={(e) => setFormData({
+                ...formData,
+                hero: { ...formData.hero, title: e.target.value }
+              })}
+            />
+          </div>
+          <div>
+            <Label htmlFor="heroSubtitle">Subtítulo</Label>
+            <Textarea
+              id="heroSubtitle"
+              value={formData.hero.subtitle || ''}
+              onChange={(e) => setFormData({
+                ...formData,
+                hero: { ...formData.hero, subtitle: e.target.value }
+              })}
+              rows={2}
+            />
+          </div>
+        </>
+      )}
+      
+      <Button type="submit" disabled={isLoading} size="sm">
+        <Save className="h-4 w-4 mr-2" />
+        {isLoading ? 'Salvando...' : 'Salvar'}
+      </Button>
+    </form>
+  );
+}
+
+// Formulário para editar SEO
+function SEOForm({ seo, onSave, isLoading }: any) {
+  const [formData, setFormData] = useState(seo);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <Label htmlFor="title">Título SEO</Label>
+        <Input
+          id="title"
+          value={formData.title || ''}
+          onChange={(e) => setFormData({...formData, title: e.target.value})}
+          placeholder="Título que aparece no Google"
+        />
+      </div>
+      <div>
+        <Label htmlFor="description">Descrição SEO</Label>
+        <Textarea
+          id="description"
+          value={formData.description || ''}
+          onChange={(e) => setFormData({...formData, description: e.target.value})}
+          placeholder="Descrição que aparece no Google"
+          rows={3}
+        />
+      </div>
+      <div>
+        <Label htmlFor="keywords">Palavras-chave</Label>
+        <Input
+          id="keywords"
+          value={formData.keywords || ''}
+          onChange={(e) => setFormData({...formData, keywords: e.target.value})}
+          placeholder="palavra1, palavra2, palavra3"
+        />
+      </div>
+      <Button type="submit" disabled={isLoading} size="sm">
+        <Save className="h-4 w-4 mr-2" />
+        {isLoading ? 'Salvando...' : 'Salvar'}
+      </Button>
+    </form>
   );
 }
 
