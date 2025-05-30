@@ -35,7 +35,6 @@ export default function CMSPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cms-page-blocks'] });
       setEditingBlock(null);
-      setEditedContent({});
       toast({ title: 'Bloco atualizado com sucesso!' });
     },
     onError: (error) => {
@@ -65,21 +64,24 @@ export default function CMSPage() {
     },
   });
 
-  const handleEditBlock = (block: Block) => {
-    setEditingBlock(block.id);
-  };
-
   const handleSaveBlock = (blockId: string, payload: Record<string, any>) => {
     updateBlockMutation.mutate({ blockId, payload });
   };
 
-  const handleCancelEdit = () => {
-    setEditingBlock(null);
-  };
-
-  const renderBlockEditor = (block: Block) => {
+  const renderBlockCard = (block: Block) => {
     const isEditing = editingBlock === block.id;
-    const content = isEditing ? editedContent : block.payload;
+
+    if (isEditing) {
+      return (
+        <BlockForm
+          key={block.id}
+          block={block}
+          onSave={(data) => handleSaveBlock(block.id, data)}
+          onCancel={() => setEditingBlock(null)}
+          isLoading={updateBlockMutation.isPending}
+        />
+      );
+    }
 
     return (
       <Card key={block.id} className="mb-4">
@@ -93,142 +95,48 @@ export default function CMSPage() {
               <Badge variant={block.published ? 'default' : 'secondary'}>
                 {block.published ? 'Publicado' : 'Rascunho'}
               </Badge>
-              {isEditing ? (
-                <>
-                  <Button 
-                    size="sm" 
-                    onClick={() => handleSaveBlock(block.id)}
-                    disabled={updateBlockMutation.isPending}
-                  >
-                    <Save className="w-4 h-4 mr-1" />
-                    Salvar
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={handleCancelEdit}>
-                    <RotateCcw className="w-4 h-4 mr-1" />
-                    Cancelar
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button size="sm" variant="outline" onClick={() => handleEditBlock(block)}>
-                    <Pencil className="w-4 h-4 mr-1" />
-                    Editar
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    onClick={() => publishBlockMutation.mutate(block.id)}
-                    disabled={publishBlockMutation.isPending}
-                  >
-                    <Eye className="w-4 h-4 mr-1" />
-                    Publicar
-                  </Button>
-                </>
-              )}
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => setEditingBlock(block.id)}
+              >
+                <Pencil className="w-4 h-4 mr-1" />
+                Editar
+              </Button>
+              <Button 
+                size="sm" 
+                onClick={() => publishBlockMutation.mutate(block.id)}
+                disabled={publishBlockMutation.isPending}
+              >
+                <Eye className="w-4 h-4 mr-1" />
+                Publicar
+              </Button>
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          {renderBlockContent(block, content, isEditing)}
+          <div className="text-sm text-gray-600">
+            {block.type === 'hero-video' && (
+              <div>
+                <p><strong>Título:</strong> {block.payload?.title}</p>
+                <p><strong>Subtítulo:</strong> {block.payload?.subtitle}</p>
+              </div>
+            )}
+            {block.type === 'split-block' && (
+              <div>
+                <p><strong>Título:</strong> {block.payload?.title}</p>
+                <p><strong>Pontos:</strong> {block.payload?.bullets?.length || 0} itens</p>
+              </div>
+            )}
+            {block.type === 'stats-grid' && (
+              <div>
+                <p><strong>Estatísticas:</strong> {block.payload?.stats?.length || 0} itens</p>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
     );
-  };
-
-  const renderBlockContent = (block: Block, content: any, isEditing: boolean) => {
-    switch (block.type) {
-      case 'hero':
-        return (
-          <div className="space-y-4">
-            <div>
-              <Label>Título Principal</Label>
-              {isEditing ? (
-                <Input
-                  value={content.title || ''}
-                  onChange={(e) => setEditedContent({...editedContent, title: e.target.value})}
-                />
-              ) : (
-                <p className="mt-1 font-semibold">{content.title}</p>
-              )}
-            </div>
-            <div>
-              <Label>Subtítulo</Label>
-              {isEditing ? (
-                <Textarea
-                  value={content.subtitle || ''}
-                  onChange={(e) => setEditedContent({...editedContent, subtitle: e.target.value})}
-                />
-              ) : (
-                <p className="mt-1">{content.subtitle}</p>
-              )}
-            </div>
-            {content.cta && (
-              <div>
-                <Label>Chamada para Ação</Label>
-                {isEditing ? (
-                  <Input
-                    value={content.cta || ''}
-                    onChange={(e) => setEditedContent({...editedContent, cta: e.target.value})}
-                  />
-                ) : (
-                  <p className="mt-1 text-blue-600">{content.cta}</p>
-                )}
-              </div>
-            )}
-          </div>
-        );
-
-      case 'text':
-        return (
-          <div>
-            <Label>Conteúdo</Label>
-            {isEditing ? (
-              <Textarea
-                value={content.content || ''}
-                onChange={(e) => setEditedContent({...editedContent, content: e.target.value})}
-                rows={6}
-              />
-            ) : (
-              <p className="mt-1 whitespace-pre-wrap">{content.content}</p>
-            )}
-          </div>
-        );
-
-      case 'stats':
-        return (
-          <div className="grid grid-cols-2 gap-4">
-            {content.items?.map((item: any, index: number) => (
-              <div key={index} className="text-center">
-                <div className="text-2xl font-bold text-green-600">{item.value}</div>
-                <div className="text-sm text-gray-600">{item.label}</div>
-              </div>
-            ))}
-          </div>
-        );
-
-      default:
-        return (
-          <div>
-            <Label>Dados JSON</Label>
-            {isEditing ? (
-              <Textarea
-                value={JSON.stringify(content, null, 2)}
-                onChange={(e) => {
-                  try {
-                    const parsed = JSON.parse(e.target.value);
-                    setEditedContent(parsed);
-                  } catch {}
-                }}
-                rows={10}
-                className="font-mono text-sm"
-              />
-            ) : (
-              <pre className="mt-1 text-sm bg-gray-100 p-3 rounded overflow-auto">
-                {JSON.stringify(content, null, 2)}
-              </pre>
-            )}
-          </div>
-        );
-    }
   };
 
   if (pagesLoading) {
@@ -278,7 +186,22 @@ export default function CMSPage() {
               {selectedPage ? (
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold">{selectedPage.name}</h2>
+                    <div>
+                      <h2 className="text-2xl font-bold">{selectedPage.name}</h2>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge variant="outline">
+                          Template: {selectedPage.template}
+                        </Badge>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(`/${selectedPage.slug === 'home' ? '' : selectedPage.slug}`, '_blank')}
+                        >
+                          <ExternalLink className="w-4 h-4 mr-1" />
+                          Ver Página
+                        </Button>
+                      </div>
+                    </div>
                     <Button
                       onClick={() => publishPageMutation.mutate(selectedPage.id)}
                       disabled={publishPageMutation.isPending}
@@ -291,7 +214,7 @@ export default function CMSPage() {
                     <div>Carregando blocos...</div>
                   ) : pageWithBlocks?.blocks.length ? (
                     <div>
-                      {pageWithBlocks.blocks.map(renderBlockEditor)}
+                      {pageWithBlocks.blocks.map(renderBlockCard)}
                     </div>
                   ) : (
                     <Card>
@@ -323,7 +246,7 @@ export default function CMSPage() {
               <CardDescription>Gerencie imagens e vídeos do site</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-500">Funcionalidade de mídia em desenvolvimento...</p>
+              <p className="text-gray-500">Biblioteca de mídia será implementada</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -335,7 +258,7 @@ export default function CMSPage() {
               <CardDescription>Configurações gerais do website</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-500">Configurações em desenvolvimento...</p>
+              <p className="text-gray-500">Configurações globais serão implementadas</p>
             </CardContent>
           </Card>
         </TabsContent>
