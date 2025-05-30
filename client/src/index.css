@@ -48,35 +48,6 @@
   --mr-logo: 40px;
 }
 
-/* Header wrapper (onde vivem logo, nav e botão) */
-header.site-header {
-  position: relative;         /* ① vira o contexto do absolute */
-}
-
-/* Painel do mega-menu */
-.mega-panel {
-  position: absolute;
-  inset: auto 0 0 0;          /* top:100% deixa colado na borda inferior */
-  top: 100%;                  /* ② encosta no header */
-  width: 100vw;               /* ocupa toda a viewport p/ alinhar ao grid */
-  padding: 0;                 /* zera o extra que empurrava p/ baixo */
-  background: #fff;
-  box-shadow: 0 4px 14px rgba(0,0,0,.05);
-  z-index: 50;
-  margin-top: 0 !important;   /* anula qualquer margin */
-  transform: translateY(0) !important; /* anula qualquer translate */
-}
-
-/* Grid interno mantém o mesmo gutter do header */
-.mega-panel__grid {
-  max-width: 1440px;          /* mesmo wrapper da 1ª dobra */
-  margin-inline: auto;
-  padding: 3rem 2rem;         /* 48 px vertical / 32 px horizontal */
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 2.5rem 4rem;           /* 40 px linha / 64 px coluna */
-}
-
 /* React Day Picker - Design System Overrides */
 .rdp-day_selected, 
 .rdp-day_selected:focus-visible, 
