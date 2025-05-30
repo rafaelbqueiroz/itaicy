@@ -307,6 +307,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Page Blocks routes
+  app.get('/api/cms/pages/:pageId/blocks', async (req, res) => {
+    try {
+      const pageId = parseInt(req.params.pageId);
+      const blocks = await storage.getPageBlocks(pageId);
+      res.json(blocks);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post('/api/cms/pages/:pageId/blocks', async (req, res) => {
+    try {
+      const pageId = parseInt(req.params.pageId);
+      const block = await storage.createPageBlock({ ...req.body, pageId });
+      res.status(201).json(block);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.put('/api/cms/blocks/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const block = await storage.updatePageBlock(id, req.body);
+      res.json(block);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.delete('/api/cms/blocks/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deletePageBlock(id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Pages routes
+  app.get('/api/cms/pages', async (req, res) => {
+    try {
+      const pages = await storage.getPages();
+      res.json(pages);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.get('/api/cms/pages/slug/:slug', async (req, res) => {
+    try {
+      const page = await storage.getPageBySlug(req.params.slug);
+      if (!page) {
+        return res.status(404).json({ message: "Page not found" });
+      }
+      res.json(page);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

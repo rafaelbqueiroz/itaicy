@@ -71,6 +71,10 @@ export interface IStorage {
   // Page Content methods
   getPageContent(slug: string): Promise<any>;
   updatePageContent(slug: string, content: any): Promise<any>;
+  getPageBlocks(pageId: number): Promise<any[]>;
+  createPageBlock(block: any): Promise<any>;
+  updatePageBlock(id: number, block: any): Promise<any>;
+  deletePageBlock(id: number): Promise<void>;
   
   // SEO methods
   getPageSEO(slug: string): Promise<any>;
@@ -79,6 +83,12 @@ export interface IStorage {
   // Media methods
   getMediaFiles(): Promise<any[]>;
   uploadMedia(file: any): Promise<any>;
+  
+  // Pages methods
+  getPages(): Promise<any[]>;
+  getPageBySlug(slug: string): Promise<any>;
+  createPage(page: any): Promise<any>;
+  updatePage(id: number, page: any): Promise<any>;
 }
 
 export class MemStorage implements IStorage {
@@ -98,6 +108,8 @@ export class MemStorage implements IStorage {
   private pageContents: Map<string, any>;
   private pageSEO: Map<string, any>;
   private mediaFiles: Map<number, any>;
+  private pages: Map<number, any>;
+  private pageBlocks: Map<number, any>;
   private currentId: number;
 
   constructor() {
@@ -117,6 +129,8 @@ export class MemStorage implements IStorage {
     this.pageContents = new Map();
     this.pageSEO = new Map();
     this.mediaFiles = new Map();
+    this.pages = new Map();
+    this.pageBlocks = new Map();
     this.currentId = 1;
 
     // Initialize with sample data
@@ -302,6 +316,186 @@ export class MemStorage implements IStorage {
       phone: '+55 65 9999-9999',
       whatsapp: '+55 65 9999-9999'
     };
+
+    // Initialize pages with complete content
+    const pageData = [
+      {
+        id: 1,
+        slug: 'home',
+        title: 'Página Inicial',
+        template: 'hero_video',
+        status: 'published'
+      },
+      {
+        id: 2,
+        slug: 'acomodacoes',
+        title: 'Acomodações',
+        template: 'hero_image',
+        status: 'published'
+      },
+      {
+        id: 3,
+        slug: 'experiencias',
+        title: 'Experiências',
+        template: 'hero_image',
+        status: 'published'
+      },
+      {
+        id: 4,
+        slug: 'galeria',
+        title: 'Galeria',
+        template: 'standard',
+        status: 'published'
+      },
+      {
+        id: 5,
+        slug: 'contato',
+        title: 'Contato',
+        template: 'standard',
+        status: 'published'
+      }
+    ];
+
+    pageData.forEach(page => {
+      this.pages.set(page.id, page);
+    });
+
+    // Initialize page blocks with rich content
+    const pageBlocks = [
+      // Home page blocks
+      {
+        id: 1,
+        pageId: 1,
+        type: 'hero_video',
+        order: 1,
+        props: {
+          title: 'Viva o Pantanal Autêntico',
+          subtitle: 'Pesque, observe, descanse e reconecte-se em um refúgio de biodiversidade única no mundo',
+          videoUrl: '/assets/itaicy-video-bg.mp4',
+          ctaText: 'Descobrir Experiências',
+          ctaLink: '/experiencias'
+        }
+      },
+      {
+        id: 2,
+        pageId: 1,
+        type: 'stats_strip',
+        order: 2,
+        props: {
+          title: 'Pantanal em Números',
+          stats: [
+            { code: 'BIRD_SPECIES', label: 'Espécies de Aves', value: 4700 },
+            { code: 'FISH_SPECIES', label: 'Espécies de Peixes', value: 400 },
+            { code: 'SINCE_YEAR', label: 'Desde', value: 1897 },
+            { code: 'PROTECTED_AREA', label: 'Hectares Protegidos', value: 650 }
+          ]
+        }
+      },
+      {
+        id: 3,
+        pageId: 1,
+        type: 'experiences_grid',
+        order: 3,
+        props: {
+          title: 'Experiências Únicas',
+          subtitle: 'Descubra o melhor do Pantanal',
+          cards: [
+            {
+              title: 'Pesca Esportiva',
+              description: 'Dourados gigantes em águas cristalinas com guias especializados',
+              image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5',
+              link: '/experiencias/pesca'
+            },
+            {
+              title: 'Birdwatching',
+              description: 'Mais de 4.700 espécies de aves em habitat natural',
+              image: 'https://images.unsplash.com/photo-1444927714506-8492d94b5ba0',
+              link: '/experiencias'
+            },
+            {
+              title: 'Safári Fotográfico',
+              description: 'Vida selvagem em cenários únicos no mundo',
+              image: 'https://images.unsplash.com/photo-1549366021-9f761d040a94',
+              link: '/experiencias'
+            }
+          ]
+        }
+      },
+      // Gallery page blocks
+      {
+        id: 4,
+        pageId: 4,
+        type: 'page_header',
+        order: 1,
+        props: {
+          title: 'Galeria de Fotos',
+          subtitle: 'Momentos únicos capturados no Pantanal',
+          description: 'Explore nossa coleção de imagens que retratam a beleza natural e a vida selvagem do Pantanal.'
+        }
+      },
+      {
+        id: 5,
+        pageId: 4,
+        type: 'image_gallery',
+        order: 2,
+        props: {
+          layout: 'masonry',
+          categories: ['Vida Selvagem', 'Paisagens', 'Atividades', 'Lodge'],
+          images: [
+            {
+              url: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5',
+              alt: 'Pesca no Pantanal',
+              category: 'Atividades'
+            },
+            {
+              url: 'https://images.unsplash.com/photo-1444927714506-8492d94b5ba0',
+              alt: 'Aves do Pantanal',
+              category: 'Vida Selvagem'
+            }
+          ]
+        }
+      },
+      // Contact page blocks
+      {
+        id: 6,
+        pageId: 5,
+        type: 'page_header',
+        order: 1,
+        props: {
+          title: 'Entre em Contato',
+          subtitle: 'Planeje sua experiência no Pantanal',
+          description: 'Nossa equipe está pronta para ajudar você a criar momentos inesquecíveis.'
+        }
+      },
+      {
+        id: 7,
+        pageId: 5,
+        type: 'contact_info',
+        order: 2,
+        props: {
+          email: 'reservas@itaicy.com.br',
+          phone: '+55 65 9999-9999',
+          whatsapp: '+55 65 9999-9999',
+          address: 'Rio Cuiabá, Pantanal - MT',
+          hours: 'Atendimento: 8h às 18h'
+        }
+      },
+      {
+        id: 8,
+        pageId: 5,
+        type: 'contact_form',
+        order: 3,
+        props: {
+          title: 'Envie sua Mensagem',
+          fields: ['name', 'email', 'phone', 'dates', 'guests', 'message'],
+          submitText: 'Enviar Mensagem'
+        }
+      }
+    ];
+
+    pageBlocks.forEach(block => {
+      this.pageBlocks.set(block.id, block);
+    });
   }
 
   // User methods
@@ -677,6 +871,16 @@ export class MemStorage implements IStorage {
         title: 'Experiências - Itaicy Pantanal Eco Lodge',
         description: 'Pesca esportiva, birdwatching, safári fotográfico e muito mais. Descubra o Pantanal com guias especializados.',
         keywords: 'experiências pantanal, pesca esportiva, birdwatching, safári'
+      },
+      'galeria': {
+        title: 'Galeria - Itaicy Pantanal Eco Lodge',
+        description: 'Fotos e momentos únicos do Pantanal. Veja a beleza natural e vida selvagem em nossa galeria.',
+        keywords: 'galeria pantanal, fotos lodge, vida selvagem'
+      },
+      'contato': {
+        title: 'Contato - Itaicy Pantanal Eco Lodge',
+        description: 'Entre em contato conosco para reservas e informações. Planeje sua experiência no Pantanal.',
+        keywords: 'contato itaicy, reservas pantanal, informações lodge'
       }
     };
     return defaultSEO[slug] || {
@@ -684,6 +888,60 @@ export class MemStorage implements IStorage {
       description: 'Descubra o Pantanal autêntico no Itaicy Lodge.',
       keywords: 'pantanal, ecoturismo, lodge'
     };
+  }
+
+  // Page Blocks methods
+  async getPageBlocks(pageId: number): Promise<any[]> {
+    return Array.from(this.pageBlocks.values())
+      .filter(block => block.pageId === pageId)
+      .sort((a, b) => a.order - b.order);
+  }
+
+  async createPageBlock(block: any): Promise<any> {
+    const id = this.currentId++;
+    const newBlock = { id, ...block, createdAt: new Date() };
+    this.pageBlocks.set(id, newBlock);
+    return newBlock;
+  }
+
+  async updatePageBlock(id: number, updateData: any): Promise<any> {
+    const block = this.pageBlocks.get(id);
+    if (!block) {
+      throw new Error(`Block with id ${id} not found`);
+    }
+    const updated = { ...block, ...updateData, updatedAt: new Date() };
+    this.pageBlocks.set(id, updated);
+    return updated;
+  }
+
+  async deletePageBlock(id: number): Promise<void> {
+    this.pageBlocks.delete(id);
+  }
+
+  // Pages methods
+  async getPages(): Promise<any[]> {
+    return Array.from(this.pages.values());
+  }
+
+  async getPageBySlug(slug: string): Promise<any> {
+    return Array.from(this.pages.values()).find(page => page.slug === slug);
+  }
+
+  async createPage(page: any): Promise<any> {
+    const id = this.currentId++;
+    const newPage = { id, ...page, createdAt: new Date() };
+    this.pages.set(id, newPage);
+    return newPage;
+  }
+
+  async updatePage(id: number, updateData: any): Promise<any> {
+    const page = this.pages.get(id);
+    if (!page) {
+      throw new Error(`Page with id ${id} not found`);
+    }
+    const updated = { ...page, ...updateData, updatedAt: new Date() };
+    this.pages.set(id, updated);
+    return updated;
   }
 }
 

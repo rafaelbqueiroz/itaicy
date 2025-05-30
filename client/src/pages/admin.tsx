@@ -136,11 +136,11 @@ export default function AdminPage() {
       </div>
 
       <div className="max-w-7xl mx-auto p-6">
-        <Tabs defaultValue="pages" className="space-y-6">
+        <Tabs defaultValue="blocks" className="space-y-6">
           <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="pages" className="flex items-center space-x-2">
+            <TabsTrigger value="blocks" className="flex items-center space-x-2">
               <Edit className="h-4 w-4" />
-              <span>Páginas</span>
+              <span>Editor de Blocos</span>
             </TabsTrigger>
             <TabsTrigger value="suites" className="flex items-center space-x-2">
               <Home className="h-4 w-4" />
@@ -164,24 +164,20 @@ export default function AdminPage() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Editar Páginas */}
-          <TabsContent value="pages">
+          {/* Editor de Blocos */}
+          <TabsContent value="blocks">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Edit className="h-5 w-5" />
-                  <span>Editor de Conteúdo das Páginas</span>
+                  <span>Editor de Blocos - Conteúdo Completo do Site</span>
                 </CardTitle>
                 <p className="text-sm text-gray-600">
-                  Edite textos, títulos, descrições e conteúdo de todas as páginas do site
+                  Edite todo o conteúdo das páginas: textos, títulos, imagens, vídeos, informações de contato e muito mais
                 </p>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {['home', 'acomodacoes', 'experiencias', 'galeria', 'contato'].map((page) => (
-                    <PageEditor key={page} pageName={page} />
-                  ))}
-                </div>
+                <BlocksEditor />
               </CardContent>
             </Card>
           </TabsContent>
