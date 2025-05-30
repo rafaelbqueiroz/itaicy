@@ -26,18 +26,6 @@ export default function CMSPage() {
     queryKey: ['cms-page-blocks', selectedPage?.slug],
     queryFn: () => selectedPage ? CMSService.getPageWithBlocks(selectedPage.slug) : null,
     enabled: !!selectedPage,
-    onSuccess: (data) => {
-      console.log('🔍 Dados carregados no CMS:', data);
-      if (data?.blocks) {
-        data.blocks.forEach((block, index) => {
-          console.log(`Bloco ${index + 1}:`, {
-            type: block.type,
-            position: block.position,
-            payload: block.payload
-          });
-        });
-      }
-    }
   });
 
   // Mutação para atualizar bloco
