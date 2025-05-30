@@ -63,7 +63,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link 
                     href={link.href}
-                    className="hover:text-itaicy-secondary transition-colors text-[#1b5038]"
+                    className="hover:text-itaicy-secondary transition-colors text-[#1b5048]"
                   >
                     {link.name}
                   </Link>
