@@ -25,7 +25,7 @@ export function StickyBar({
 
   if (variant === 'availability') {
     return (
-      <div className="sticky top-20 z-40 bg-white/95 backdrop-blur-sm border-b border-river-slate-700/20 shadow-sm">
+      <div className="sticky top-20 z-40 bg-white/95 backdrop-blur-sm border-b border-river-slate-700/20 shadow-sm hidden md:block">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-center">
             <Link href={ctaHref}>
@@ -40,9 +40,9 @@ export function StickyBar({
   }
 
   return (
-    <div className="sticky top-20 z-40 bg-white/95 backdrop-blur-sm border-b border-river-slate-700/20 shadow-sm">
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex flex-wrap items-end gap-4 justify-center">
+    <div className="sticky top-20 z-40 bg-white/95 backdrop-blur-sm border-b border-river-slate-700/20 shadow-sm hidden md:block">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+        <div className="flex flex-wrap items-end gap-3 sm:gap-4 justify-center">
           {/* Date Range */}
           <div className="min-w-[220px] space-y-1">
             <Label className="font-lato text-xs text-river-slate-800">Período</Label>

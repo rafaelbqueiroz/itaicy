@@ -40,21 +40,21 @@ export function HeroSection({
         <div className="absolute inset-0 bg-black/40" />
       )}
       
-      <div className="relative z-10 max-w-4xl mx-auto px-6">
-        <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6">
+        <h1 className="font-playfair text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 sm:mb-6 leading-tight">
           {title}
         </h1>
         
         {subtitle && (
-          <p className="font-lato text-lg md:text-xl mb-8 text-white/90 max-w-2xl mx-auto">
+          <p className="font-lato text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-white/90 max-w-2xl mx-auto leading-relaxed">
             {subtitle}
           </p>
         )}
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
           {primaryCTA && (
             <Link href={primaryCTA.href}>
-              <Button className="font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-8 rounded-md transition-colors duration-150">
+              <Button className="w-full sm:w-auto font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-6 sm:px-8 rounded-md transition-colors duration-150">
                 {primaryCTA.label}
               </Button>
             </Link>
@@ -62,7 +62,7 @@ export function HeroSection({
           
           {secondaryCTA && (
             <Link href={secondaryCTA.href}>
-              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-black py-3 px-8 rounded-md transition-colors duration-150">
+              <Button variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-black py-3 px-6 sm:px-8 rounded-md transition-colors duration-150">
                 {secondaryCTA.label}
               </Button>
             </Link>

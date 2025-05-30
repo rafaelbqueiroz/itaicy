@@ -2,6 +2,7 @@ import { HeroSection } from '@/components/sections/hero-section';
 import { StickyBar } from '@/components/sections/sticky-bar';
 import { SplitBlock } from '@/components/sections/split-block';
 import { StatsRibbon } from '@/components/sections/stats-ribbon';
+import { MobileBookingBar } from '@/components/sections/mobile-booking-bar';
 import { Check, Wifi, Car, Coffee, Shirt, UtensilsCrossed } from 'lucide-react';
 import { useState } from 'react';
 

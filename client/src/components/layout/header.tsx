@@ -334,24 +334,52 @@ export function Header() {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="lg:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-pantanal-green-900 shadow-lg rounded-lg mt-2">
+            <div className="px-4 pt-4 pb-6 space-y-3 bg-black/95 backdrop-blur-sm shadow-lg rounded-lg mt-2">
               {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="block px-3 py-2 text-white hover:bg-pantanal-green-800 rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
+                <div key={item.name}>
+                  <Link
+                    href={item.href}
+                    className="block px-4 py-3 text-white hover:text-sunset-amber-400 transition-colors font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                  {item.megaMenu && (
+                    <div className="ml-4 mt-2 space-y-2 pb-3 border-b border-white/20">
+                      {item.name === 'LODGE' && (
+                        <>
+                          <Link href="/acomodacoes" className="block py-2 text-white/80 hover:text-sunset-amber-400 transition-colors text-sm" onClick={() => setIsMenuOpen(false)}>
+                            Acomodações
+                          </Link>
+                          <Link href="/gastronomia" className="block py-2 text-white/80 hover:text-sunset-amber-400 transition-colors text-sm" onClick={() => setIsMenuOpen(false)}>
+                            Gastronomia
+                          </Link>
+                        </>
+                      )}
+                      {item.name === 'EXPERIÊNCIAS' && (
+                        <>
+                          <Link href="/experiencias/pesca" className="block py-2 text-white/80 hover:text-sunset-amber-400 transition-colors text-sm" onClick={() => setIsMenuOpen(false)}>
+                            Pesca Esportiva
+                          </Link>
+                          <Link href="/experiencias/safari" className="block py-2 text-white/80 hover:text-sunset-amber-400 transition-colors text-sm" onClick={() => setIsMenuOpen(false)}>
+                            Safáris & Birdwatching
+                          </Link>
+                          <Link href="/experiencias/pacotes" className="block py-2 text-white/80 hover:text-sunset-amber-400 transition-colors text-sm" onClick={() => setIsMenuOpen(false)}>
+                            Pacotes & Tarifas
+                          </Link>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
               ))}
-              <div className="px-3 py-2">
+              <div className="px-4 py-3 border-t border-white/20">
                 <LanguageSwitcher />
               </div>
-              <div className="px-3 py-2">
+              <div className="px-4">
                 <Link href="/booking">
                   <Button
-                    className="w-full border-white text-white hover:bg-white hover:text-[#064737] font-light tracking-[0.08em] uppercase"
+                    className="w-full font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-6 rounded-md transition-colors duration-150"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     RESERVAR
