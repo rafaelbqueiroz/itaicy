@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <HeroVideo />
-      <BookingWidget />
+      <BookingWidget variant="floating" />
       <Experiences />
       <LodgeOverview />
       <Highlights />

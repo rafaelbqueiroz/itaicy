@@ -1,0 +1,76 @@
+Remover os dois botões da hero (“RESERVAR AGORA” e “CONHEÇA AS EXPERIÊNCIAS”) e subir o widget de reservas de modo que fique encaixado (quase colado) na dobra entre a hero-video e a próxima seção de conteúdo.
+
+1. Impacto no Design System (v 1.1 → v 1.2)
+Token / Componente	Antes	Depois
+Hero CTA-Area	cta-group (max 2 botões)	deprecada
+Booking Widget	“Section widget” – offset 64 px abaixo da hero	widget-floating – offset 16 px, z-index 30, negative-margin-top −88 px (desktop) / −64 px (tablet)
+Spacing Scale	96 / 64 / 48 px section-padding	idem (a hero continua 0-padding), mas gap-hero→next = 0
+Accessibility note	2 CTAs equivalentes (“Reservar” no botão + widget)	1 CTA (widget) – simplifica sem perda de função
+
+2. Instrução para Dev Front-end (Next.js + Tailwind)
+2.1 Remover botões da hero
+tsx
+Copiar
+Editar
+// client/src/components/sections/hero-video.tsx
+// ↓ delete ou comente o bloco <div className="cta-group"> …
+
+{/* 
+<div className="cta-group mt-10 flex flex-col sm:flex-row gap-4">
+  <PrimaryButton>Reservar agora</PrimaryButton>
+  <SecondaryButton>Conheça as experiências</SecondaryButton>
+</div>
+*/}
+2.2 Criar variante “floating” do widget
+tsx
+Copiar
+Editar
+// client/src/components/booking/BookingWidget.tsx
+export interface BookingWidgetProps {
+  variant?: 'section' | 'floating';
+}
+
+export const BookingWidget = ({ variant = 'section' }: BookingWidgetProps) => (
+  <div
+    className={clsx(
+      'w-full max-w-6xl mx-auto rounded-lg shadow-lvl2 bg-cloud-white',
+      variant === 'floating'
+        ? '-mt-22 md:-mt-16 relative z-30'
+        : 'mt-24'
+    )}
+  >
+    {/* …form fields… */}
+  </div>
+);
+2.3 Injetar a variante na página home
+tsx
+Copiar
+Editar
+// pages/index.tsx
+<HeroVideo />
+<BookingWidget variant="floating" />   {/* NOVA POSIÇÃO */}
+<SectionExperiencias />
+2.4 Responsivo
+css
+Copiar
+Editar
+/* tailwind.config.js – spacing custom */
+theme: {
+  extend: {
+    spacing: {
+      22: '88px',
+    }
+  }
+}
+Mobile (≤ md) mantém o widget imediatamente abaixo da hero, mas sem sobreposição (usa padding-top extra na próxima seção se necessário).
+
+2.5 Z-index
+Hero-video mantém z-10; widget z-30; nav-bar sticky já usa z-50 → sem conflito.
+
+3. QA checklist
+Teste	Esperado
+Hero sem CTAs	nenhum botão visível; foco de teclado pula direto para campos do widget
+Sobreposição	Widget não cobre texto principal em larguras ≥ 1024 px
+Acessibilidade	aria-label="Formulário de reserva" no <form>; ordem tabbing lógica
+CLS / LCP	LCP continua ≤ 2.5 s (widget carrega abaixo-fold mas acima da dobra real)
+Mobile Safari	Negative-margin não corta sombra; fallback padding funciona

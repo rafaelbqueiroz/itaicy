@@ -40,28 +40,7 @@ export function HeroVideo() {
         <p className="text-lg sm:text-xl md:text-2xl mb-8 opacity-90 max-w-2xl mx-auto animate-fade-up font-normal text-[#FAF9F6]" style={{ animationDelay: '0.2s', fontFamily: 'Lato, sans-serif' }}>
           Descubra a maior planície alagável do mundo em nosso eco lodge sustentável
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{ animationDelay: '0.4s' }}>
-          <Button 
-            size="lg"
-            className="bg-[#C97A2C] hover:brightness-[0.92] text-[#FAF9F6] py-3 px-7 text-[0.9rem] font-medium transition-all duration-300 shadow-md hover:shadow-sm uppercase tracking-[0.06em] rounded-lg"
-            style={{ 
-              fontFamily: 'Lato, sans-serif',
-              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
-            }}
-            onClick={scrollToBooking}
-          >
-            Reservar Agora
-          </Button>
-          <Button 
-            variant="outline"
-            size="lg"
-            className="border-2 border-[#FAF9F6] text-[#FAF9F6] hover:bg-[#FAF9F6] hover:text-[#064737] py-3 px-7 text-[0.9rem] font-medium transition-all duration-300 uppercase tracking-[0.06em] rounded-lg"
-            style={{ fontFamily: 'Lato, sans-serif' }}
-            onClick={() => document.getElementById('experiencias')?.scrollIntoView({ behavior: 'smooth' })}
-          >
-            Conheça as Experiências
-          </Button>
-        </div>
+
       </div>
       
       {/* Scroll Indicator */}

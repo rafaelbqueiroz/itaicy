@@ -1,0 +1,124 @@
+Melhorando o Language Switcher
+O objetivo é deixá-lo mais visível, elegante e acessível, sem cair na armadilha de usar somente bandeiras (problema de inclusão para países multilíngues, daltônicos, etc.).
+
+1. Padrão visual proposto
+Elemento	Token / estilo	Observações UI
+Ícone base	globe-01 (Lucide) 20 × 20 px	Mantém familiaridade.
+Flag-badge	Disco 16 px, radius 9999, shadow lvl-1	Usa SVG sprite otimizada; 1 px stroke sand-beige/400 para contraste em dark-mode.
+Label curto	Lato 500 0.75 rem UPPERCASE	Cód. ISO (“EN”, “ES”, “PT”) – mantém barra de menu compacta.
+Chevon	chevron-down 16 px	Rotaciona 180° em aberto, segue motion padrão.
+Popover	width 184 px, radius 8, shadow lvl-3, bg cloud-white	Foco trap + ESC fecha.
+Item de lista	32 px height, gap 8 px	Flag + idioma (ex.: 🇬🇧 EN – English). Hover bg sand-beige/200.
+
+<small>Exemplo visual (top-bar):</small>
+
+Copiar
+Editar
+|  🌐  | 🏳️‍🇧🇷  BR ▾ |
+2. Acessibilidade
+aria-label="Seleção de idioma" no botão.
+
+No popover, <ul role="listbox"> + <li role="option" aria-selected="true">.
+
+Bandeira exige aria-hidden="true"; nome completo do idioma fica visível - garante leitores de tela.
+
+3. Implementação (Next.js + Tailwind)
+3.1 Sprite de bandeiras (12 KB gzip)
+tsx
+Copiar
+Editar
+// public/flags.svg  (snippet)
+/* <symbol id="flag-en" viewBox="0 0 512 512">…</symbol> */
+3.2 Componente
+tsx
+Copiar
+Editar
+// components/ui/LocaleSwitch.tsx
+'use client';
+import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import IconGlobe from '@/icons/globe-01.svg';
+
+const LANGS = [
+  { code: 'pt', name: 'Português', flag: 'flag-br' },
+  { code: 'en', name: 'English',    flag: 'flag-en' },
+  { code: 'es', name: 'Español',    flag: 'flag-es' },
+];
+
+export default function LocaleSwitch() {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const router   = useRouter();
+  const cur      = LANGS.find(l => pathname.startsWith(`/${l.code}`)) ?? LANGS[0];
+
+  const select = (lc:string) => {
+    setOpen(false);
+    const newPath = pathname.replace(/^\/(pt|en|es)/, `/${lc}`);
+    router.push(newPath);
+  };
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen(v => !v)}
+        className="flex items-center gap-1 px-3 py-1 rounded-md hover:bg-sand-beige/200 focus-visible:outline-2"
+        aria-label="Seleção de idioma"
+      >
+        <IconGlobe className="w-5 h-5" />
+        <svg className="w-4 h-4" aria-hidden><use href={`/flags.svg#${cur.flag}`}/></svg>
+        <span className="text-xs font-medium tracking-widest">{cur.code.toUpperCase()}</span>
+        <svg className="w-3 h-3 ml-1 transition-transform"
+             style={{ transform: open ? 'rotate(180deg)' : undefined }}>
+          <use href="/icons/chevron-down.svg#icon" />
+        </svg>
+      </button>
+
+      {open && (
+        <ul role="listbox"
+            className="absolute right-0 mt-2 w-44 bg-cloud-white rounded-lg shadow-lvl3 py-1 z-50">
+          {LANGS.map(l => (
+            <li key={l.code}
+                role="option"
+                aria-selected={l.code === cur.code}
+                onClick={() => select(l.code)}
+                className="flex items-center gap-2 px-3 h-8 cursor-pointer hover:bg-sand-beige/100"
+            >
+              <svg className="w-4 h-4" aria-hidden><use href={`/flags.svg#${l.flag}`}/></svg>
+              <span className="text-sm">{l.name}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+Tailwind classes usam tokens de cor já definidos (sand-beige/200 etc.).
+Motion segue nossos princípios (120–200 ms ease).
+
+3.3 Dark-mode
+css
+Copiar
+Editar
+@media (prefers-color-scheme: dark) {
+  .locale-switch button:hover { @apply bg-pantanal-green/700; }
+  .locale-switch ul { @apply bg-pantanal-green/900 text-cloud-white; }
+}
+4. CMS / Locales
+Mantemos as 3 coleções no Supabase (locale_content.pt, .en, .es).
+
+next-intl ou next-i18next carrega traduções; chave do locale switcher atualiza cookie NEXT_LOCALE, hidrata no servidor.
+
+5. Checklist de validação
+Cenário	Resultado
+Hover + click	Popover abre e fecha suavemente, foco permanece no item selecionado
+Keyboard	Enter → abre, ↑/↓ navega, Enter seleciona, Esc fecha
+CLS	Sem layout shift (popover fora do fluxo)
+Badges retina	Flags em SVG ficam nítidas em qualquer DPI
+Mobile	Toca fora → fecha; área de toque ≥ 40 × 40 px
+
+Próximo passo
+ Adicionar flags.svg às assets.
+
+ Implementar o componente, substituir o placeholder “🌐 BR”.
+
+ Teste cross-browser + accessibility (NVDA/VoiceOver).

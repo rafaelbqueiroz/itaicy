@@ -8,7 +8,11 @@ import { useLanguage } from '@/hooks/use-language';
 import { BOOKING_EXPERIENCES, GUEST_OPTIONS } from '@/lib/constants';
 import { Calendar, Users, MapPin } from 'lucide-react';
 
-export function BookingWidget() {
+interface BookingWidgetProps {
+  variant?: 'section' | 'floating';
+}
+
+export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -37,9 +41,40 @@ export function BookingWidget() {
     }, 2000);
   };
 
+  const containerClasses = variant === 'floating' 
+    ? '-mt-22 md:-mt-16 relative z-30 max-w-4xl mx-auto px-4'
+    : 'max-w-4xl mx-auto px-4';
+
+  const sectionClasses = variant === 'floating'
+    ? ''
+    : 'bg-itaicy-cream py-24';
+
+  if (variant === 'floating') {
+    return (
+      <div className={containerClasses}>
+        <Card className="shadow-2xl max-w-[840px] mx-auto" aria-label="Formulário de reserva">
+          <div className="bg-[#D4B896] p-6 text-center">
+            <h3 className="playfair text-2xl font-semibold text-[#064737]">
+              Reserve Sua Experiência
+            </h3>
+            <p className="text-[#064737] opacity-80 mt-2">
+              Encontre as datas perfeitas para sua estadia no Pantanal
+            </p>
+          </div>
+          
+          <div className="p-8">
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {/* Same form content as below */}
+            </form>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <section id="booking-widget" className="bg-itaicy-cream py-24">
-      <div className="max-w-4xl mx-auto px-4">
+    <section id="booking-widget" className={sectionClasses}>
+      <div className={containerClasses}>
         <Card className="shadow-2xl max-w-[840px] mx-auto">
           <div className="bg-[#D4B896] p-6 text-center">
             <h3 className="playfair text-2xl font-semibold text-[#064737]">
