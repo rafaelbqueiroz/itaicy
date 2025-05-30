@@ -78,7 +78,7 @@ export function Header() {
                 key={item.name}
                 className="relative group"
                 onMouseEnter={() => item.megaMenu && setActiveDropdown(item.name)}
-                onMouseLeave={() => setActiveDropdown(null)}
+                onMouseLeave={() => !item.megaMenu && setActiveDropdown(null)}
               >
                 <Link
                   href={item.href}
@@ -93,7 +93,11 @@ export function Header() {
 
                 {/* Mega Menu */}
                 {item.megaMenu && activeDropdown === item.name && (
-                  <div className="fixed top-20 left-0 right-0 w-full shadow-lg z-50 bg-white border-t border-pantanal-green-900/10">
+                  <div 
+                    className="fixed top-20 left-0 right-0 w-full shadow-lg z-50 bg-white border-t border-pantanal-green-900/10"
+                    onMouseEnter={() => setActiveDropdown(item.name)}
+                    onMouseLeave={() => setActiveDropdown(null)}
+                  >
                     <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-4 gap-x-12 gap-y-8 py-12 items-stretch">
                       {/* Coluna 1: Lodge */}
                       <div className="flex flex-col h-full">
@@ -308,12 +312,7 @@ export function Header() {
             <LanguageSwitcher />
             <Link href="/booking">
               <Button
-                variant="outline"
-                className={`${
-                  isSticky 
-                    ? 'border-pantanal-green-900 text-pantanal-green-900 hover:bg-pantanal-green-900 hover:text-white' 
-                    : 'border-white text-white hover:bg-white hover:text-pantanal-green-900'
-                } font-light tracking-[0.08em] uppercase transition-all duration-200`}
+                className="font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-6 rounded-md transition-colors duration-150 whitespace-nowrap"
               >
                 RESERVAR
               </Button>
