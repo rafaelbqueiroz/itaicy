@@ -121,25 +121,33 @@ export function Header() {
                             ))}
                           </ul>
                         </div>
-                        <div>
-                          <h3 className="text-base font-normal text-[#064737] mb-4 tracking-wide" style={{ fontFamily: 'Lato, sans-serif' }}>
+                        <div className="col-span-3" aria-label="Planeje sua visita">
+                          <h3 className="text-[0.875rem] font-medium text-[#064737] mb-4 uppercase tracking-wide" style={{ fontFamily: 'Lato, sans-serif' }}>
                             Planeje-se
                           </h3>
-                          <ul className="space-y-2">
-                            <li><Link href="/como-chegar" className="block text-[#64748B] hover:text-[#064737] transition-colors font-normal">Como Chegar</Link></li>
-                            <li><Link href="/melhor-epoca" className="block text-[#64748B] hover:text-[#064737] transition-colors font-normal">Melhor Época</Link></li>
-                            <li><Link href="/faq" className="block text-[#64748B] hover:text-[#064737] transition-colors font-normal">FAQ</Link></li>
+                          <ul className="space-y-3">
+                            <li><Link href="/como-chegar" className="block text-[0.9375rem] text-[#64748B] hover:text-[#064737] hover:bg-[#D9CEB3] hover:rounded px-2 py-1 transition-all duration-150 font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Como Chegar</Link></li>
+                            <li><Link href="/melhor-epoca" className="block text-[0.9375rem] text-[#64748B] hover:text-[#064737] hover:bg-[#D9CEB3] hover:rounded px-2 py-1 transition-all duration-150 font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Melhor Época</Link></li>
+                            <li><Link href="/faq" className="block text-[0.9375rem] text-[#64748B] hover:text-[#064737] hover:bg-[#D9CEB3] hover:rounded px-2 py-1 transition-all duration-150 font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>FAQ</Link></li>
                           </ul>
                         </div>
-                        <div>
-                          <div className="bg-white rounded-lg p-4 shadow-md">
+                        <div className="col-span-6">
+                          <div className="bg-white rounded-lg p-6 shadow-md h-full relative overflow-hidden">
                             <img 
-                              src="https://images.unsplash.com/photo-1551969014-7d2c4786d7a6?q=80&w=240&h=160&auto=format&fit=crop" 
-                              alt="Ver onças de perto"
-                              className="w-full h-32 object-cover rounded-md mb-3"
+                              src="https://images.unsplash.com/photo-1551969014-7d2c4786d7a6?q=80&w=320&h=210&auto=format&fit=crop" 
+                              alt="Safari Fotográfico no Pantanal"
+                              className="w-full h-[210px] object-cover rounded-md mb-4"
                             />
-                            <h4 className="font-semibold text-[#064737] mb-1">Ver onças de perto</h4>
-                            <p className="text-sm text-gray-600">Experiência única no Pantanal</p>
+                            <span className="inline-block bg-[#C97A2C] text-white text-xs font-medium px-2 py-1 rounded mb-2 uppercase tracking-wide">Destaque</span>
+                            <h4 className="text-lg font-bold text-[#064737] mb-2" style={{ fontFamily: 'Playfair Display, serif' }}>Safari Fotográfico</h4>
+                            <p className="text-sm text-[#64748B] mb-4 leading-relaxed">Capture momentos únicos da vida selvagem do Pantanal com guias especializados</p>
+                            <Link 
+                              href="/experiencias/safari-fotografico" 
+                              className="inline-flex items-center text-[#C97A2C] text-sm font-medium hover:underline"
+                              onClick={() => setActiveDropdown(null)}
+                            >
+                              Saiba mais →
+                            </Link>
                           </div>
                         </div>
                       </div>
