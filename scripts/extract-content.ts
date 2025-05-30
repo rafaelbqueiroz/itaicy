@@ -378,7 +378,7 @@ class ContentExtractor {
 }
 
 // Executa se chamado diretamente
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const extractor = new ContentExtractor();
   extractor.extractAll().catch(console.error);
 }

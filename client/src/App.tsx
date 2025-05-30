@@ -17,6 +17,7 @@ import SobreNos from "@/pages/sobre-nos";
 import Galeria from "@/pages/galeria";
 import Blog from "@/pages/blog";
 import Contato from "@/pages/contato";
+import CMS from "@/pages/cms";
 
 import NotFound from "@/pages/not-found";
 
@@ -37,6 +38,7 @@ function Router() {
           <Route path="/galeria" component={Galeria} />
           <Route path="/blog" component={Blog} />
           <Route path="/contato" component={Contato} />
+          <Route path="/cms" component={CMS} />
 
           <Route component={NotFound} />
         </Switch>
