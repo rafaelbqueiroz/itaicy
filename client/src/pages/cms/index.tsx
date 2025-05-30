@@ -1,495 +1,350 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { CMSService, type Page, type Block } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { 
-  Settings, 
-  FileText, 
-  Image, 
-  Eye, 
-  Save,
-  Home,
-  Building,
-  Camera,
-  MessageSquare
-} from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { Pencil, Eye, Save, RotateCcw } from 'lucide-react';
 
-interface Block {
-  id: string;
-  type: string;
-  position: number;
-  payload: Record<string, any>;
-  published: Record<string, any> | null;
-}
-
-interface Page {
-  id: string;
-  slug: string;
-  name: string;
-  template: string;
-  blocks: Block[];
-}
-
-export default function CMS() {
-  const [pages, setPages] = useState<Page[]>([]);
+export default function CMSPage() {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [editingBlock, setEditingBlock] = useState<string | null>(null);
+  const [editedContent, setEditedContent] = useState<Record<string, any>>({});
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  // Carregar dados extraídos do export.json
-  useEffect(() => {
-    const loadCMSData = async () => {
-      try {
-        // Carregar conteúdo real extraído do site
-        const response = await fetch('/seed/export.json');
-        const exportData = await response.json();
-        
-        const loadedPages: Page[] = exportData.pages.map((page: any, pageIndex: number) => ({
-          id: `page-${pageIndex}`,
-          slug: page.slug,
-          name: page.name,
-          template: page.template,
-          blocks: page.blocks.map((block: any, blockIndex: number) => ({
-            id: `block-${pageIndex}-${blockIndex}`,
-            type: block.type,
-            position: block.position,
-            payload: block.payload,
-            published: block.payload // Inicialmente, published = payload
-          }))
-        }));
+  // Buscar todas as páginas
+  const { data: pages = [], isLoading: pagesLoading } = useQuery({
+    queryKey: ['cms-pages'],
+    queryFn: CMSService.getPages,
+  });
 
-        setPages(loadedPages);
-        setSelectedPage(loadedPages[0]);
-      } catch (error) {
-        console.error('Erro ao carregar dados do CMS:', error);
-      }
-    };
+  // Buscar blocos da página selecionada
+  const { data: pageWithBlocks, isLoading: blocksLoading } = useQuery({
+    queryKey: ['cms-page-blocks', selectedPage?.slug],
+    queryFn: () => selectedPage ? CMSService.getPageWithBlocks(selectedPage.slug) : null,
+    enabled: !!selectedPage,
+  });
 
-    loadCMSData();
-  }, []);
+  // Mutação para atualizar bloco
+  const updateBlockMutation = useMutation({
+    mutationFn: ({ blockId, payload }: { blockId: string; payload: Record<string, any> }) =>
+      CMSService.updateBlock(blockId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cms-page-blocks'] });
+      setEditingBlock(null);
+      setEditedContent({});
+      toast({ title: 'Bloco atualizado com sucesso!' });
+    },
+    onError: (error) => {
+      toast({ 
+        title: 'Erro ao atualizar bloco',
+        description: error.message,
+        variant: 'destructive'
+      });
+    },
+  });
 
-  const updateBlockField = (blockId: string, field: string, value: any) => {
-    if (!selectedPage) return;
+  // Mutação para publicar bloco
+  const publishBlockMutation = useMutation({
+    mutationFn: (blockId: string) => CMSService.publishBlock(blockId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cms-page-blocks'] });
+      toast({ title: 'Bloco publicado com sucesso!' });
+    },
+  });
 
-    const updatedBlocks = selectedPage.blocks.map(block => {
-      if (block.id === blockId) {
-        return {
-          ...block,
-          payload: {
-            ...block.payload,
-            [field]: value
-          }
-        };
-      }
-      return block;
-    });
+  // Mutação para publicar página completa
+  const publishPageMutation = useMutation({
+    mutationFn: (pageId: string) => CMSService.publishPage(pageId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cms-page-blocks'] });
+      toast({ title: 'Página publicada com sucesso!' });
+    },
+  });
 
-    setSelectedPage({
-      ...selectedPage,
-      blocks: updatedBlocks
-    });
-
-    setHasUnsavedChanges(true);
+  const handleEditBlock = (block: Block) => {
+    setEditingBlock(block.id);
+    setEditedContent(block.payload);
   };
 
-  const updateNestedField = (blockId: string, parentField: string, childField: string, value: any) => {
-    if (!selectedPage) return;
-
-    const updatedBlocks = selectedPage.blocks.map(block => {
-      if (block.id === blockId) {
-        return {
-          ...block,
-          payload: {
-            ...block.payload,
-            [parentField]: {
-              ...block.payload[parentField],
-              [childField]: value
-            }
-          }
-        };
-      }
-      return block;
-    });
-
-    setSelectedPage({
-      ...selectedPage,
-      blocks: updatedBlocks
-    });
-
-    setHasUnsavedChanges(true);
+  const handleSaveBlock = (blockId: string) => {
+    updateBlockMutation.mutate({ blockId, payload: editedContent });
   };
 
-  const publishChanges = () => {
-    if (!selectedPage) return;
-
-    const updatedBlocks = selectedPage.blocks.map(block => ({
-      ...block,
-      published: { ...block.payload }
-    }));
-
-    setSelectedPage({
-      ...selectedPage,
-      blocks: updatedBlocks
-    });
-
-    setHasUnsavedChanges(false);
-    
-    console.log('Publicando alterações para:', selectedPage.slug);
+  const handleCancelEdit = () => {
+    setEditingBlock(null);
+    setEditedContent({});
   };
 
   const renderBlockEditor = (block: Block) => {
+    const isEditing = editingBlock === block.id;
+    const content = isEditing ? editedContent : block.payload;
+
+    return (
+      <Card key={block.id} className="mb-4">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-lg">{block.type}</CardTitle>
+              <CardDescription>Posição: {block.position}</CardDescription>
+            </div>
+            <div className="flex gap-2">
+              <Badge variant={block.published ? 'default' : 'secondary'}>
+                {block.published ? 'Publicado' : 'Rascunho'}
+              </Badge>
+              {isEditing ? (
+                <>
+                  <Button 
+                    size="sm" 
+                    onClick={() => handleSaveBlock(block.id)}
+                    disabled={updateBlockMutation.isPending}
+                  >
+                    <Save className="w-4 h-4 mr-1" />
+                    Salvar
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={handleCancelEdit}>
+                    <RotateCcw className="w-4 h-4 mr-1" />
+                    Cancelar
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button size="sm" variant="outline" onClick={() => handleEditBlock(block)}>
+                    <Pencil className="w-4 h-4 mr-1" />
+                    Editar
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    onClick={() => publishBlockMutation.mutate(block.id)}
+                    disabled={publishBlockMutation.isPending}
+                  >
+                    <Eye className="w-4 h-4 mr-1" />
+                    Publicar
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {renderBlockContent(block, content, isEditing)}
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const renderBlockContent = (block: Block, content: any, isEditing: boolean) => {
     switch (block.type) {
-      case 'hero-video':
+      case 'hero':
         return (
-          <Card key={block.id} className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Camera className="h-5 w-5" />
-                Hero Principal com Vídeo
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Título Principal</label>
-                <input
-                  type="text"
-                  value={block.payload.title || ''}
-                  onChange={(e) => updateBlockField(block.id, 'title', e.target.value)}
-                  className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
-                  placeholder="Título principal da página"
+          <div className="space-y-4">
+            <div>
+              <Label>Título Principal</Label>
+              {isEditing ? (
+                <Input
+                  value={content.title || ''}
+                  onChange={(e) => setEditedContent({...editedContent, title: e.target.value})}
                 />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2">Subtítulo</label>
-                <textarea
-                  value={block.payload.subtitle || ''}
-                  onChange={(e) => updateBlockField(block.id, 'subtitle', e.target.value)}
-                  className="w-full p-3 border rounded-md h-24 focus:ring-2 focus:ring-blue-500"
-                  placeholder="Descrição que aparece abaixo do título"
+              ) : (
+                <p className="mt-1 font-semibold">{content.title}</p>
+              )}
+            </div>
+            <div>
+              <Label>Subtítulo</Label>
+              {isEditing ? (
+                <Textarea
+                  value={content.subtitle || ''}
+                  onChange={(e) => setEditedContent({...editedContent, subtitle: e.target.value})}
                 />
+              ) : (
+                <p className="mt-1">{content.subtitle}</p>
+              )}
+            </div>
+            {content.cta && (
+              <div>
+                <Label>Chamada para Ação</Label>
+                {isEditing ? (
+                  <Input
+                    value={content.cta || ''}
+                    onChange={(e) => setEditedContent({...editedContent, cta: e.target.value})}
+                  />
+                ) : (
+                  <p className="mt-1 text-blue-600">{content.cta}</p>
+                )}
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Botão Primário - Texto</label>
-                  <input
-                    type="text"
-                    value={block.payload.primaryCTA?.label || ''}
-                    onChange={(e) => updateNestedField(block.id, 'primaryCTA', 'label', e.target.value)}
-                    className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-2">Botão Primário - Link</label>
-                  <input
-                    type="text"
-                    value={block.payload.primaryCTA?.href || ''}
-                    onChange={(e) => updateNestedField(block.id, 'primaryCTA', 'href', e.target.value)}
-                    className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Botão Secundário - Texto</label>
-                  <input
-                    type="text"
-                    value={block.payload.secondaryCTA?.label || ''}
-                    onChange={(e) => updateNestedField(block.id, 'secondaryCTA', 'label', e.target.value)}
-                    className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-2">Botão Secundário - Link</label>
-                  <input
-                    type="text"
-                    value={block.payload.secondaryCTA?.href || ''}
-                    onChange={(e) => updateNestedField(block.id, 'secondaryCTA', 'href', e.target.value)}
-                    className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            )}
+          </div>
         );
 
-      case 'stats-ribbon':
+      case 'text':
         return (
-          <Card key={block.id} className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
-                Faixa de Estatísticas
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {block.payload.stats?.map((stat: any, index: number) => (
-                  <div key={index} className="border rounded-lg p-4 bg-gray-50">
-                    <h4 className="font-medium mb-3">Estatística {index + 1}</h4>
-                    
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">Valor</label>
-                        <input
-                          type="text"
-                          value={stat.value || ''}
-                          onChange={(e) => {
-                            const newStats = [...block.payload.stats];
-                            newStats[index] = { ...stat, value: e.target.value };
-                            updateBlockField(block.id, 'stats', newStats);
-                          }}
-                          className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-                          placeholder="Ex: 4.700, 100%, 127"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium mb-1">Título</label>
-                        <input
-                          type="text"
-                          value={stat.label || ''}
-                          onChange={(e) => {
-                            const newStats = [...block.payload.stats];
-                            newStats[index] = { ...stat, label: e.target.value };
-                            updateBlockField(block.id, 'stats', newStats);
-                          }}
-                          className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-                          placeholder="Ex: Espécies catalogadas"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium mb-1">Descrição</label>
-                        <input
-                          type="text"
-                          value={stat.description || ''}
-                          onChange={(e) => {
-                            const newStats = [...block.payload.stats];
-                            newStats[index] = { ...stat, description: e.target.value };
-                            updateBlockField(block.id, 'stats', newStats);
-                          }}
-                          className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-                          placeholder="Ex: Biodiversidade registrada"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <div>
+            <Label>Conteúdo</Label>
+            {isEditing ? (
+              <Textarea
+                value={content.content || ''}
+                onChange={(e) => setEditedContent({...editedContent, content: e.target.value})}
+                rows={6}
+              />
+            ) : (
+              <p className="mt-1 whitespace-pre-wrap">{content.content}</p>
+            )}
+          </div>
         );
 
-      case 'split-block':
+      case 'stats':
         return (
-          <Card key={block.id} className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Bloco 50/50 - {block.payload.title || 'Sem título'}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Título</label>
-                <input
-                  type="text"
-                  value={block.payload.title || ''}
-                  onChange={(e) => updateBlockField(block.id, 'title', e.target.value)}
-                  className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
-                />
+          <div className="grid grid-cols-2 gap-4">
+            {content.items?.map((item: any, index: number) => (
+              <div key={index} className="text-center">
+                <div className="text-2xl font-bold text-green-600">{item.value}</div>
+                <div className="text-sm text-gray-600">{item.label}</div>
               </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2">Subtítulo</label>
-                <input
-                  type="text"
-                  value={block.payload.subtitle || ''}
-                  onChange={(e) => updateBlockField(block.id, 'subtitle', e.target.value)}
-                  className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2">Descrição</label>
-                <textarea
-                  value={block.payload.description || ''}
-                  onChange={(e) => updateBlockField(block.id, 'description', e.target.value)}
-                  className="w-full p-3 border rounded-md h-24 focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Botão Primário - Texto</label>
-                  <input
-                    type="text"
-                    value={block.payload.primaryCTA?.label || ''}
-                    onChange={(e) => updateNestedField(block.id, 'primaryCTA', 'label', e.target.value)}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-2">Botão Primário - Link</label>
-                  <input
-                    type="text"
-                    value={block.payload.primaryCTA?.href || ''}
-                    onChange={(e) => updateNestedField(block.id, 'primaryCTA', 'href', e.target.value)}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            ))}
+          </div>
         );
 
       default:
         return (
-          <Card key={block.id} className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                {block.type}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">
-                Editor para {block.type} em desenvolvimento. Dados preservados.
-              </p>
-              <pre className="mt-2 p-2 bg-gray-100 rounded text-xs overflow-auto">
-                {JSON.stringify(block.payload, null, 2)}
+          <div>
+            <Label>Dados JSON</Label>
+            {isEditing ? (
+              <Textarea
+                value={JSON.stringify(content, null, 2)}
+                onChange={(e) => {
+                  try {
+                    const parsed = JSON.parse(e.target.value);
+                    setEditedContent(parsed);
+                  } catch {}
+                }}
+                rows={10}
+                className="font-mono text-sm"
+              />
+            ) : (
+              <pre className="mt-1 text-sm bg-gray-100 p-3 rounded overflow-auto">
+                {JSON.stringify(content, null, 2)}
               </pre>
-            </CardContent>
-          </Card>
+            )}
+          </div>
         );
     }
   };
 
+  if (pagesLoading) {
+    return <div className="p-8">Carregando páginas...</div>;
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b shadow-sm">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-bold text-gray-900">CMS Itaicy</h1>
-            {selectedPage && (
-              <Badge variant="outline">
-                Editando: {selectedPage.name}
-              </Badge>
-            )}
-            {hasUnsavedChanges && (
-              <Badge variant="destructive">
-                Alterações não salvas
-              </Badge>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => window.open(`/${selectedPage?.slug || ''}`, '_blank')}
-            >
-              <Eye className="h-4 w-4 mr-2" />
-              Preview
-            </Button>
-            <Button
-              onClick={publishChanges}
-              disabled={!hasUnsavedChanges}
-              className="bg-green-600 hover:bg-green-700"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              Publicar
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      <div className="flex h-[calc(100vh-80px)]">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white border-r overflow-y-auto">
-          <div className="p-4">
-            <h2 className="font-semibold text-gray-900 mb-4">Páginas do Site</h2>
-            <nav className="space-y-1">
-              {pages.map((page) => (
-                <button
-                  key={page.id}
-                  onClick={() => setSelectedPage(page)}
-                  className={`w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg transition-colors ${
-                    selectedPage?.id === page.id
-                      ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                      : 'hover:bg-gray-50'
-                  }`}
-                >
-                  {page.slug === 'home' ? (
-                    <Home className="h-4 w-4" />
-                  ) : page.slug === 'acomodacoes' ? (
-                    <Building className="h-4 w-4" />
-                  ) : (
-                    <FileText className="h-4 w-4" />
-                  )}
-                  {page.name}
-                  <Badge variant="secondary" className="ml-auto text-xs">
-                    {page.blocks.length}
-                  </Badge>
-                </button>
-              ))}
-            </nav>
-
-            <Separator className="my-6" />
-
-            <h2 className="font-semibold text-gray-900 mb-4">Ferramentas</h2>
-            <nav className="space-y-1">
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:bg-gray-50">
-                <Image className="h-4 w-4" />
-                Biblioteca de Mídia
-              </button>
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:bg-gray-50">
-                <Settings className="h-4 w-4" />
-                SEO
-              </button>
-            </nav>
-          </div>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-6">
-          {selectedPage ? (
-            <div>
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                  {selectedPage.name}
-                </h2>
-                <p className="text-gray-600">
-                  Editando /{selectedPage.slug} • Template: {selectedPage.template} • {selectedPage.blocks.length} blocos
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                {selectedPage.blocks
-                  .sort((a, b) => a.position - b.position)
-                  .map(renderBlockEditor)}
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center">
-                <FileText className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Selecione uma página
-                </h3>
-                <p className="text-gray-600">
-                  Escolha uma página na barra lateral para começar a editar
-                </p>
-              </div>
-            </div>
-          )}
-        </main>
+    <div className="container mx-auto p-6">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">CMS - Itaicy Pantanal Eco Lodge</h1>
+        <p className="text-gray-600">Gerencie o conteúdo do website</p>
       </div>
+
+      <Tabs defaultValue="pages" className="w-full">
+        <TabsList className="mb-6">
+          <TabsTrigger value="pages">Páginas</TabsTrigger>
+          <TabsTrigger value="media">Mídia</TabsTrigger>
+          <TabsTrigger value="settings">Configurações</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="pages">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Lista de Páginas */}
+            <div className="lg:col-span-1">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Páginas</CardTitle>
+                  <CardDescription>Selecione uma página para editar</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {pages.map((page) => (
+                    <Button
+                      key={page.id}
+                      variant={selectedPage?.id === page.id ? 'default' : 'outline'}
+                      className="w-full justify-start"
+                      onClick={() => setSelectedPage(page)}
+                    >
+                      {page.name}
+                    </Button>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Editor de Blocos */}
+            <div className="lg:col-span-2">
+              {selectedPage ? (
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold">{selectedPage.name}</h2>
+                    <Button
+                      onClick={() => publishPageMutation.mutate(selectedPage.id)}
+                      disabled={publishPageMutation.isPending}
+                    >
+                      Publicar Página Completa
+                    </Button>
+                  </div>
+
+                  {blocksLoading ? (
+                    <div>Carregando blocos...</div>
+                  ) : pageWithBlocks?.blocks.length ? (
+                    <div>
+                      {pageWithBlocks.blocks.map(renderBlockEditor)}
+                    </div>
+                  ) : (
+                    <Card>
+                      <CardContent className="pt-6">
+                        <p className="text-center text-gray-500">
+                          Nenhum bloco encontrado para esta página
+                        </p>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              ) : (
+                <Card>
+                  <CardContent className="pt-6">
+                    <p className="text-center text-gray-500">
+                      Selecione uma página para começar a editar
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="media">
+          <Card>
+            <CardHeader>
+              <CardTitle>Biblioteca de Mídia</CardTitle>
+              <CardDescription>Gerencie imagens e vídeos do site</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-500">Funcionalidade de mídia em desenvolvimento...</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="settings">
+          <Card>
+            <CardHeader>
+              <CardTitle>Configurações Globais</CardTitle>
+              <CardDescription>Configurações gerais do website</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-500">Configurações em desenvolvimento...</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
