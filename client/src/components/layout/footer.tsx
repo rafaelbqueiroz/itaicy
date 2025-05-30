@@ -63,7 +63,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link 
                     href={link.href}
-                    className="hover:text-[#1b5048] transition-colors text-gray-300"
+                    className="hover:text-[#1b5048] transition-colors text-[#1b5038]"
                   >
                     {link.name}
                   </Link>
@@ -103,13 +103,13 @@ export function Footer() {
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link 
               href="/termos" 
-              className="hover:text-[#1b5048] text-sm transition-colors text-gray-300"
+              className="hover:text-[#1b5048] text-sm transition-colors text-[#1b5038]"
             >
               {t('footer.terms')}
             </Link>
             <Link 
               href="/privacidade" 
-              className="hover:text-[#1b5048] text-sm transition-colors text-gray-300"
+              className="hover:text-[#1b5048] text-sm transition-colors text-[#1b5038]"
             >
               {t('footer.privacy')}
             </Link>
