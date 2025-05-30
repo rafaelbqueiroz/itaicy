@@ -94,7 +94,7 @@ export function Header() {
                 {/* Mega Menu */}
                 {item.megaMenu && activeDropdown === item.name && (
                   <div 
-                    className="fixed top-20 left-0 right-0 w-full shadow-lg z-50 bg-white border-t border-pantanal-green-900/10"
+                    className="fixed top-20 left-0 right-0 w-full shadow-lg z-50 bg-black/80 backdrop-blur-sm border-t border-white/20"
                     onMouseEnter={() => setActiveDropdown(item.name)}
                     onMouseLeave={() => setActiveDropdown(null)}
                   >
@@ -102,12 +102,12 @@ export function Header() {
                       {/* Coluna 1: Lodge */}
                       <div className="flex flex-col h-full">
                         <div className="flex-1">
-                          <h3 className="font-playfair text-xl text-pantanal-green-900 mb-4">Lodge</h3>
+                          <h3 className="font-playfair text-xl text-white mb-4">Lodge</h3>
                           <ul className="space-y-3 mb-8">
                             <li>
                               <Link 
                                 href="/acomodacoes" 
-                                className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                                className="text-white/80 hover:text-sunset-amber-400 transition-colors" 
                                 onClick={() => setActiveDropdown(null)}
                               >
                                 Acomodações
@@ -116,7 +116,7 @@ export function Header() {
                             <li>
                               <Link 
                                 href="/gastronomia" 
-                                className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                                className="text-white/80 hover:text-sunset-amber-400 transition-colors" 
                                 onClick={() => setActiveDropdown(null)}
                               >
                                 Gastronomia
@@ -145,12 +145,12 @@ export function Header() {
                       {/* Coluna 2: Experiências */}
                       <div className="flex flex-col h-full">
                         <div className="flex-1">
-                          <h3 className="font-playfair text-xl text-pantanal-green-900 mb-4">Experiências</h3>
+                          <h3 className="font-playfair text-xl text-white mb-4">Experiências</h3>
                           <ul className="space-y-3 mb-8">
                             <li>
                               <Link 
                                 href="/experiencias/pesca" 
-                                className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                                className="text-white/80 hover:text-sunset-amber-400 transition-colors" 
                                 onClick={() => setActiveDropdown(null)}
                               >
                                 Pesca Esportiva
@@ -159,7 +159,7 @@ export function Header() {
                             <li>
                               <Link 
                                 href="/experiencias/safari" 
-                                className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                                className="text-white/80 hover:text-sunset-amber-400 transition-colors" 
                                 onClick={() => setActiveDropdown(null)}
                               >
                                 Safáris & Birdwatching
@@ -168,7 +168,7 @@ export function Header() {
                             <li>
                               <Link 
                                 href="/experiencias/pacotes" 
-                                className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                                className="text-white/80 hover:text-sunset-amber-400 transition-colors" 
                                 onClick={() => setActiveDropdown(null)}
                               >
                                 Pacotes & Tarifas
@@ -197,12 +197,12 @@ export function Header() {
                       {/* Coluna 3: Blog */}
                       <div className="flex flex-col h-full">
                         <div className="flex-1">
-                          <h3 className="font-playfair text-xl text-pantanal-green-900 mb-4">Blog</h3>
+                          <h3 className="font-playfair text-xl text-white mb-4">Blog</h3>
                           <ul className="space-y-3 mb-8">
                             <li>
                               <Link 
                                 href="/blog/natureza" 
-                                className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                                className="text-white/80 hover:text-sunset-amber-400 transition-colors" 
                                 onClick={() => setActiveDropdown(null)}
                               >
                                 Natureza
@@ -211,7 +211,7 @@ export function Header() {
                             <li>
                               <Link 
                                 href="/blog/aventura" 
-                                className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                                className="text-white/80 hover:text-sunset-amber-400 transition-colors" 
                                 onClick={() => setActiveDropdown(null)}
                               >
                                 Aventura
@@ -220,7 +220,7 @@ export function Header() {
                             <li>
                               <Link 
                                 href="/blog/sustentabilidade" 
-                                className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                                className="text-white/80 hover:text-sunset-amber-400 transition-colors" 
                                 onClick={() => setActiveDropdown(null)}
                               >
                                 Sustentabilidade
@@ -249,33 +249,33 @@ export function Header() {
                       {/* Coluna 4: Planejamento */}
                       <div className="flex flex-col h-full">
                         <div className="flex-1">
-                          <h3 className="font-playfair text-xl text-pantanal-green-900 mb-4">Planejamento</h3>
+                          <h3 className="font-playfair text-xl text-white mb-4">Planejamento</h3>
                           <ul className="space-y-3 mb-8">
                             <li className="flex items-center gap-2">
-                              <MapPin className="h-4 w-4 text-pantanal-green-900" />
+                              <MapPin className="h-4 w-4 text-white" />
                               <Link 
                                 href="/como-chegar" 
-                                className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                                className="text-white/80 hover:text-sunset-amber-400 transition-colors" 
                                 onClick={() => setActiveDropdown(null)}
                               >
                                 Como chegar
                               </Link>
                             </li>
                             <li className="flex items-center gap-2">
-                              <CalendarDays className="h-4 w-4 text-pantanal-green-900" />
+                              <CalendarDays className="h-4 w-4 text-white" />
                               <Link 
                                 href="/melhor-epoca" 
-                                className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                                className="text-white/80 hover:text-sunset-amber-400 transition-colors" 
                                 onClick={() => setActiveDropdown(null)}
                               >
                                 Melhor época
                               </Link>
                             </li>
                             <li className="flex items-center gap-2">
-                              <HelpCircle className="h-4 w-4 text-pantanal-green-900" />
+                              <HelpCircle className="h-4 w-4 text-white" />
                               <Link 
                                 href="/faq" 
-                                className="text-river-slate-800 hover:text-pantanal-green-700 transition-colors" 
+                                className="text-white/80 hover:text-sunset-amber-400 transition-colors" 
                                 onClick={() => setActiveDropdown(null)}
                               >
                                 FAQ
