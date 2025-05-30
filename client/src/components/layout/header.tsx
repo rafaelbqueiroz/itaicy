@@ -176,14 +176,11 @@ export function Header() {
             {/* Reserve button */}
             <Link href="/reservar">
               <Button 
-                variant={isSticky ? "default" : "ghost"}
-                size="sm"
-                className={`hidden lg:inline-flex items-center font-semibold tracking-widest uppercase py-2 px-5 rounded-md shadow-md transition-colors duration-150 ${
+                className={`hidden lg:inline-flex items-center font-lato font-medium text-sm uppercase tracking-wide py-3 px-6 rounded-md transition-colors duration-150 ${
                   isSticky 
-                    ? 'bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 shadow-xl' 
+                    ? 'bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0' 
                     : 'bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0'
                 }`}
-                style={{ fontFamily: 'Lato, sans-serif' }}
               >
                 RESERVAR
               </Button>

@@ -81,7 +81,7 @@ export function BookingWidget({ variant = 'section' }: BookingWidgetProps) {
             <Button 
               type="submit" 
               disabled={isLoading}
-              className="order-last font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-6 rounded-md transition-colors duration-150 whitespace-nowrap"
+              className="ml-auto order-last font-lato font-medium text-sm uppercase tracking-wide bg-sunset-amber-600 hover:bg-sunset-amber-700 text-cloud-white-0 py-3 px-6 rounded-md transition-colors duration-150 whitespace-nowrap"
             >
               {isLoading ? 'VERIFICANDO...' : t('booking.reserve')}
             </Button>
