@@ -1,76 +1,36 @@
-import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { LanguageProvider } from "@/hooks/use-language";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-import AuthWrapper from "@/components/auth/AuthWrapper";
-import Home from "@/pages/home";
-import Experiencias from "@/pages/experiencias";
-import Lodge from "@/pages/lodge";
-import PescaEsportiva from "@/pages/pesca-esportiva";
-import Acomodacoes from "@/pages/acomodacoes";
-import Gastronomia from "@/pages/gastronomia";
-import Sustentabilidade from "@/pages/sustentabilidade";
-import SobreNos from "@/pages/sobre-nos";
-import Galeria from "@/pages/galeria";
-import Blog from "@/pages/blog";
-import Contato from "@/pages/contato";
-import CMS from "@/pages/cms";
+import { Route, Switch } from 'wouter'
+import { Header } from '@/components/layout/header'
 
-import NotFound from "@/pages/not-found";
+function HomePage() {
+  return (
+    <div className="min-h-screen bg-cloud-white-50">
+      <h1 className="text-4xl font-playfair text-pantanal-green-900 text-center pt-20">
+        Itaicy Pantanal Eco Lodge
+      </h1>
+      <p className="text-center text-river-slate-600 mt-4">
+        Uma experiência única no coração do Pantanal
+      </p>
+      <p className="text-center text-river-slate-500 mt-2 text-sm">
+        Ambiente de desenvolvimento configurado com sucesso!
+      </p>
+    </div>
+  )
+}
 
-function Router() {
+export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
-      <Switch>
-        {/* CMS protegido - SEMPRE antes das rotas públicas */}
-        <Route path="/cms">
-          <AuthWrapper>
-            <CMS />
-          </AuthWrapper>
-        </Route>
-        
-        {/* Site público - SEMPRE depois do CMS */}
-        <Route>
-          <Header />
-          <main className="flex-1">
-            <Switch>
-              <Route path="/" component={Home} />
-              <Route path="/lodge" component={Lodge} />
-              <Route path="/experiencias" component={Experiencias} />
-              <Route path="/experiencias/pesca" component={PescaEsportiva} />
-              <Route path="/acomodacoes" component={Acomodacoes} />
-              <Route path="/gastronomia" component={Gastronomia} />
-              <Route path="/sustentabilidade" component={Sustentabilidade} />
-              <Route path="/sobre-nos" component={SobreNos} />
-              <Route path="/galeria" component={Galeria} />
-              <Route path="/blog" component={Blog} />
-              <Route path="/contato" component={Contato} />
-              
-              <Route component={NotFound} />
-            </Switch>
-          </main>
-          <Footer />
-        </Route>
-      </Switch>
+      <Header />
+      <main className="flex-1">
+        <Switch>
+          <Route path="/" component={HomePage} />
+          <Route>
+            <div className="flex items-center justify-center min-h-[50vh]">
+              <p className="text-river-slate-600">Página em construção...</p>
+            </div>
+          </Route>
+        </Switch>
+      </main>
     </div>
-  );
+  )
 }
-
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </LanguageProvider>
-    </QueryClientProvider>
-  );
-}
-
-export default App;

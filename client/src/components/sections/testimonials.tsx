@@ -1,73 +1,125 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { useLanguage } from '@/hooks/use-language';
-import { Star } from 'lucide-react';
+import { useLanguage } from '@/hooks/use-language'
+import { cn } from '@/lib/utils'
+import { Star } from 'lucide-react'
 
-export function Testimonials() {
-  const { t } = useLanguage();
+interface TestimonialsProps {
+  className?: string
+}
 
-  const testimonials = [
+const testimonials = {
+  'pt-BR': [
     {
-      rating: 5,
-      text: "Guias excepcionais e experiência inesquecível no Rio Cuiabá. Pescaria incrível com toda estrutura necessária.",
-      author: "Roberto Ferreira",
-      location: "São Paulo, SP",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      name: "João Silva",
+      role: "Fotógrafo Profissional",
+      content: "Uma experiência incrível! A natureza exuberante e o conforto do lodge superaram todas as expectativas.",
+      rating: 5
     },
     {
-      rating: 5,
-      text: "O safari fotográfico superou expectativas. Onças, ariranhas e centenas de aves. Sustentabilidade admirável do projeto.",
-      author: "Ana Carolina Silva", 
-      location: "Rio de Janeiro, RJ",
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
+      name: "Maria Santos",
+      role: "Amante da Natureza",
+      content: "O lugar perfeito para se desconectar e reconectar com a natureza. A equipe é excepcional!",
+      rating: 5
     },
     {
-      rating: 5,
-      text: "Pesca esportiva excepcional! Dourados gigantes e estrutura de primeiro mundo. Voltaremos certamente.",
-      author: "Carlos Mendonça",
-      location: "Brasília, DF", 
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+      name: "Roberto Martins",
+      role: "Biólogo",
+      content: "A riqueza da fauna e flora do Pantanal é impressionante. Experiência única e inesquecível.",
+      rating: 5
+    }
+  ],
+  'en-US': [
+    {
+      name: "John Smith",
+      role: "Professional Photographer",
+      content: "An incredible experience! The lush nature and lodge comfort exceeded all expectations.",
+      rating: 5
     },
-  ];
+    {
+      name: "Mary Santos",
+      role: "Nature Lover",
+      content: "The perfect place to disconnect and reconnect with nature. The staff is exceptional!",
+      rating: 5
+    },
+    {
+      name: "Robert Martin",
+      role: "Biologist",
+      content: "The richness of Pantanal's fauna and flora is impressive. Unique and unforgettable experience.",
+      rating: 5
+    }
+  ],
+  'es-ES': [
+    {
+      name: "Juan Silva",
+      role: "Fotógrafo Profesional",
+      content: "¡Una experiencia increíble! La exuberante naturaleza y la comodidad del lodge superaron todas las expectativas.",
+      rating: 5
+    },
+    {
+      name: "María Santos",
+      role: "Amante de la Naturaleza",
+      content: "El lugar perfecto para desconectarse y reconectarse con la naturaleza. ¡El equipo es excepcional!",
+      rating: 5
+    },
+    {
+      name: "Roberto Martínez",
+      role: "Biólogo",
+      content: "La riqueza de la fauna y flora del Pantanal es impresionante. Experiencia única e inolvidable.",
+      rating: 5
+    }
+  ]
+}
+
+export function Testimonials({ className }: TestimonialsProps) {
+  const { language } = useLanguage()
+  const reviews = testimonials[language] || testimonials['pt-BR']
 
   return (
-    <section className="py-20 bg-itaicy-cream">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="playfair text-4xl md:text-5xl font-bold text-itaicy-charcoal mb-6">
-            {t('testimonials.title')}
-          </h2>
-        </div>
-        
-        <div className="space-y-8">
-          {testimonials.map((testimonial, index) => (
-            <Card key={index} className="shadow-lg border-0">
-              <CardContent className="p-8">
-                <div className="flex items-center mb-4">
-                  <div className="flex text-itaicy-secondary">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-current" />
-                    ))}
-                  </div>
-                </div>
-                <blockquote className="text-lg text-gray-700 italic mb-6 leading-relaxed">
-                  "{testimonial.text}"
-                </blockquote>
-                <div className="flex items-center">
-                  <img 
-                    src={testimonial.avatar} 
-                    alt={testimonial.author}
-                    className="w-12 h-12 rounded-full object-cover mr-4"
-                  />
-                  <div>
-                    <p className="font-semibold text-itaicy-charcoal">{testimonial.author}</p>
-                    <p className="text-gray-600">{testimonial.location}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+    <section className={cn("container mx-auto px-4", className)}>
+      <div className="text-center mb-12">
+        <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-4 text-pantanal-green-900">
+          {language === 'en-US' ? 'Guest Reviews' : 
+           language === 'es-ES' ? 'Opiniones de Huéspedes' : 
+           'Avaliações dos Hóspedes'}
+        </h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {reviews.map((review, index) => (
+          <div
+            key={index}
+            className="bg-cloud-white-0 p-6 rounded-lg shadow-lg"
+          >
+            {/* Rating */}
+            <div className="flex items-center mb-4">
+              {Array.from({ length: review.rating }).map((_, i) => (
+                <Star
+                  key={i}
+                  className="w-5 h-5 text-sunset-amber-500 fill-sunset-amber-500"
+                />
+              ))}
+            </div>
+
+            {/* Content */}
+            <blockquote>
+              <p className="text-river-slate-700 mb-4 italic">
+                "{review.content}"
+              </p>
+            </blockquote>
+
+            {/* Author */}
+            <div>
+              <cite className="not-italic">
+                <span className="font-semibold text-pantanal-green-900 block">
+                  {review.name}
+                </span>
+                <span className="text-sm text-river-slate-600">
+                  {review.role}
+                </span>
+              </cite>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
-  );
+  )
 }

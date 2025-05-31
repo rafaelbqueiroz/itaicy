@@ -1,121 +1,198 @@
-import { Link } from 'wouter';
-import { useLanguage } from '@/hooks/use-language';
-import { Instagram, Facebook, Youtube, Phone, Mail, MapPin } from 'lucide-react';
-import logoPrimary from '@assets/itaicy-wordmark-primary.png';
+import { Link } from 'wouter'
+import { useLanguage } from '@/hooks/use-language'
+import { Instagram, Facebook, Twitter } from 'lucide-react'
+
+const navigation = {
+  'pt-BR': {
+    sections: [
+      {
+        title: 'Sobre',
+        links: [
+          { name: 'O Lodge', href: '/lodge' },
+          { name: 'Experiências', href: '/experiencias' },
+          { name: 'Contato', href: '/contato' },
+        ],
+      },
+      {
+        title: 'Reservas',
+        links: [
+          { name: 'Disponibilidade', href: '/booking' },
+          { name: 'Política de cancelamento', href: '/politica-cancelamento' },
+          { name: 'FAQ', href: '/faq' },
+        ],
+      },
+    ],
+    contact: {
+      title: 'Contato',
+      email: 'contato@itaicy.com.br',
+      phone: '+55 67 99999-9999',
+      address: 'Estrada do Pantanal, KM 42, Miranda - MS',
+    },
+  },
+  'en-US': {
+    sections: [
+      {
+        title: 'About',
+        links: [
+          { name: 'The Lodge', href: '/lodge' },
+          { name: 'Experiences', href: '/experiences' },
+          { name: 'Contact', href: '/contact' },
+        ],
+      },
+      {
+        title: 'Bookings',
+        links: [
+          { name: 'Availability', href: '/booking' },
+          { name: 'Cancellation Policy', href: '/cancellation-policy' },
+          { name: 'FAQ', href: '/faq' },
+        ],
+      },
+    ],
+    contact: {
+      title: 'Contact',
+      email: 'contact@itaicy.com.br',
+      phone: '+55 67 99999-9999',
+      address: 'Pantanal Road, KM 42, Miranda - MS',
+    },
+  },
+  'es-ES': {
+    sections: [
+      {
+        title: 'Acerca',
+        links: [
+          { name: 'El Lodge', href: '/lodge' },
+          { name: 'Experiencias', href: '/experiencias' },
+          { name: 'Contacto', href: '/contacto' },
+        ],
+      },
+      {
+        title: 'Reservas',
+        links: [
+          { name: 'Disponibilidad', href: '/booking' },
+          { name: 'Política de cancelación', href: '/politica-cancelacion' },
+          { name: 'FAQ', href: '/faq' },
+        ],
+      },
+    ],
+    contact: {
+      title: 'Contacto',
+      email: 'contacto@itaicy.com.br',
+      phone: '+55 67 99999-9999',
+      address: 'Carretera del Pantanal, KM 42, Miranda - MS',
+    },
+  },
+}
+
+const socialLinks = [
+  {
+    name: 'Instagram',
+    href: 'https://instagram.com',
+    icon: Instagram,
+  },
+  {
+    name: 'Facebook',
+    href: 'https://facebook.com',
+    icon: Facebook,
+  },
+  {
+    name: 'Twitter',
+    href: 'https://twitter.com',
+    icon: Twitter,
+  },
+]
 
 export function Footer() {
-  const { t } = useLanguage();
-
-  const quickLinks = [
-    { name: t('nav.experiencias'), href: '/experiencias' },
-    { name: t('nav.acomodacoes'), href: '/acomodacoes' },
-    { name: t('nav.galeria'), href: '/galeria' },
-    { name: t('nav.blog'), href: '/blog' },
-    { name: t('nav.contato'), href: '/contato' },
-  ];
+  const { language } = useLanguage()
+  const content = navigation[language] || navigation['pt-BR']
+  const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-itaicy-charcoal text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Logo & Description */}
-          <div className="lg:col-span-2">
-            <img 
-              src={logoPrimary} 
-              alt="Itaicy Pantanal Eco Lodge" 
-              className="h-14 w-auto mb-6"
-            />
-            <p className="max-w-md leading-relaxed mb-6 text-river-slate-800">
-              {t('footer.description')}
-            </p>
-            
-            {/* Social Links */}
-            <div className="flex space-x-4">
-              <a 
-                href="#" 
-                className="w-10 h-10 bg-river-slate-800 rounded-full flex items-center justify-center hover:bg-pantanal-green-700 transition-colors duration-200 text-white"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a 
-                href="#" 
-                className="w-10 h-10 bg-river-slate-800 rounded-full flex items-center justify-center hover:bg-pantanal-green-700 transition-colors duration-200 text-white"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a 
-                href="#" 
-                className="w-10 h-10 bg-river-slate-800 rounded-full flex items-center justify-center hover:bg-pantanal-green-700 transition-colors duration-200 text-white"
-                aria-label="YouTube"
-              >
-                <Youtube className="h-5 w-5" />
-              </a>
-            </div>
-          </div>
-          
-          {/* Quick Links */}
+    <footer className="bg-river-slate-900 text-cloud-white-0">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Logo */}
           <div>
-            <h4 className="font-semibold text-lg mb-4 playfair text-river-slate-800">{t('footer.quickLinks')}</h4>
-            <ul className="space-y-2">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
-                  <Link 
-                    href={link.href}
-                    className="hover:text-pantanal-green-700 transition-colors duration-200 text-river-slate-800"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <Link href="/">
+              <a className="flex items-center">
+                <img
+                  className="h-8 w-auto"
+                  src="/logo-white.svg"
+                  alt="Itaicy Eco Lodge"
+                />
+              </a>
+            </Link>
           </div>
-          
+
+          {/* Navigation Sections */}
+          {content.sections.map((section) => (
+            <div key={section.title}>
+              <h3 className="font-playfair text-lg font-medium mb-4">
+                {section.title}
+              </h3>
+              <ul className="space-y-3">
+                {section.links.map((link) => (
+                  <li key={link.name}>
+                    <Link href={link.href}>
+                      <a className="text-river-slate-300 hover:text-cloud-white-0 text-sm">
+                        {link.name}
+                      </a>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
           {/* Contact Info */}
           <div>
-            <h4 className="font-semibold text-lg mb-4 playfair text-river-slate-800">{t('footer.contact')}</h4>
-            <ul className="space-y-3 text-river-slate-800">
-              <li className="flex items-center">
-                <Phone className="w-4 h-4 mr-3 flex-shrink-0" />
-                <span>+55 (65) 3000-0000</span>
+            <h3 className="font-playfair text-lg font-medium mb-4">
+              {content.contact.title}
+            </h3>
+            <ul className="space-y-3 text-sm">
+              <li>
+                <a
+                  href={`mailto:${content.contact.email}`}
+                  className="text-river-slate-300 hover:text-cloud-white-0"
+                >
+                  {content.contact.email}
+                </a>
               </li>
-              <li className="flex items-center">
-                <Mail className="w-4 h-4 mr-3 flex-shrink-0" />
-                <span>contato@itaicy.com.br</span>
+              <li>
+                <a
+                  href={`tel:${content.contact.phone}`}
+                  className="text-river-slate-300 hover:text-cloud-white-0"
+                >
+                  {content.contact.phone}
+                </a>
               </li>
-              <li className="flex items-start">
-                <MapPin className="w-4 h-4 mr-3 mt-1 flex-shrink-0" />
-                <span>
-                  Estrada do Itaicy, s/n<br />
-                  Pantanal, MT - Brasil
-                </span>
-              </li>
+              <li className="text-river-slate-300">{content.contact.address}</li>
             </ul>
           </div>
         </div>
-        
-        {/* Bottom Footer */}
-        <div className="border-t border-gray-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-river-slate-800">
-            {t('footer.rights')}
-          </p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link 
-              href="/termos" 
-              className="hover:text-pantanal-green-700 text-sm transition-colors duration-200 text-river-slate-800"
-            >
-              {t('footer.terms')}
-            </Link>
-            <Link 
-              href="/privacidade" 
-              className="hover:text-pantanal-green-700 text-sm transition-colors duration-200 text-river-slate-800"
-            >
-              {t('footer.privacy')}
-            </Link>
+
+        {/* Social Links and Copyright */}
+        <div className="mt-12 pt-8 border-t border-river-slate-800">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex space-x-6 mb-4 md:mb-0">
+              {socialLinks.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-river-slate-300 hover:text-cloud-white-0"
+                >
+                  <span className="sr-only">{item.name}</span>
+                  <item.icon className="h-6 w-6" />
+                </a>
+              ))}
+            </div>
+            <p className="text-river-slate-400 text-sm">
+              &copy; {currentYear} Itaicy Eco Lodge. {language === 'pt-BR' ? 'Todos os direitos reservados.' : language === 'es-ES' ? 'Todos los derechos reservados.' : 'All rights reserved.'}
+            </p>
           </div>
         </div>
       </div>
     </footer>
-  );
+  )
 }
