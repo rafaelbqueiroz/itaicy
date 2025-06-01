@@ -1,14 +1,22 @@
 {
-  "name": "rest-express",
+  "name": "itaicy-eco-lodge",
   "version": "1.0.0",
   "type": "module",
   "license": "MIT",
   "scripts": {
     "dev": "cross-env NODE_ENV=development tsx server/index.ts",
     "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "vercel:build": "vite build",
     "start": "NODE_ENV=production node dist/index.js",
+    "preview": "vite preview",
     "check": "tsc",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "static:build": "cross-env NODE_ENV=production vite build",
+    "static:preview": "vite preview --port 5173",
+    "cms:setup": "ts-node scripts/complete-setup.ts",
+    "cms:extract": "ts-node scripts/extract-site.ts",
+    "cms:seed": "ts-node scripts/seed-supabase.ts",
+    "cms:test": "ts-node scripts/test-cms.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -109,5 +117,8 @@
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

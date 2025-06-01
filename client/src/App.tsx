@@ -1,36 +1,109 @@
-import { Route, Switch } from 'wouter'
+import { Route, Switch, useLocation } from 'wouter'
+import { Suspense, lazy } from 'react'
 import { Header } from '@/components/layout/header'
+import { Footer } from '@/components/layout/footer'
+import { Loader } from '@/components/ui/loader'
 
-function HomePage() {
-  return (
-    <div className="min-h-screen bg-cloud-white-50">
-      <h1 className="text-4xl font-playfair text-pantanal-green-900 text-center pt-20">
-        Itaicy Pantanal Eco Lodge
-      </h1>
-      <p className="text-center text-river-slate-600 mt-4">
-        Uma experiência única no coração do Pantanal
-      </p>
-      <p className="text-center text-river-slate-500 mt-2 text-sm">
-        Ambiente de desenvolvimento configurado com sucesso!
-      </p>
-    </div>
-  )
-}
+// Páginas do site público
+import HomePage from '@/pages/home'
+import NotFoundPage from '@/pages/not-found'
+
+// Lazy loading para páginas públicas
+const AcomodacoesPage = lazy(() => import('@/pages/acomodacoes'))
+const ExperienciasPage = lazy(() => import('@/pages/experiencias'))
+const GaleriaPage = lazy(() => import('@/pages/galeria'))
+const BlogPage = lazy(() => import('@/pages/blog'))
+const ContatoPage = lazy(() => import('@/pages/contato'))
+const SobreNosPage = lazy(() => import('@/pages/sobre-nos'))
+const SustentabilidadePage = lazy(() => import('@/pages/sustentabilidade'))
+const GastronomiaPage = lazy(() => import('@/pages/gastronomia'))
+const PescaEsportivaPage = lazy(() => import('@/pages/pesca-esportiva'))
+const LodgePage = lazy(() => import('@/pages/lodge'))
+
+// Lazy loading para páginas do CMS
+const CMSLogin = lazy(() => import('@/pages/cms/login'))
+const CMSAdmin = lazy(() => import('@/pages/cms/admin'))
+const CMSMedia = lazy(() => import('@/pages/cms/media'))
+const PreviewPage = lazy(() => import('@/pages/preview'))
+
+// Componente de loading para Suspense
+const PageLoading = () => (
+  <div className="flex items-center justify-center min-h-[50vh]">
+    <Loader className="w-8 h-8 text-pantanal-green-700" />
+  </div>
+)
+
+// Layout para páginas públicas
+const PublicLayout = ({ children }: { children: React.ReactNode }) => (
+  <>
+    <Header />
+    <main className="flex-1">
+      <Suspense fallback={<PageLoading />}>
+        {children}
+      </Suspense>
+    </main>
+    <Footer />
+  </>
+)
+
+// Layout para páginas do CMS (sem header/footer)
+const CMSLayout = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={<PageLoading />}>
+    {children}
+  </Suspense>
+)
 
 export default function App() {
+  const [location] = useLocation()
+  
+  // Determina qual layout usar com base na URL
+  const isCMSRoute = location.startsWith('/cms')
+  const isPreviewRoute = location.startsWith('/preview')
+  
+  // Não usa layout para CMS ou preview
+  if (isCMSRoute || isPreviewRoute) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <CMSLayout>
+          <Switch>
+            {/* Rotas do CMS */}
+            <Route path="/cms/login" component={CMSLogin} />
+            <Route path="/cms/media" component={CMSMedia} />
+            <Route path="/cms/:slug?" component={CMSAdmin} />
+            
+            {/* Rota de Preview */}
+            <Route path="/preview/:slug?" component={PreviewPage} />
+            
+            {/* Fallback */}
+            <Route component={NotFoundPage} />
+          </Switch>
+        </CMSLayout>
+      </div>
+    )
+  }
+  
+  // Layout padrão para páginas públicas
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1">
+      <PublicLayout>
         <Switch>
+          {/* Rotas públicas */}
           <Route path="/" component={HomePage} />
-          <Route>
-            <div className="flex items-center justify-center min-h-[50vh]">
-              <p className="text-river-slate-600">Página em construção...</p>
-            </div>
-          </Route>
+          <Route path="/acomodacoes" component={AcomodacoesPage} />
+          <Route path="/experiencias" component={ExperienciasPage} />
+          <Route path="/galeria" component={GaleriaPage} />
+          <Route path="/blog" component={BlogPage} />
+          <Route path="/contato" component={ContatoPage} />
+          <Route path="/sobre-nos" component={SobreNosPage} />
+          <Route path="/sustentabilidade" component={SustentabilidadePage} />
+          <Route path="/gastronomia" component={GastronomiaPage} />
+          <Route path="/pesca-esportiva" component={PescaEsportivaPage} />
+          <Route path="/lodge" component={LodgePage} />
+          
+          {/* Página 404 */}
+          <Route component={NotFoundPage} />
         </Switch>
-      </main>
+      </PublicLayout>
     </div>
   )
 }
