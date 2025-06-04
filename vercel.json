@@ -1,5 +1,6 @@
 {
-  "buildCommand": "cd ItaicyEcoLodge && npm install && npm run build",
+  "version": 2,
+  "buildCommand": "chmod +x build-vercel.sh && ./build-vercel.sh",
   "outputDirectory": "ItaicyEcoLodge/dist",
   "installCommand": "cd ItaicyEcoLodge && npm install",
   "devCommand": "cd ItaicyEcoLodge && npm run dev",
@@ -21,5 +22,10 @@
   ],
   "env": {
     "NODE_ENV": "production"
+  },
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
   }
 }

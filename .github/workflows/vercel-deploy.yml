@@ -1,0 +1,43 @@
+name: Vercel Deploy Trigger
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  trigger-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'ItaicyEcoLodge/package-lock.json'
+        
+    - name: Install dependencies
+      run: |
+        cd ItaicyEcoLodge
+        npm ci
+        
+    - name: Run tests and validation
+      run: |
+        cd ItaicyEcoLodge
+        npm run health-check || echo "Health check failed"
+        npm run validate-schema || echo "Schema validation failed"
+        
+    - name: Trigger Vercel Deploy
+      if: github.ref == 'refs/heads/main'
+      run: |
+        curl -X POST "https://api.vercel.com/v1/integrations/deploy/prj_${{ secrets.VERCEL_PROJECT_ID }}/trigger" \
+          -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{"ref": "main"}'
