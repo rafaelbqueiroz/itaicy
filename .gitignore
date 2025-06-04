@@ -1,52 +1,64 @@
 # Dependencies
-node_modules
-.pnpm-store
-.pnp
-.pnp.js
-
-# Testing
-coverage
-.nyc_output
-
-# Production
-build
-dist
-.output
-*.tsbuildinfo
-
-# Environment Variables
-.env
-.env.local
-.env.*.local
-
-# Development
-.vscode/*
-!.vscode/extensions.json
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Logs
-logs
-*.log
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Database
-*.sqlite
-*.sqlite3
-dev.db
-dev.db-journal
+# Build outputs
+dist/
+build/
+.vite/
+server/public/
 
-# OS
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
 Thumbs.db
-desktop.ini
 
-# Project specific
+# Logs
+logs
+*.log
+
+# Temporary files
+*.tar.gz
+vite.config.ts.*
+nul
+fishing-test.jpg
+test-image.jpg
+
+# Test files
+test-*.html
+test-*.js
+
+# Performance reports
+performance/lighthouse/reports/
+performance/web-vitals/data/
+
+# Uploaded media (keep structure, ignore content)
+public/uploads/
+public/media/
+
+# Attached assets (temporary files)
 attached_assets/
+
+# Backup files
+*.bak
+*.backup
+
+# Supabase local
+.supabase/

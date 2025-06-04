@@ -1,0 +1,37 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background com a cor bege do placeholder -->
+  <rect width="800" height="600" fill="#D4C5A0"/>
+  
+  <!-- Logo do tuiuiú estilizado no centro -->
+  <g transform="translate(400, 300)">
+    <!-- Círculo de fundo -->
+    <circle cx="0" cy="0" r="120" fill="none" stroke="white" stroke-width="4" opacity="0.8"/>
+    
+    <!-- Tuiuiú estilizado -->
+    <g transform="scale(2)">
+      <!-- Corpo -->
+      <ellipse cx="0" cy="10" rx="25" ry="35" fill="white" opacity="0.9"/>
+      
+      <!-- Pescoço -->
+      <rect x="-3" y="-25" width="6" height="35" fill="white" opacity="0.9"/>
+      
+      <!-- Cabeça -->
+      <circle cx="0" cy="-35" r="12" fill="white" opacity="0.9"/>
+      
+      <!-- Bico -->
+      <polygon points="0,-47 -2,-40 2,-40" fill="white" opacity="0.9"/>
+      
+      <!-- Pernas -->
+      <rect x="-8" y="40" width="3" height="20" fill="white" opacity="0.9"/>
+      <rect x="5" y="40" width="3" height="20" fill="white" opacity="0.9"/>
+      
+      <!-- Asa -->
+      <ellipse cx="15" cy="5" rx="12" ry="20" fill="white" opacity="0.7"/>
+    </g>
+    
+    <!-- Texto -->
+    <text x="0" y="160" text-anchor="middle" font-family="serif" font-size="24" fill="white" opacity="0.8">
+      Itaicy Pantanal Eco Lodge
+    </text>
+  </g>
+</svg>
