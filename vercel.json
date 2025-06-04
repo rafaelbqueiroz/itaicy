@@ -22,7 +22,7 @@
   ],
   "env": {
     "NODE_ENV": "production",
-    "VERCEL_DEPLOY": "true"
+    "VERCEL_DEPLOY": "auto"
   },
   "git": {
     "deploymentEnabled": {
