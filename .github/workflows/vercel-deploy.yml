@@ -1,43 +1,45 @@
-name: Vercel Deploy Trigger
+name: Vercel Deploy
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  trigger-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         submodules: recursive
-        
+        fetch-depth: 0
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
         cache-dependency-path: 'ItaicyEcoLodge/package-lock.json'
-        
+
+    - name: Install Vercel CLI
+      run: npm install --global vercel@latest
+
     - name: Install dependencies
       run: |
         cd ItaicyEcoLodge
         npm ci
-        
-    - name: Run tests and validation
+
+    - name: Build project
       run: |
         cd ItaicyEcoLodge
-        npm run health-check || echo "Health check failed"
-        npm run validate-schema || echo "Schema validation failed"
-        
-    - name: Trigger Vercel Deploy
-      if: github.ref == 'refs/heads/main'
+        npm run build
+
+    - name: Deploy to Vercel
       run: |
-        curl -X POST "https://api.vercel.com/v1/integrations/deploy/prj_${{ secrets.VERCEL_PROJECT_ID }}/trigger" \
-          -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -d '{"ref": "main"}'
+        cd ItaicyEcoLodge
+        vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
+      env:
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

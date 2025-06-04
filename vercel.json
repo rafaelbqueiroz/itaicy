@@ -1,32 +1,30 @@
 {
   "version": 2,
-  "buildCommand": "chmod +x build-vercel.sh && ./build-vercel.sh",
-  "outputDirectory": "ItaicyEcoLodge/dist",
-  "installCommand": "cd ItaicyEcoLodge && npm install",
-  "devCommand": "cd ItaicyEcoLodge && npm run dev",
-  "framework": null,
-  "functions": {
-    "ItaicyEcoLodge/server/index.ts": {
-      "runtime": "nodejs18.x"
-    }
-  },
-  "rewrites": [
+  "name": "itaicy-eco-lodge",
+  "builds": [
     {
-      "source": "/api/(.*)",
-      "destination": "/ItaicyEcoLodge/server/index.ts"
+      "src": "ItaicyEcoLodge/client/**/*",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     },
     {
-      "source": "/(.*)",
-      "destination": "/ItaicyEcoLodge/client/index.html"
+      "src": "ItaicyEcoLodge/server/index.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/ItaicyEcoLodge/server/index.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/ItaicyEcoLodge/client/index.html"
     }
   ],
   "env": {
-    "NODE_ENV": "production",
-    "VERCEL_DEPLOY": "auto"
-  },
-  "git": {
-    "deploymentEnabled": {
-      "main": true
-    }
+    "NODE_ENV": "production"
   }
 }
