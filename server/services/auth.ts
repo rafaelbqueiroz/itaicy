@@ -8,18 +8,25 @@ import jwt from 'jsonwebtoken';
 import { db } from '../db';
 import { cmsUsers } from '@shared/schema';
 import { eq } from 'drizzle-orm';
+import { env, getSupabaseConfigOrNull } from '../config/environment';
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
-const jwtSecret = process.env.SESSION_SECRET || 'itaicy-cms-secret';
+const jwtSecret = env.config.SESSION_SECRET;
+const supabaseConfig = getSupabaseConfigOrNull();
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.warn('⚠️ Supabase credentials not configured. Authentication will not work.');
+// Log authentication mode on startup
+if (supabaseConfig) {
+  console.log('🔐 Authentication: Supabase configured');
+} else {
+  if (env.isDevelopment) {
+    console.log('🔧 Authentication: Development mode (mock auth)');
+  } else {
+    console.error('❌ Authentication: Supabase not configured in production!');
+  }
 }
 
-// Create Supabase admin client (only if credentials are available)
-const supabaseAdmin = supabaseUrl && supabaseServiceKey
-  ? createClient(supabaseUrl, supabaseServiceKey, {
+// Create Supabase admin client (only if credentials are properly configured)
+const supabaseAdmin = supabaseConfig
+  ? createClient(supabaseConfig.url, supabaseConfig.serviceKey, {
       auth: {
         autoRefreshToken: false,
         persistSession: false
@@ -48,7 +55,7 @@ export interface AuthResult {
 export async function authenticateUser(email: string, password: string): Promise<AuthResult> {
   try {
     // Development mode: Use mock authentication if Supabase is not available
-    if (!supabaseAdmin || process.env.NODE_ENV === 'development') {
+    if (!supabaseAdmin || env.isDevelopment) {
       console.log('🔧 Using mock authentication for development');
 
       // Mock users for development
@@ -171,7 +178,7 @@ export async function verifyToken(token: string): Promise<CmsUserSession | null>
     const decoded = jwt.verify(token, jwtSecret) as CmsUserSession;
 
     // Development mode: Use mock verification if Supabase is not available
-    if (!supabaseAdmin || process.env.NODE_ENV === 'development') {
+    if (!supabaseAdmin || env.isDevelopment) {
       // Mock users for development
       const mockUsers = [
         {

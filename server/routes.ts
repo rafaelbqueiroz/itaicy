@@ -28,23 +28,33 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Redirect middleware - handle 301 redirects before other routes
-  app.use(async (req, res, next) => {
-    try {
-      const { RedirectService } = await import('./services/redirect.js');
-      const redirect = await RedirectService.getRedirect(req.path);
-
-      if (redirect) {
-        console.log(`🔀 Redirecting ${req.path} -> ${redirect.toPath} (${redirect.statusCode})`);
-        return res.redirect(redirect.statusCode, redirect.toPath);
-      }
-
-      next();
-    } catch (error) {
-      console.error('Redirect middleware error:', error);
-      next();
-    }
+  // Simple test route
+  app.get('/test', (req, res) => {
+    res.json({ message: 'Server is working!' });
   });
+
+  // Health check route
+  app.get('/health', (req, res) => {
+    res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  });
+
+  // Redirect middleware - temporarily disabled due to db issues
+  // app.use(async (req, res, next) => {
+  //   try {
+  //     const { RedirectService } = await import('./services/redirect.js');
+  //     const redirect = await RedirectService.getRedirect(req.path);
+
+  //     if (redirect) {
+  //       console.log(`🔀 Redirecting ${req.path} -> ${redirect.toPath} (${redirect.statusCode})`);
+  //       return res.redirect(redirect.statusCode, redirect.toPath);
+  //     }
+
+  //     next();
+  //   } catch (error) {
+  //     console.error('Error getting redirect:', error);
+  //     next();
+  //   }
+  // });
 
   // Media routes
   app.use("/api/media", mediaRoutes);

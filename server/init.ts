@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import http from 'http';
 import { Pool } from '@neondatabase/serverless';
+import { validateEnvironment, env } from './config/environment';
 
 interface ServiceCheck {
   name: string;
@@ -10,12 +11,12 @@ interface ServiceCheck {
 
 async function checkDatabase() {
   try {
-    if (!process.env.DATABASE_URL) {
+    if (!env.config.DATABASE_URL) {
       throw new Error('DATABASE_URL not configured');
     }
 
     // In development, skip actual connection check
-    if (process.env.NODE_ENV === 'development') {
+    if (env.isDevelopment) {
       console.log('Database check skipped in development mode');
       return true;
     }
@@ -23,7 +24,7 @@ async function checkDatabase() {
     // Production database check
     try {
       const pool = new Pool({
-        connectionString: process.env.DATABASE_URL,
+        connectionString: env.config.DATABASE_URL,
         connectionTimeoutMillis: 5000,
         ssl: true
       });
@@ -45,20 +46,7 @@ async function checkDatabase() {
 }
 
 async function checkEnvironment() {
-  const requiredVars = [
-    'NODE_ENV',
-    'PORT',
-    'DATABASE_URL'
-  ];
-
-  const missing = requiredVars.filter(varName => !process.env[varName]);
-  
-  if (missing.length > 0) {
-    console.error('Missing required environment variables:', missing);
-    return false;
-  }
-
-  return true;
+  return validateEnvironment();
 }
 
 export async function initializeServer(): Promise<boolean> {
@@ -73,11 +61,11 @@ export async function initializeServer(): Promise<boolean> {
     {
       name: 'Database',
       check: checkDatabase,
-      required: process.env.NODE_ENV === 'production' // Only required in production
+      required: env.isProduction // Only required in production
     }
   ];
 
-  if (process.env.NODE_ENV === 'development') {
+  if (env.isDevelopment) {
     console.log('Running in development mode - some checks are optional\n');
   }
 
