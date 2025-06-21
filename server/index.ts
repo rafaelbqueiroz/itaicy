@@ -4,6 +4,8 @@ dotenv.config();
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { env } from "./config/environment";
+import { initPayloadCMS, setupCMSRoutes } from "./cms/init";
 
 const app = express();
 app.use(express.json());
@@ -42,6 +44,25 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
+  // Inicializa o Payload CMS se configurado
+  if (env.hasPayloadConfig) {
+    try {
+      log("Inicializando Payload CMS...");
+      await initPayloadCMS(
+        app, 
+        env.databaseConfig.url || '', 
+        env.payloadConfig.secret
+      );
+      setupCMSRoutes(app);
+      log("✅ Payload CMS inicializado com sucesso");
+    } catch (error) {
+      log("❌ Erro ao inicializar o Payload CMS:");
+      console.error(error);
+    }
+  } else {
+    log("⚠️ Payload CMS não configurado. Pulando inicialização.");
+  }
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -68,5 +89,8 @@ app.use((req, res, next) => {
     host: "localhost",
   }, () => {
     log(`serving on port ${port}`);
+    if (env.hasPayloadConfig) {
+      log(`Payload Admin URL: http://localhost:${port}/admin`);
+    }
   });
 })();

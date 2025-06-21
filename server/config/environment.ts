@@ -4,6 +4,11 @@
  */
 
 import { z } from 'zod';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Carrega variáveis de ambiente do arquivo .env
+dotenv.config();
 
 // Environment variable schema
 const envSchema = z.object({
@@ -41,6 +46,15 @@ const envSchema = z.object({
   VITE_DEV_MODE: z.union([z.string(), z.boolean()]).transform(val =>
     typeof val === 'string' ? val === 'true' : val
   ).default(false),
+
+  // Payload CMS Configuration
+  PAYLOAD_SECRET: z.string().optional(),
+  PAYLOAD_CONFIG_PATH: z.string().optional(),
+  PAYLOAD_ADMIN_EMAIL: z.string().email().optional(),
+  PAYLOAD_ADMIN_PASSWORD: z.string().optional(),
+  PAYLOAD_PUBLIC_SERVER_URL: z.string().url().optional(),
+  PAYLOAD_PUBLIC_SITE_URL: z.string().url().optional(),
+  CORS_ORIGIN: z.string().optional(),
 });
 
 export type Environment = z.infer<typeof envSchema>;
@@ -177,6 +191,27 @@ class EnvironmentConfig {
     }
   }
 
+  // Payload CMS configuration helpers
+  get hasPayloadConfig(): boolean {
+    try {
+      return !!this.config.PAYLOAD_SECRET;
+    } catch {
+      return false;
+    }
+  }
+
+  get payloadConfig() {
+    return {
+      secret: this.config.PAYLOAD_SECRET || 'seu-segredo-seguro',
+      configPath: this.config.PAYLOAD_CONFIG_PATH,
+      adminEmail: this.config.PAYLOAD_ADMIN_EMAIL,
+      adminPassword: this.config.PAYLOAD_ADMIN_PASSWORD,
+      publicServerUrl: this.config.PAYLOAD_PUBLIC_SERVER_URL,
+      publicSiteUrl: this.config.PAYLOAD_PUBLIC_SITE_URL,
+      corsOrigin: this.config.CORS_ORIGIN || '*',
+    };
+  }
+
   // Print configuration status
   printStatus(): void {
     try {
@@ -186,6 +221,7 @@ class EnvironmentConfig {
       console.log(`   Database: ${this.config.DATABASE_URL ? '✅ Configured' : '❌ Missing'}`);
       console.log(`   Supabase: ${this.hasSupabaseConfig ? '✅ Configured' : '❌ Missing'}`);
       console.log(`   OpenAI: ${this.config.OPENAI_API_KEY ? '✅ Configured' : '❌ Missing'}`);
+      console.log(`   Payload CMS: ${this.hasPayloadConfig ? '✅ Configured' : '❌ Missing'}`);
 
       if (!this.isValid) {
         console.log('\n❌ Configuration Errors:');
@@ -250,3 +286,54 @@ export function requireSupabase(): { url: string; serviceKey: string; anonKey?: 
 export function getSupabaseConfigOrNull() {
   return env.hasSupabaseConfig ? env.supabaseConfig : null;
 }
+
+/**
+ * Configurações de ambiente da aplicação
+ */
+export const environment = {
+  // Configurações do servidor
+  server: {
+    port: process.env.PORT || 3001,
+    host: process.env.HOST || 'localhost',
+    nodeEnv: process.env.NODE_ENV || 'development',
+    isProduction: process.env.NODE_ENV === 'production',
+    isDevelopment: process.env.NODE_ENV === 'development' || !process.env.NODE_ENV,
+    corsOrigin: process.env.CORS_ORIGIN || '*',
+  },
+
+  // Configurações do banco de dados
+  database: {
+    url: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/itaicy',
+    ssl: process.env.NODE_ENV === 'production',
+  },
+
+  // Configurações do CMS
+  cms: {
+    secret: process.env.PAYLOAD_SECRET || 'seu-segredo-seguro',
+    adminEmail: process.env.ADMIN_EMAIL || 'admin@itaicyecolodge.com',
+    adminPassword: process.env.ADMIN_PASSWORD,
+    mediaDir: path.resolve(process.cwd(), 'media'),
+  },
+
+  // Configurações de armazenamento
+  storage: {
+    type: process.env.STORAGE_TYPE || 'local', // 'local', 'supabase', 's3'
+    supabaseUrl: process.env.SUPABASE_URL,
+    supabaseKey: process.env.SUPABASE_KEY,
+    supabaseBucket: process.env.SUPABASE_BUCKET || 'media',
+    s3Bucket: process.env.S3_BUCKET,
+    s3Region: process.env.S3_REGION || 'us-east-1',
+    s3AccessKey: process.env.S3_ACCESS_KEY,
+    s3SecretKey: process.env.S3_SECRET_KEY,
+  },
+
+  // Configurações de serviços externos
+  services: {
+    emailProvider: process.env.EMAIL_PROVIDER || 'none', // 'none', 'sendgrid', 'mailgun'
+    sendgridKey: process.env.SENDGRID_API_KEY,
+    mailgunKey: process.env.MAILGUN_API_KEY,
+    mailgunDomain: process.env.MAILGUN_DOMAIN,
+  },
+};
+
+export default environment;
