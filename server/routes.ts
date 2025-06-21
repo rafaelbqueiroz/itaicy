@@ -8,6 +8,7 @@ import {
 import { z } from "zod";
 import mediaRoutes from "./routes/media.js";
 import placeholdersRoutes from "./routes/placeholders.js";
+import sitemapRoutes from "./routes/sitemap.js";
 import seoSuggestionsRoutes from "./routes/cms/seo-suggestions.js";
 import cmsAuthRoutes from "./routes/cms/auth.js";
 import cmsMediaRoutes from "./routes/cms/media.js";
@@ -23,6 +24,7 @@ import gscRoutes from "./routes/automation/google-search-console.js";
 import vitalsRoutes from "./routes/performance/vitals.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import { SitemapService } from "./services/sitemap.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -61,6 +63,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Placeholders routes
   app.use("/api/placeholders", placeholdersRoutes);
+
+  // Root level XML files
+  app.get("/sitemap.xml", (req, res) => {
+    try {
+      const urls = SitemapService.getStaticSitemap();
+      const sitemapXml = SitemapService.generateSitemapXml(urls);
+      console.log('Serving sitemap.xml');
+      res.set('Content-Type', 'application/xml');
+      res.send(sitemapXml);
+    } catch (error) {
+      console.error('Error serving sitemap:', error);
+      res.status(500).send('Error generating sitemap');
+    }
+  });
+
+  // API routes
+  app.use("/api/sitemap", sitemapRoutes);
 
   // CMS Authentication routes
   app.use("/api/cms/auth", cmsAuthRoutes);
@@ -796,30 +815,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Serve sitemap.xml from Supabase Storage
-  app.get("/sitemap.xml", async (req, res) => {
-    try {
-      const { createClient } = await import('@supabase/supabase-js');
-      const supabaseUrl = 'https://hcmrlpevcpkclqubnmmf.supabase.co';
-      const supabaseKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjbXJscGV2Y3BrY2xxdWJubW1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1NTk1MzksImV4cCI6MjA2NDEzNTUzOX0.zJj-0ovtg-c48VOMPBtS3lO_--gucNGRMs3sFndmsc0';
-      const supabase = createClient(supabaseUrl, supabaseKey);
-
-      const { data, error } = await supabase.storage
-        .from('media')
-        .download('sitemap/sitemap.xml');
-
-      if (error || !data) {
-        return res.status(404).send('Sitemap not found');
-      }
-
-      const sitemapContent = await data.text();
-      res.set('Content-Type', 'application/xml');
-      res.send(sitemapContent);
-    } catch (error) {
-      console.error('Error serving sitemap:', error);
-      res.status(500).send('Error loading sitemap');
-    }
-  });
+  // Serve sitemap.xml
+  app.use(sitemapRoutes);
 
   // Serve rss.xml from Supabase Storage
   app.get("/rss.xml", async (req, res) => {

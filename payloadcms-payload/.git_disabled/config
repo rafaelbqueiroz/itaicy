@@ -1,0 +1,14 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[remote "origin"]
+	url = https://github.com/3m1l1a/payloadcms-payload.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "multilingual"]
+	remote = origin
+	merge = refs/heads/multilingual
+	vscode-merge-base = origin/multilingual

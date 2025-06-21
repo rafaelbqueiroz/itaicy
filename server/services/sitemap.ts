@@ -19,55 +19,52 @@ export class SitemapService {
   private static readonly BASE_URL = 'https://itaicy.com.br';
 
   /**
-   * Generate complete sitemap.xml and save to Supabase Storage
+   * Generate complete sitemap.xml
    */
-  static async generateSitemap(): Promise<void> {
-    console.log('🗺️ Generating sitemap.xml...');
-
-    try {
-      // Collect all URLs from different content types
-      const urls: SitemapUrl[] = [];
-
-      // Add static pages
-      urls.push(...await this.getStaticPages());
-
-      // Add dynamic content pages
-      urls.push(...await this.getPageUrls());
-      urls.push(...await this.getBlogPostUrls());
-      urls.push(...await this.getExperienceUrls());
-      urls.push(...await this.getAccommodationUrls());
-      urls.push(...await this.getGastronomyUrls());
-
-      // Generate XML content
-      const sitemapXml = this.generateSitemapXml(urls);
-
-      // Save to Supabase Storage
-      await this.saveSitemapToStorage(sitemapXml);
-
-      // Purge CDN cache
-      await this.purgeCDNCache();
-
-      // Ping Google
-      await this.pingGoogle();
-
-      console.log(`✅ Sitemap generated with ${urls.length} URLs`);
-
-    } catch (error) {
-      console.error('❌ Failed to generate sitemap:', error);
-      throw error;
-    }
+  static getStaticSitemap(): SitemapUrl[] {
+    console.log('🗺️ Generating static sitemap.xml...');
+    const urls = this.getStaticPages();
+    console.log(`✅ Sitemap generated with ${urls.length} URLs`);
+    return urls;
   }
 
   /**
    * Get static pages URLs
    */
-  private static async getStaticPages(): Promise<SitemapUrl[]> {
+  private static getStaticPages(): SitemapUrl[] {
     const staticPages = [
+      // Páginas principais
       { path: '/', priority: 1.0, changefreq: 'weekly' as const },
-      { path: '/lodge', priority: 0.9, changefreq: 'monthly' as const },
+      
+      // Seção Lodge
+      { path: '/lodge', priority: 0.9, changefreq: 'weekly' as const },
+      { path: '/acomodacoes', priority: 0.9, changefreq: 'weekly' as const },
+      { path: '/gastronomia', priority: 0.8, changefreq: 'weekly' as const },
+      
+      // Seção Experiências
       { path: '/experiencias', priority: 0.9, changefreq: 'weekly' as const },
+      { path: '/pesca-esportiva', priority: 0.8, changefreq: 'weekly' as const },
+      { path: '/safaris-birdwatching', priority: 0.8, changefreq: 'weekly' as const },
+      { path: '/pacotes', priority: 0.8, changefreq: 'weekly' as const },
+      
+      // Seção Mídia
+      { path: '/galeria', priority: 0.7, changefreq: 'weekly' as const },
+      
+      // Seção Blog
       { path: '/blog', priority: 0.8, changefreq: 'daily' as const },
+      { path: '/blog/natureza', priority: 0.7, changefreq: 'daily' as const },
+      { path: '/blog/aventura', priority: 0.7, changefreq: 'daily' as const },
+      { path: '/blog/sustentabilidade', priority: 0.7, changefreq: 'daily' as const },
+      
+      // Seção Planejamento
+      { path: '/planejamento', priority: 0.8, changefreq: 'weekly' as const },
+      { path: '/como-chegar', priority: 0.7, changefreq: 'monthly' as const },
+      { path: '/melhor-epoca', priority: 0.7, changefreq: 'monthly' as const },
+      { path: '/faq', priority: 0.7, changefreq: 'monthly' as const },
+      
+      // Páginas Institucionais
       { path: '/contato', priority: 0.7, changefreq: 'monthly' as const },
+      { path: '/sobre-nos', priority: 0.7, changefreq: 'monthly' as const },
     ];
 
     return staticPages.map(page => ({
@@ -215,7 +212,7 @@ export class SitemapService {
   /**
    * Generate XML content for sitemap
    */
-  private static generateSitemapXml(urls: SitemapUrl[]): string {
+  public static generateSitemapXml(urls: SitemapUrl[]): string {
     const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>\n';
     const urlsetOpen = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
     const urlsetClose = '</urlset>';
@@ -236,6 +233,11 @@ export class SitemapService {
    * Save sitemap to Supabase Storage
    */
   private static async saveSitemapToStorage(sitemapXml: string): Promise<void> {
+    // Em modo desenvolvimento, não salva no storage
+    if (process.env.NODE_ENV === 'development') {
+      return;
+    }
+
     try {
       const { error } = await supabase.storage
         .from('media')
