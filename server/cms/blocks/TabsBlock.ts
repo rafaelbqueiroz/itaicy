@@ -105,13 +105,21 @@ export const TabsBlock: Block = {
             { label: 'Base', value: 'bottom' },
           ],
           defaultValue: 'top',
+          validate: (value, { siblingData }) => {
+            const orientation = siblingData?.orientation || 'horizontal';
+            
+            if (orientation === 'horizontal' && !['top', 'bottom'].includes(value)) {
+              return 'Para orientação horizontal, use apenas "Topo" ou "Base"';
+            }
+            
+            if (orientation === 'vertical' && !['left', 'right'].includes(value)) {
+              return 'Para orientação vertical, use apenas "Esquerda" ou "Direita"';
+            }
+            
+            return true;
+          },
           admin: {
-            condition: (data, siblingData) => {
-              if (siblingData?.orientation === 'horizontal') {
-                return ['top', 'bottom'].includes(siblingData?.tabsPosition || 'top');
-              }
-              return ['left', 'right'].includes(siblingData?.tabsPosition || 'left');
-            },
+            description: 'Horizontal: Topo/Base | Vertical: Esquerda/Direita',
           },
         },
         {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -66,8 +66,8 @@ const Carousel: React.FC<CarouselProps> = ({
     zoom: 'transition-all duration-500 transform',
   };
 
-  // Avançar para o próximo slide
-  const nextSlide = () => {
+  // Avançar para o próximo slide - memoizado com useCallback
+  const nextSlide = useCallback(() => {
     if (isAnimating || slides.length <= 1) return;
     
     setIsAnimating(true);
@@ -77,7 +77,7 @@ const Carousel: React.FC<CarouselProps> = ({
     setTimeout(() => {
       setIsAnimating(false);
     }, 500);
-  };
+  }, [isAnimating, slides.length]);
 
   // Voltar para o slide anterior
   const prevSlide = () => {
@@ -107,20 +107,20 @@ const Carousel: React.FC<CarouselProps> = ({
 
   // Configurar autoplay
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let intervalId: NodeJS.Timeout;
     
     if (autoplay && slides.length > 1) {
-      interval = setInterval(() => {
+      intervalId = setInterval(() => {
         nextSlide();
       }, interval);
     }
     
     return () => {
-      if (interval) {
-        clearInterval(interval);
+      if (intervalId) {
+        clearInterval(intervalId);
       }
     };
-  }, [autoplay, currentSlide, slides.length]);
+  }, [autoplay, interval, slides.length, nextSlide]);
 
   // Se não houver slides, não renderizar nada
   if (!slides || slides.length === 0) {
