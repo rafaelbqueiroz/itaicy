@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+import { Link } from 'react-router-dom';
+import DOMPurify from 'isomorphic-dompurify';
 import { Button } from '../ui/button';
 import { cn } from '../../lib/utils';
 
@@ -45,11 +47,57 @@ const Tabs: React.FC<TabsProps> = ({
   } = settings || {};
 
   const [activeTab, setActiveTab] = useState(0);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // Se não houver abas, não renderizar nada
   if (!tabs || tabs.length === 0) {
     return null;
   }
+
+  // Função para lidar com navegação por teclado
+  const handleKeyDown = (event: React.KeyboardEvent, index: number) => {
+    let newIndex = index;
+
+    if (orientation === 'horizontal') {
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        newIndex = (index + 1) % tabs.length;
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        newIndex = (index - 1 + tabs.length) % tabs.length;
+      }
+    } else {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        newIndex = (index + 1) % tabs.length;
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        newIndex = (index - 1 + tabs.length) % tabs.length;
+      }
+    }
+
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      setActiveTab(index);
+    }
+
+    if (newIndex !== index) {
+      setActiveTab(newIndex);
+      tabRefs.current[newIndex]?.focus();
+    }
+
+    // Home e End keys
+    if (event.key === 'Home') {
+      event.preventDefault();
+      setActiveTab(0);
+      tabRefs.current[0]?.focus();
+    } else if (event.key === 'End') {
+      event.preventDefault();
+      const lastIndex = tabs.length - 1;
+      setActiveTab(lastIndex);
+      tabRefs.current[lastIndex]?.focus();
+    }
+  };
 
   // Classes para o container principal baseado nas configurações
   const containerClasses = cn(
@@ -118,14 +166,23 @@ const Tabs: React.FC<TabsProps> = ({
       {/* Container das abas */}
       <div className={layoutClasses}>
         {/* Lista de abas */}
-        <div className={tabListClasses}>
+        <div 
+          className={tabListClasses}
+          role="tablist"
+          aria-orientation={orientation}
+        >
           {tabs.map((tab, index) => (
             <button
               key={`tab-${index}`}
+              ref={el => tabRefs.current[index] = el}
               className={tabClasses(index)}
               onClick={() => setActiveTab(index)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
               aria-selected={activeTab === index}
               role="tab"
+              id={`tab-${index}`}
+              aria-controls={`tabpanel-${index}`}
+              tabIndex={activeTab === index ? 0 : -1}
             >
               {tab.label}
             </button>
@@ -137,12 +194,15 @@ const Tabs: React.FC<TabsProps> = ({
           {tabs.map((tab, index) => (
             <div
               key={`content-${index}`}
+              id={`tabpanel-${index}`}
               className={cn(
                 "transition-opacity duration-300",
                 activeTab === index ? "block opacity-100" : "hidden opacity-0"
               )}
               role="tabpanel"
+              aria-labelledby={`tab-${index}`}
               aria-hidden={activeTab !== index}
+              tabIndex={0}
             >
               {/* Layout baseado na configuração */}
               <div className={contentLayoutClasses}>
@@ -189,22 +249,27 @@ const Tabs: React.FC<TabsProps> = ({
                     : "w-full",
                   contentLayout === 'image-background' && "relative z-10 text-white p-8"
                 )}>
-                  {/* Renderizar o conteúdo rich text */}
+                  {/* Renderizar o conteúdo rich text com sanitização */}
                   <div className="prose max-w-none">
                     {typeof tab.content === 'string' 
-                      ? <div dangerouslySetInnerHTML={{ __html: tab.content }} /> 
+                      ? <div dangerouslySetInnerHTML={{ 
+                          __html: DOMPurify.sanitize(tab.content, {
+                            ADD_TAGS: ['iframe'],
+                            ADD_ATTR: ['target', 'rel']
+                          }) 
+                        }} /> 
                       : tab.content
                     }
                   </div>
                   
-                  {/* CTA */}
+                  {/* CTA com Link do React Router */}
                   {tab.cta?.label && tab.cta.href && (
                     <div className="mt-6">
                       <Button
                         variant={tab.cta.variant || 'primary'}
                         asChild
                       >
-                        <a href={tab.cta.href}>{tab.cta.label}</a>
+                        <Link to={tab.cta.href}>{tab.cta.label}</Link>
                       </Button>
                     </div>
                   )}
