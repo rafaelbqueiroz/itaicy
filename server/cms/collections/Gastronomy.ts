@@ -331,6 +331,9 @@ const Gastronomy: CollectionConfig = {
         const { payload } = req;
 
         try {
+          // Log da requisição para debugging
+          console.log(`[Gastronomy API] Fetching item by slug: ${slug}`);
+
           const gastronomy = await payload.find({
             collection: 'gastronomy',
             where: {
@@ -341,12 +344,48 @@ const Gastronomy: CollectionConfig = {
           });
 
           if (gastronomy.docs.length === 0) {
-            return res.status(404).json({ error: 'Item não encontrado' });
+            console.log(`[Gastronomy API] Item not found for slug: ${slug}`);
+            return res.status(404).json({ 
+              success: false,
+              error: {
+                code: 'NOT_FOUND',
+                message: 'Item não encontrado',
+                details: {
+                  slug: slug,
+                  collection: 'gastronomy'
+                }
+              }
+            });
           }
 
-          return res.status(200).json(gastronomy.docs[0]);
+          console.log(`[Gastronomy API] Successfully retrieved item: ${slug}`);
+          return res.status(200).json({
+            success: true,
+            data: gastronomy.docs[0]
+          });
         } catch (error) {
-          return res.status(500).json({ error: 'Erro ao buscar item' });
+          // Log detalhado do erro para debugging
+          console.error('[Gastronomy API] Error fetching item:', {
+            slug: slug,
+            error: error instanceof Error ? {
+              message: error.message,
+              stack: error.stack,
+              name: error.name
+            } : error,
+            timestamp: new Date().toISOString()
+          });
+
+          return res.status(500).json({ 
+            success: false,
+            error: {
+              code: 'INTERNAL_ERROR',
+              message: 'Erro ao buscar item',
+              details: {
+                slug: slug,
+                errorMessage: error instanceof Error ? error.message : 'Erro desconhecido'
+              }
+            }
+          });
         }
       },
     },
