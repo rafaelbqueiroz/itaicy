@@ -344,12 +344,54 @@ export const ContactFormBlock: Block = {
           name: 'recipients',
           type: 'array',
           label: 'Destinatários',
+          minRows: 1,
+          required: true,
+          validate: (value, { operation }) => {
+            // Só valida em criação e atualização
+            if (operation === 'create' || operation === 'update') {
+              // Verifica se há pelo menos um destinatário
+              if (!value || !Array.isArray(value) || value.length === 0) {
+                return 'É necessário configurar pelo menos um destinatário';
+              }
+              
+              // Regex para validação de email (mesmo usado no frontend)
+              const emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+              
+              // Valida cada destinatário
+              const invalidEmails: string[] = [];
+              value.forEach((recipient: any, index: number) => {
+                if (!recipient.email || !emailRegex.test(recipient.email)) {
+                  invalidEmails.push(`Destinatário ${index + 1}: email inválido ou não informado`);
+                }
+              });
+              
+              if (invalidEmails.length > 0) {
+                return invalidEmails.join(', ');
+              }
+            }
+            
+            return true;
+          },
           fields: [
             {
               name: 'email',
               type: 'email',
               label: 'Email',
               required: true,
+              validate: (value) => {
+                if (!value) {
+                  return 'Email é obrigatório';
+                }
+                
+                // Regex robusto para validação de email
+                const emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+                
+                if (!emailRegex.test(value)) {
+                  return 'Por favor, insira um email válido';
+                }
+                
+                return true;
+              },
             },
             {
               name: 'name',
@@ -358,7 +400,7 @@ export const ContactFormBlock: Block = {
             },
           ],
           admin: {
-            description: 'Emails que receberão as mensagens enviadas pelo formulário',
+            description: 'Emails que receberão as mensagens enviadas pelo formulário (mínimo 1 destinatário)',
           },
         },
         {
