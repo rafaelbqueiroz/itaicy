@@ -133,8 +133,15 @@ const ContactForm: React.FC<ContactFormProps> = ({
     
     if (emailField.enabled && emailField.required && !formState.email) {
       newErrors.email = 'Email é obrigatório';
-    } else if (emailField.enabled && formState.email && !/\S+@\S+\.\S+/.test(formState.email)) {
-      newErrors.email = 'Email inválido';
+    } else if (emailField.enabled && formState.email) {
+      // Regex mais robusto para validação de email
+      // Aceita formatos como: user@domain.com, user.name@domain.co.uk, user+tag@domain.com
+      // Rejeita: espaços, múltiplos @, domínios sem TLD, caracteres especiais inválidos
+      const emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+      
+      if (!emailRegex.test(formState.email)) {
+        newErrors.email = 'Por favor, insira um email válido';
+      }
     }
     
     if (phoneField.enabled && phoneField.required && !formState.phone) {

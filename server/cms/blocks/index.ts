@@ -2,45 +2,76 @@ import { CarouselBlock } from './CarouselBlock';
 import { TabsBlock } from './TabsBlock';
 import { ContactFormBlock } from './ContactFormBlock';
 
-// Blocos básicos
+/*
+ * ARQUITETURA DE BLOCOS DO CMS
+ * 
+ * Este arquivo serve como índice central para todos os blocos disponíveis no CMS.
+ * A estrutura está organizada em duas categorias:
+ * 
+ * 1. BLOCOS BÁSICOS (definidos em Pages.ts):
+ *    - Estes blocos têm suas definições completas no arquivo collections/Pages.ts
+ *    - A separação foi feita para manter Pages.ts mais enxuto e focado
+ *    - Aqui apenas exportamos referências com o slug para mapeamento
+ * 
+ * 2. BLOCOS COMPLEXOS (definidos em arquivos separados):
+ *    - CarouselBlock, TabsBlock, ContactFormBlock
+ *    - Cada um tem seu próprio arquivo devido à complexidade da configuração
+ *    - Permite melhor manutenibilidade e organização do código
+ * 
+ * Para adicionar um novo bloco:
+ * 1. Se for simples: defina em Pages.ts e adicione referência aqui
+ * 2. Se for complexo: crie arquivo separado e importe aqui
+ * 3. Adicione o slug em allBlocks[]
+ * 4. Adicione mapeamento em blockMap{}
+ */
+
+// BLOCOS BÁSICOS - Definições completas em collections/Pages.ts
 export const HeroImageBlock = {
   slug: 'hero-image',
-  // Este bloco está definido em Pages.ts
+  // Definição completa: server/cms/collections/Pages.ts (linha ~50)
+  // Bloco para hero com imagem de fundo
 };
 
 export const HeroVideoBlock = {
   slug: 'hero-video',
-  // Este bloco está definido em Pages.ts
+  // Definição completa: server/cms/collections/Pages.ts (linha ~150)
+  // Bloco para hero com vídeo de fundo
 };
 
 export const FeatureBlocksBlock = {
   slug: 'feature-blocks',
-  // Este bloco está definido em Pages.ts
+  // Definição completa: server/cms/collections/Pages.ts (linha ~250)
+  // Grade de blocos de recursos/características
 };
 
 export const SplitBlock = {
   slug: 'split-block',
-  // Este bloco está definido em Pages.ts
+  // Definição completa: server/cms/collections/Pages.ts (linha ~350)
+  // Layout dividido com imagem e texto
 };
 
 export const TestimonialsBlock = {
   slug: 'testimonials',
-  // Este bloco está definido em Pages.ts
+  // Definição completa: server/cms/collections/Pages.ts (linha ~450)
+  // Seção de depoimentos de clientes
 };
 
 export const FAQBlock = {
   slug: 'faq',
-  // Este bloco está definido em Pages.ts
+  // Definição completa: server/cms/collections/Pages.ts (linha ~550)
+  // Perguntas frequentes com accordion
 };
 
 export const NewsletterBlock = {
   slug: 'newsletter',
-  // Este bloco está definido em Pages.ts
+  // Definição completa: server/cms/collections/Pages.ts (linha ~650)
+  // Formulário de inscrição em newsletter
 };
 
 export const CountersRibbonBlock = {
   slug: 'counters-ribbon',
-  // Este bloco está definido em Pages.ts
+  // Definição completa: server/cms/collections/Pages.ts (linha ~750)
+  // Faixa com contadores animados
 };
 
 // Exportar todos os blocos
