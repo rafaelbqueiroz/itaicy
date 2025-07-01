@@ -1,254 +1,107 @@
-# Itaicy Pantanal Eco Lodge
+# Itaicy Eco Lodge - CMS e Website
 
-Um website moderno e responsivo para o Itaicy Pantanal Eco Lodge, construído com React, TypeScript, Tailwind CSS e um CMS completo integrado.
+## Visão Geral
 
-## 🌟 Características
+Este repositório contém o código-fonte do website e sistema de gerenciamento de conteúdo (CMS) para o Itaicy Eco Lodge, um eco-resort localizado no Pantanal brasileiro. O projeto utiliza uma arquitetura moderna com Payload CMS, React, e Supabase.
 
-- **Design Responsivo**: Otimizado para todos os dispositivos
-- **CMS Completo**: Sistema de gerenciamento de conteúdo em tempo real
-- **Performance Otimizada**: Core Web Vitals otimizados (LCP ≤ 2.5s, CLS ≤ 0.1, FID < 100ms)
-- **SEO Avançado**: Meta tags dinâmicas, JSON-LD, sitemap automático
-- **Processamento de Imagens**: Otimização automática para AVIF/WebP/JPEG
-- **Multilíngue**: Suporte para Português e Inglês
-- **Acessibilidade**: Seguindo as melhores práticas WCAG
+## Estrutura do Projeto
 
-## 🚀 Tecnologias
-
-### Frontend
-- **React 18** com TypeScript
-- **Tailwind CSS** para estilização
-- **Vite** como build tool
-- **Radix UI** para componentes acessíveis
-- **Framer Motion** para animações
-- **React Hook Form** para formulários
-
-### Backend & CMS
-- **Node.js** com Express
-- **Supabase** como banco de dados PostgreSQL
-- **Drizzle ORM** para queries type-safe
-- **Sharp** para processamento de imagens
-- **JWT** para autenticação
-
-### Performance & SEO
-- **Lighthouse CI** para monitoramento
-- **Web Vitals** para métricas de performance
-- **Critical CSS** extraction
-- **Image optimization** com múltiplos formatos
-
-## 📦 Instalação
-
-### Requisitos
-- Node.js 18+
-- npm ou pnpm
-- PostgreSQL (local ou Supabase)
-
-### 1. Clone e Configure
-
-```bash
-# Clone o repositório
-git clone [URL_DO_REPOSITORIO]
-cd ItaicyEcoLodge
-
-# Instale as dependências
-npm install
-
-# Configure as variáveis de ambiente
-cp .env.example .env
-# Edite o arquivo .env com suas credenciais do Supabase
-```
-
-### 2. Configuração do Banco
-
-```bash
-# Execute as migrações do banco
-npm run db:migrate
-
-# Popule o banco com dados iniciais
-npm run db:seed
-```
-
-### 3. Inicie o Desenvolvimento
-
-```bash
-# Inicia o servidor de desenvolvimento
-npm run dev
-
-# Acesse:
-# Website: http://localhost:5173
-# CMS: http://localhost:5173/cms
-```
-
-## 🏗️ Estrutura do Projeto
+O projeto está organizado da seguinte forma:
 
 ```
 ItaicyEcoLodge/
-├── client/                 # Frontend React
-│   ├── src/
-│   │   ├── components/     # Componentes reutilizáveis
-│   │   ├── pages/          # Páginas da aplicação
-│   │   ├── hooks/          # Custom hooks
-│   │   └── lib/            # Utilitários
-├── server/                 # Backend Node.js
-│   ├── api/               # Rotas da API
-│   ├── services/          # Serviços (auth, storage, etc.)
-│   └── routes/            # Definições de rotas
-├── shared/                # Código compartilhado
-│   └── schema.ts          # Schemas do banco de dados
-├── scripts/               # Scripts de setup e migração
-├── docs/                  # Documentação
-└── performance/           # Configurações de performance
+  ├── client/               # Frontend em React
+  │   ├── public/           # Arquivos estáticos
+  │   └── src/              # Código-fonte React
+  ├── server/               # Backend com Payload CMS
+  │   ├── cms/              # Configurações do Payload CMS
+  │   │   ├── blocks/       # Blocos de conteúdo reutilizáveis
+  │   │   ├── collections/  # Coleções do CMS
+  │   │   └── shared/       # Componentes compartilhados
+  │   ├── routes/           # Rotas da API
+  │   └── services/         # Serviços do backend
+  ├── scripts/              # Scripts de utilidade
+  └── docs/                 # Documentação
 ```
 
-## 🎛️ CMS (Sistema de Gerenciamento)
+## Sprints Concluídos
 
-O CMS oferece funcionalidades completas para gerenciar o conteúdo:
+### Sprint 1: Configuração Básica do Payload CMS
 
-### Funcionalidades
-- **Páginas**: Criação e edição de páginas com blocos dinâmicos
-- **Experiências**: Gestão de atividades e pacotes
-- **Acomodações**: Gerenciamento de quartos e suítes
-- **Blog**: Sistema completo de blog com categorias
-- **Gastronomia**: Cardápios e pratos especiais
-- **Mídia**: Biblioteca de imagens com otimização automática
-- **SEO**: Gestão de meta tags, JSON-LD e redirects
+- ✅ Configuração base do Payload CMS
+- ✅ Conexão com PostgreSQL via Supabase
+- ✅ Sistema de autenticação
+- ✅ Configuração do editor Lexical
+- ✅ Implementação das coleções principais (Users, Media, Pages)
+- ✅ Configuração de localização (PT/EN/ES)
 
-### Acesso ao CMS
-- **URL**: `/cms`
-- **Usuário padrão**: `admin@itaicy.com`
-- **Senha padrão**: `admin123` (altere após primeiro acesso)
+Detalhes: [Relatório de Conclusão do Sprint 1](./SPRINT1-COMPLETION-REPORT.md)
 
-## 📱 Páginas do Website
+### Sprint 2: Coleções Específicas e Sistema de Blocos
 
-- **Home**: Hero com vídeo, destaques e informações principais
-- **Lodge**: Acomodações e facilidades
-- **Experiências**: Safaris, birdwatching, pesca esportiva
-- **Gastronomia**: Culinária pantaneira e internacional
-- **Blog**: Artigos sobre natureza e sustentabilidade
-- **Galeria**: Fotos do lodge e da fauna local
-- **Contato**: Formulário e informações de localização
+- ✅ Implementação da coleção Gastronomy
+- ✅ Criação de blocos avançados:
+  - Carousel: Carrossel de imagens com múltiplas opções
+  - Tabs: Sistema de abas com layouts flexíveis
+  - ContactForm: Formulário de contato personalizável
+- ✅ Componentes frontend para renderização dos blocos
+- ✅ Integração com o sistema de páginas existente
 
-## 🎨 Design System
+Detalhes: [Relatório de Conclusão do Sprint 2](./SPRINT2-COMPLETION-REPORT.md)
 
-### Cores
-- **Primary**: Verde Pantanal (#22c55e)
-- **Secondary**: Terra (#a3a3a3)
-- **Accent**: Dourado (#fbbf24)
+## Próximos Passos
 
-### Tipografia
-- **Headings**: Inter (peso 600-700)
-- **Body**: Inter (peso 400-500)
-- **Hierarchy**: H1 (3xl), H2 (2xl), H3 (xl), H4 (lg)
+### Sprint 3: Migração de Dados e Testes
 
-### Componentes
-- Biblioteca completa de componentes UI
-- Variantes consistentes (primary, secondary, outline)
-- Estados interativos (hover, focus, disabled)
+- Desenvolvimento de scripts de migração
+- Sistema de validação e rollback
+- Testes de integração
+- Hooks para processamento de dados específicos
+- Sistema de versionamento de conteúdo
 
-## 🔧 Scripts Disponíveis
+## Tecnologias Utilizadas
 
-### Desenvolvimento
-- `npm run dev`: Servidor de desenvolvimento
-- `npm run build`: Build de produção
-- `npm run preview`: Preview da build
+- **Frontend**: React, TypeScript, Tailwind CSS
+- **CMS**: Payload CMS
+- **Backend**: Node.js, Express
+- **Banco de Dados**: PostgreSQL via Supabase
+- **Editor**: Lexical (Rich Text)
+- **Imagens**: Sistema de otimização e processamento
 
-### Banco de Dados
-- `npm run db:migrate`: Executa migrações
-- `npm run db:seed`: Popula dados iniciais
-- `npm run db:studio`: Interface visual do banco
+## Instalação e Execução
 
-### Performance
-- `npm run lighthouse`: Auditoria de performance
-- `npm run vitals`: Coleta métricas Web Vitals
-- `npm run optimize`: Otimização de imagens
+### Pré-requisitos
 
-### CMS
-- `npm run cms:setup`: Configuração inicial do CMS
-- `npm run cms:reset`: Reset completo dos dados
+- Node.js 16+
+- PostgreSQL ou Supabase
+- Variáveis de ambiente configuradas
 
-## 📈 Performance
+### Instalação
 
-### Métricas Alvo
-- **LCP**: ≤ 2.5s (Largest Contentful Paint)
-- **CLS**: ≤ 0.1 (Cumulative Layout Shift)
-- **FID**: < 100ms (First Input Delay)
-- **Lighthouse**: 90+ em todas as categorias
+1. Clone o repositório
+   ```
+   git clone https://github.com/seu-usuario/ItaicyEcoLodge.git
+   cd ItaicyEcoLodge
+   ```
 
-### Otimizações
-- **Imagens**: AVIF/WebP com fallback JPEG
-- **CSS**: Critical CSS inline, resto lazy-loaded
-- **JavaScript**: Code splitting e tree shaking
-- **Fonts**: Preload de fontes críticas
-- **CDN**: Assets servidos via CDN
+2. Instale as dependências
+   ```
+   npm install
+   ```
 
-## 🌐 SEO
+3. Configure as variáveis de ambiente
+   ```
+   cp .env.example .env
+   ```
+   Edite o arquivo `.env` com suas configurações
 
-### Funcionalidades
-- **Meta Tags**: Dinâmicas por página
-- **Open Graph**: Cards para redes sociais
-- **JSON-LD**: Schema.org markup
-- **Sitemap**: Geração automática
-- **Redirects**: Gestão de 301/302
+4. Execute o projeto em modo de desenvolvimento
+   ```
+   npm run dev
+   ```
 
-### Monitoramento
-- Google Search Console integrado
-- Relatórios de performance SEO
-- Sugestões automáticas de melhorias
+## Documentação Adicional
 
-## 🖼️ Processamento de Imagens
-
-### Formatos Suportados
-- **AVIF**: Formato moderno, máxima compressão
-- **WebP**: Fallback para navegadores compatíveis
-- **JPEG**: Fallback universal
-
-### Tamanhos Gerados
-- **Hero**: 1920×1280, 1280×853, 768×512
-- **Cards**: 1024×683
-- **Thumbnails**: 400×267
-- **Quadradas**: 300×300
-
-## 🚀 Deploy
-
-### Vercel (Recomendado)
-1. Conecte o repositório ao Vercel
-2. Configure as variáveis de ambiente
-3. Deploy automático a cada push
-
-### Variáveis de Ambiente
-```env
-SUPABASE_URL=your_supabase_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-JWT_SECRET=your_jwt_secret
-OPENAI_API_KEY=your_openai_key (opcional)
-```
-
-## 🔒 Segurança
-
-- **Autenticação**: JWT com refresh tokens
-- **Autorização**: Roles (Admin, Editor, Redator)
-- **Validação**: Schemas Zod em todas as entradas
-- **Sanitização**: XSS protection
-- **Rate Limiting**: Proteção contra spam
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch (`git checkout -b feature/nova-funcionalidade`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/nova-funcionalidade`)
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja [LICENSE](LICENSE) para detalhes.
-
-## 📞 Suporte
-
-- **Email**: contato@itaicyecolodge.com.br
-- **Website**: [www.itaicyecolodge.com.br](https://www.itaicyecolodge.com.br)
-- **Documentação**: [/docs](./docs/)
-
----
-
-**Desenvolvido com ❤️ para o Pantanal**
+- [Configuração do Payload CMS](./docs/PAYLOAD-CMS-SETUP.md)
+- [Sistema de Imagens](./docs/IMAGE-PROCESSING-SYSTEM.md)
+- [Resumo do Sprint 1](./docs/SPRINT1-SETUP-SUMMARY.md)
